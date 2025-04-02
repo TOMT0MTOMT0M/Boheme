@@ -1,6 +1,7 @@
 // Configuration de l'API Google Places
 const GOOGLE_PLACE_ID = 'ChIJq6put__q9EcREH6B3VlZUrM';
-const GOOGLE_API_KEY = 'AIzaSyCTJ-ttYO8KkKmvDGAFFpjRwiBJf9ciXrA';
+// Clé API définie dans config.js pour plus de sécurité
+// La clé API est chargée depuis config.js
 
 // Variable pour stocker l'instance Swiper
 let reviewsSwiper;
@@ -197,9 +198,16 @@ function displayGoogleReviews(reviews) {
 
 // Initialiser les avis Google au chargement de la page
 document.addEventListener('DOMContentLoaded', () => {
+    // Utiliser la clé API définie dans config.js
+    const apiKey = window.GOOGLE_API_KEY || '';
+    if (!apiKey) {
+        showErrorMessage("Erreur de configuration: Clé API manquante");
+        return;
+    }
+    
     // Charger les scripts Google Maps avec la nouvelle approche
     const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places&loading=async&callback=initGooglePlaces`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&loading=async&callback=initGooglePlaces`;
     script.async = true;
     script.defer = true;
     document.head.appendChild(script);
