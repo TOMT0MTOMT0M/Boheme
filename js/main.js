@@ -265,4 +265,71 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Appeler cette fonction après un délai pour s'assurer que tout est chargé
     setTimeout(forceTextVisibility, 1000);
+
+    // Améliorer les interactions tactiles sur mobile
+    // Détecter si l'appareil est tactile
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+    
+    if (isTouchDevice) {
+        // Ajouter une classe au body pour les styles spécifiques aux appareils tactiles
+        document.body.classList.add('is-touch-device');
+        
+        // Améliorer l'expérience tactile pour les cartes de services professionnels
+        const serviceCards = document.querySelectorAll('.pro-service-card');
+        serviceCards.forEach(card => {
+            // Premier tap pour afficher la description, deuxième tap pour exécuter le lien si présent
+            let isTapped = false;
+            
+            card.addEventListener('touchstart', function(e) {
+                if (!isTapped) {
+                    e.preventDefault();
+                    // Réinitialiser tous les autres éléments
+                    serviceCards.forEach(otherCard => {
+                        if (otherCard !== card) {
+                            otherCard.classList.remove('tapped');
+                        }
+                    });
+                    
+                    // Activer l'état hover via une classe
+                    card.classList.add('tapped');
+                    isTapped = true;
+                    
+                    // Réinitialiser après un délai
+                    setTimeout(() => {
+                        isTapped = false;
+                    }, 3000);
+                }
+            });
+        });
+        
+        // Améliorer l'expérience tactile pour les éléments de galerie
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        galleryItems.forEach(item => {
+            item.addEventListener('touchstart', function() {
+                this.classList.add('touched');
+                
+                // Retirer la classe après la fin de l'animation
+                setTimeout(() => {
+                    this.classList.remove('touched');
+                }, 300);
+            });
+        });
+    }
+    
+    // Détecter iOS pour les correctifs spécifiques
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (isIOS) {
+        document.body.classList.add('is-ios');
+        
+        // Corriger le comportement des inputs sur iOS
+        const inputs = document.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                // Faire défiler légèrement vers le haut pour éviter que le clavier ne cache l'input
+                setTimeout(() => {
+                    window.scrollBy(0, -100);
+                }, 300);
+            });
+        });
+    }
 }); 

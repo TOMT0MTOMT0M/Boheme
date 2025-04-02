@@ -2,7 +2,10 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#100d0c">
     <title>Bohème Fleurs | Fleuriste Sophistiqué</title>
     <meta name="description" content="Bohème Fleurs - Fleuriste proposant des créations florales sophistiquées pour particuliers et professionnels. Services pour mariages, événements et décorations d'intérieur.">
     
@@ -1012,10 +1015,10 @@
                         <div class="footer-form">
                             <h3>Écrivez-nous</h3>
                             <form class="footer-contact-form">
-                                <input type="text" placeholder="Nom" required>
-                                <input type="email" placeholder="Email" required>
-                                <input type="tel" placeholder="Téléphone" required>
-                                <textarea placeholder="Message" rows="2" required></textarea>
+                                <input type="text" placeholder="Votre nom" required autocomplete="name" autocapitalize="words">
+                                <input type="email" placeholder="Votre adresse email" required autocomplete="email" autocorrect="off" autocapitalize="off">
+                                <input type="tel" placeholder="Votre numéro de téléphone" required autocomplete="tel" pattern="[0-9+\s]*">
+                                <textarea placeholder="Votre message..." rows="3" required></textarea>
                                 <button type="submit" class="footer-submit-btn">Envoyer</button>
                             </form>
                         </div>
