@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord - Administration Bohème Fleurs</title>
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+    
+    <!-- Polices -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-dashboard">
+        <!-- En-tête du tableau de bord -->
+        <header class="admin-header">
+            <h1>Bohème Fleurs - Administration</h1>
+            <div class="admin-user-menu">
+                <span id="adminUsername">Admin</span>
+                <button id="logoutBtn" class="admin-action-btn">Déconnexion</button>
+            </div>
+        </header>
+        
+        <!-- Contenu principal -->
+        <main class="admin-main">
+            <!-- Sidebar de navigation -->
+            <aside class="admin-sidebar">
+                <nav>
+                    <ul class="admin-nav">
+                        <li class="admin-nav-item">
+                            <a href="dashboard.html" class="admin-nav-link active">Tableau de bord</a>
+                        </li>
+                        <li class="admin-nav-item">
+                            <a href="photos.html" class="admin-nav-link">Gestion des photos</a>
+                        </li>
+                        <li class="admin-nav-item">
+                            <a href="textes.html" class="admin-nav-link">Gestion des textes</a>
+                        </li>
+                        <li class="admin-nav-item">
+                            <a href="../index.html" target="_blank" class="admin-nav-link">Voir le site</a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+            
+            <!-- Contenu du tableau de bord -->
+            <div class="admin-content">
+                <section class="admin-section">
+                    <h2 class="admin-section-title">Bienvenue sur votre espace d'administration</h2>
+                    <p>Cet espace vous permet de gérer le contenu de votre site web Bohème Fleurs. Utilisez les options du menu pour naviguer entre les différentes fonctionnalités.</p>
+                </section>
+                
+                <section class="admin-section">
+                    <h2 class="admin-section-title">Accès rapides</h2>
+                    <div class="admin-quick-links">
+                        <div class="admin-card">
+                            <h3 class="admin-card-title">Gestion des photos</h3>
+                            <p>Ajoutez, modifiez ou supprimez les photos de votre galerie et des différentes sections du site.</p>
+                            <div class="admin-card-actions">
+                                <a href="photos.html" class="admin-btn">Gérer les photos</a>
+                            </div>
+                        </div>
+                        
+                        <div class="admin-card">
+                            <h3 class="admin-card-title">Gestion des textes</h3>
+                            <p>Modifiez les titres, descriptions et autres contenus textuels de votre site web.</p>
+                            <div class="admin-card-actions">
+                                <a href="textes.html" class="admin-btn">Gérer les textes</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="admin-section">
+                    <h2 class="admin-section-title">Aide et conseils</h2>
+                    <div class="admin-card">
+                        <h3 class="admin-card-title">Comment gérer vos photos</h3>
+                        <p>Pour ajouter une nouvelle photo :</p>
+                        <ol>
+                            <li>Accédez à la section "Gestion des photos"</li>
+                            <li>Cliquez sur "Ajouter une photo"</li>
+                            <li>Sélectionnez l'image depuis votre ordinateur</li>
+                            <li>Renseignez un titre et une description (optionnel)</li>
+                            <li>Choisissez la section du site où la photo apparaîtra</li>
+                            <li>Cliquez sur "Enregistrer"</li>
+                        </ol>
+                        <p>Pour de meilleurs résultats, utilisez des photos au format paysage avec une résolution minimale de 1200x800 pixels.</p>
+                    </div>
+                    
+                    <div class="admin-card">
+                        <h3 class="admin-card-title">Comment gérer vos textes</h3>
+                        <p>Pour modifier un texte :</p>
+                        <ol>
+                            <li>Accédez à la section "Gestion des textes"</li>
+                            <li>Recherchez le texte que vous souhaitez modifier</li>
+                            <li>Cliquez sur le bouton "Modifier"</li>
+                            <li>Effectuez vos modifications dans l'éditeur</li>
+                            <li>Cliquez sur "Enregistrer"</li>
+                        </ol>
+                        <p>Attention à ne pas supprimer les balises HTML si présentes dans certains textes, elles permettent la mise en forme.</p>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/login.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html> 

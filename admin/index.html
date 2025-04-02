@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - Bohème Fleurs</title>
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+    
+    <!-- Polices -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <div class="admin-login-container">
+        <div class="admin-logo">
+            <h1>Bohème Fleurs</h1>
+            <p>Espace Administration</p>
+        </div>
+        
+        <form id="loginForm" class="admin-login-form">
+            <div class="form-group">
+                <label for="username">Nom d'utilisateur</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-message" id="loginMessage"></div>
+            <button type="submit" class="admin-submit-btn">Se connecter</button>
+        </form>
+        
+        <div class="admin-footer">
+            <a href="../index.html">Retour au site</a>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/login.js"></script>
+</body>
+</html> 

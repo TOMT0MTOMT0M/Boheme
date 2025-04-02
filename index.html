@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bohème Fleurs | Fleuriste Sophistiqué</title>
+    <meta name="description" content="Bohème Fleurs - Fleuriste proposant des créations florales sophistiquées pour particuliers et professionnels. Services pour mariages, événements et décorations d'intérieur.">
+    
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon_io/favicon-16x16.png">
+    <link rel="icon" href="images/favicon_io/favicon.ico">
+    <link rel="manifest" href="images/favicon_io/site.webmanifest">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/testimonials.css">
+    <link rel="stylesheet" href="css/gallery.css">
+    <link rel="stylesheet" href="css/grain.css">
+    <link rel="stylesheet" href="css/lightbox.css">
+    
+    <!-- Polices -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Faculty+Glyphic&display=swap" rel="stylesheet">
+    
+    <!-- Swiper JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    
+    <!-- Script pour désactiver immédiatement l'effet de grain -->
+    <script>
+        (function() {
+            // S'exécute immédiatement
+            
+            // 1. Supprimer la classe grain.css en la remplaçant
+            const links = document.querySelectorAll('link[rel="stylesheet"]');
+            links.forEach(link => {
+                if (link.href.includes('grain.css')) {
+                    // Créer une nouvelle feuille de style vide pour remplacer grain.css
+                    const newStyle = document.createElement('style');
+                    newStyle.textContent = `
+                        /* Désactivation complète de tous les effets de grain */
+                        .grain-overlay, 
+                        [class*="grain-"], 
+                        .grain-texture, 
+                        .grain-animated,
+                        .grain-hover,
+                        .grain-texture::after, 
+                        .grain-texture::before {
+                            background-image: none !important;
+                            animation: none !important;
+                            background: none !important;
+                            opacity: 1 !important;
+                            mix-blend-mode: normal !important;
+                            filter: none !important;
+                        }
+                        
+                        .grain-overlay {
+                            display: none !important;
+                            visibility: hidden !important;
+                        }
+                    `;
+                    link.parentNode.replaceChild(newStyle, link);
+                }
+            });
+            
+            // 2. Exécuter dès que le DOM est partiellement chargé
+            document.addEventListener('DOMContentLoaded', function() {
+                // Supprimer l'élément grain-overlay
+                const grainOverlay = document.querySelector('.grain-overlay');
+                if (grainOverlay && grainOverlay.parentNode) {
+                    grainOverlay.parentNode.removeChild(grainOverlay);
+                }
+                
+                // Supprimer toutes les classes liées au grain
+                document.querySelectorAll('[class*="grain-"]').forEach(function(el) {
+                    const classes = el.className.split(' ');
+                    const newClasses = classes.filter(function(cls) {
+                        return !cls.includes('grain-');
+                    });
+                    el.className = newClasses.join(' ');
+                });
+            });
+        })();
+    </script>
+    
+    <!-- Scripts -->
+    <script src="https://unpkg.com/gsap@3.12.2/dist/gsap.min.js"></script>
+    <script src="https://unpkg.com/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
+    <script defer src="js/main.js"></script>
+    <script defer src="js/lightbox.js"></script>
+    <script src="js/admin-data.js"></script>
+    <script src="js/google-reviews.js"></script>
+    
+    <!-- Script pour la galerie d'événements -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sélectionner tous les éléments nécessaires
+            const eventCategories = document.querySelectorAll('.event-category');
+            const eventGalleries = document.querySelectorAll('.event-gallery');
+            
+            // Initialiser les swipers pour chaque galerie
+            const swiperMariages = new Swiper('.swiper-mariages', {
+                slidesPerView: 1,
+                spaceBetween: 20,
+                grabCursor: true,
+                navigation: {
+                    nextEl: '.swiper-mariages .swiper-button-next',
+                    prevEl: '.swiper-mariages .swiper-button-prev',
+                },
+                breakpoints: {
+                    640: {
+                        slidesPerView: 2,
+                    },
+                    1024: {
+                        slidesPerView: 3,
+                    },
+                },
+            });
+            
+            const swiperDeuil = new Swiper('.swiper-deuil', {
+                slidesPerView: 1,
+                spaceBetween: 20,
+                grabCursor: true,
+                navigation: {
+                    nextEl: '.swiper-deuil .swiper-button-next',
+                    prevEl: '.swiper-deuil .swiper-button-prev',
+                },
+                breakpoints: {
+                    640: {
+                        slidesPerView: 2,
+                    },
+                },
+            });
+            
+            const swiperFestivites = new Swiper('.swiper-festivites', {
+                slidesPerView: 1,
+                spaceBetween: 20,
+                grabCursor: true,
+                navigation: {
+                    nextEl: '.swiper-festivites .swiper-button-next',
+                    prevEl: '.swiper-festivites .swiper-button-prev',
+                },
+                breakpoints: {
+                    640: {
+                        slidesPerView: 2,
+                    },
+                },
+            });
+            
+            // Ajouter des écouteurs d'événements pour chaque catégorie
+            eventCategories.forEach(category => {
+                category.addEventListener('click', function() {
+                    const categoryName = this.getAttribute('data-category');
+                    const targetGallery = document.getElementById('gallery-' + categoryName);
+                    
+                    // Si la galerie est déjà active, la fermer
+                    if (targetGallery.classList.contains('active')) {
+                        targetGallery.classList.remove('active');
+                        return;
+                    }
+                    
+                    // Fermer toutes les galeries
+                    eventGalleries.forEach(gallery => {
+                        gallery.classList.remove('active');
+                    });
+                    
+                    // Ouvrir la galerie sélectionnée
+                    targetGallery.classList.add('active');
+                    
+                    // Mettre à jour le swiper correspondant
+                    if (categoryName === 'mariages') {
+                        swiperMariages.update();
+                    } else if (categoryName === 'deuil') {
+                        swiperDeuil.update();
+                    } else if (categoryName === 'festivites') {
+                        swiperFestivites.update();
+                    }
+                    
+                    // Faire défiler jusqu'à la galerie
+                    setTimeout(() => {
+                        targetGallery.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
+                });
+            });
+            
+            // Empêcher la fermeture lorsqu'on clique sur le swiper
+            eventGalleries.forEach(gallery => {
+                gallery.addEventListener('click', (e) => {
+                    if (e.target.closest('.swiper')) {
+                        e.stopPropagation();
+                    }
+                });
+            });
+            
+            // Permettre de fermer les galeries en cliquant ailleurs dans la page
+            document.addEventListener('click', function(event) {
+                // Si on clique à l'extérieur d'une galerie et d'une catégorie
+                if (!event.target.closest('.event-gallery') && 
+                    !event.target.closest('.event-category')) {
+                    // Fermer toutes les galeries
+                    eventGalleries.forEach(gallery => {
+                        gallery.classList.remove('active');
+                    });
+                }
+            });
+        });
+    </script>
+    
+    <style>
+        .faculty-glyphic-regular {
+          font-family: "Faculty Glyphic", sans-serif;
+          font-weight: 400;
+          font-style: normal;
+        }
+        
+        /* Augmentation de la taille des textes */
+        body {
+            font-size: 20px; /* Taille de base augmentée */
+        }
+        
+        p, .reveal-text {
+            font-size: 1.3rem; /* Taille des paragraphes augmentée à 1.3rem */
+            line-height: 1.7;
+        }
+        
+        h2.section-title {
+            font-size: 2.6rem; /* Titres de section plus grands */
+        }
+        
+        h3 {
+            font-size: 1.8rem; /* Sous-titres plus grands */
+        }
+        
+        .testimonial-text {
+            font-size: 1.3rem; /* Textes de témoignages plus grands */
+        }
+        
+        .nav-list a {
+            font-size: 1.3rem; /* Menu de navigation plus grand */
+        }
+        
+        .quote-author {
+            font-size: 0.9em;
+            font-weight: normal;
+            display: block;
+            margin-top: 5px;
+            font-style: normal;
+            opacity: 0.8;
+        }
+        
+        #random-quote h2 {
+            line-height: 1.3;
+            margin-bottom: 15px;
+            font-size: 2rem; /* Taille augmentée */
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            padding: 25px;
+        }
+        
+        .hero-content p {
+            font-size: 1.5rem; /* Texte hero plus grand */
+        }
+        
+        .testimonials-intro {
+            width: 30%;
+            padding-right: 30px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 350px; /* Même hauteur que le container des avis */
+        }
+        
+        .testimonials-intro p {
+            margin-bottom: 20px;
+            font-style: italic;
+            line-height: 1.7;
+        }
+        
+        .testimonials-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            width: 100%;
+        }
+        
+        .reviews-swiper-container {
+            width: 100%;
+            padding: 20px 0;
+            overflow: hidden;
+            height: 350px; /* Hauteur fixe pour le conteneur */
+            box-sizing: border-box;
+        }
+        
+        @media (max-width: 992px) {
+            .reviews-swiper-container {
+                width: 100%;
+                padding-right: 0;
+            }
+        }
+        
+        .swiper-reviews {
+            width: 100%;
+            padding-bottom: 50px; /* Espace pour la pagination */
+            height: 300px; /* Hauteur fixe pour le swiper */
+        }
+        
+        /* Styles pour la nouvelle mise en page de la section Au Quotidien */
+        .full-width-image {
+            width: 100%;
+            margin-bottom: 40px;
+            height: 600px; /* Hauteur augmentée de 50% (400px -> 600px) */
+            overflow: hidden; /* Cache les parties de l'image qui dépassent */
+        }
+        
+        .full-width-image img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover; /* Couvre tout l'espace disponible */
+            object-position: center; /* Centre l'image (peut être ajusté si nécessaire) */
+        }
+        
+        /* Suppression des marges pour l'image horizontale uniquement */
+        .full-width-no-margin {
+            width: 100vw;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            max-width: 100vw;
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+        
+        /* Éliminer les marges et padding du container pour cette section spécifique */
+        #au-quotidien .container {
+            max-width: 100%;
+        }
+        
+        /* Style pour le titre avec les marges normales */
+        #au-quotidien .section-title {
+            padding-left: var(--spacing-sm, 15px); 
+            padding-right: var(--spacing-sm, 15px);
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+        }
+        
+        /* Style pour la section content qui contient l'image sans marges */
+        #au-quotidien .section-content {
+            padding-left: 0;
+            padding-right: 0;
+        }
+        
+        /* Ajuster le contenu après l'image pour respecter les marges normales */
+        #au-quotidien .about-text {
+            padding-left: 15px;
+            padding-right: 15px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .about-text {
+            margin-bottom: 40px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+        }
+        
+        .three-images-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .three-images-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Styles pour les galeries d'événements */
+        .event-category {
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            padding: 25px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .event-category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .event-galleries {
+            margin-top: 40px;
+        }
+        
+        .event-gallery {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            margin-top: 30px;
+            width: 100%;
+        }
+        
+        .event-gallery.active {
+            display: block;
+            opacity: 1;
+        }
+        
+        /* Styles pour Swiper */
+        .swiper {
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .swiper-slide {
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .swiper-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .swiper-slide:hover img {
+            transform: scale(1.03);
+        }
+        
+        /* Styles personnalisés pour les flèches de navigation */
+        .swiper-button-next, 
+        .swiper-button-prev {
+            color: var(--color-gold, #BD8F39);
+            background-color: rgba(255, 255, 255, 0.7);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .swiper-button-next:hover, 
+        .swiper-button-prev:hover {
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .swiper-button-next:after, 
+        .swiper-button-prev:after {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        /* Pour les écrans plus petits */
+        @media (max-width: 768px) {
+            .three-images-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .swiper-slide {
+                height: 300px;
+            }
+            
+            .swiper-button-next, 
+            .swiper-button-prev {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .swiper-button-next:after, 
+            .swiper-button-prev:after {
+                font-size: 14px;
+            }
+            
+            /* Effet de hover permanent sur mobile pour les services professionnels */
+            .pro-service {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+                transition: all 0.3s ease;
+            }
+            
+            .pro-service img {
+                transform: scale(1.05);
+                transition: transform 0.3s ease;
+            }
+            
+            .pro-service h3 {
+                color: var(--color-gold, #BD8F39);
+                transition: color 0.3s ease;
+            }
+        }
+        
+        /* Styles pour les messages d'erreur et de chargement des avis Google */
+        .loading-message,
+        .error-message {
+            padding: 20px;
+            text-align: center;
+            width: 100%;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        
+        .loading-message {
+            background-color: rgba(16, 13, 12, 0.5);
+            color: var(--color-text);
+        }
+        
+        .error-message {
+            background-color: rgba(180, 60, 60, 0.2);
+            color: #c85555;
+            border: 1px solid rgba(180, 60, 60, 0.3);
+        }
+        
+        /* Styles pour le carousel d'avis Google */
+        .swiper-reviews .swiper-slide {
+            height: auto;
+            display: flex;
+            transition: transform 0.3s ease;
+        }
+        
+        .swiper-reviews .testimonial-card {
+            height: 250px; /* Hauteur fixe pour tous les témoignages */
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+        
+        .swiper-reviews .testimonial-text {
+            flex-grow: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 5;
+            -webkit-box-orient: vertical;
+            margin-bottom: 15px;
+        }
+        
+        .swiper-reviews .testimonial-author {
+            margin-top: auto;
+            font-weight: bold;
+        }
+        
+        .swiper-reviews .swiper-pagination {
+            bottom: 0;
+        }
+        
+        .swiper-reviews .swiper-pagination-bullet {
+            background-color: var(--color-gold, #BD8F39);
+            opacity: 0.5;
+        }
+        
+        .swiper-reviews .swiper-pagination-bullet-active {
+            opacity: 1;
+        }
+        
+        .swiper-reviews .swiper-button-next,
+        .swiper-reviews .swiper-button-prev {
+            color: var(--color-gold, #BD8F39);
+        }
+        
+        /* Pour les écrans plus petits */
+        @media (max-width: 768px) {
+            /* ... existing code ... */
+        }
+    </style>
+</head>
+<body>
+    <!-- L'élément grain-overlay a été supprimé pour désactiver l'effet de grain -->
+
+    <!-- En-tête -->
+    <header class="site-header">
+        <div class="container">
+            <div class="header-title">
+                <img src="images/Logo Boheme.png" alt="Bohème Fleurs" class="logo-image">
+                <a href="#" class="header-title-link">Boheme Fleurs</a>
+            </div>
+            <nav class="main-nav">
+                <button class="menu-toggle" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-list">
+                    <li><a href="#au-quotidien">Au quotidien</a></li>
+                    <li><a href="#evenements">Événements</a></li>
+                    <li><a href="#professionnels">Professionnels</a></li>
+                    <li><a href="#services">Nos services</a></li>
+                    <li><a href="#galerie">Galerie</a></li>
+                    <li><a href="#reviews">Témoignages</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section avec effet de grain animé -->
+    <section class="hero grain-texture grain-animated">
+        <div class="hero-logo">
+            <img src="images/Logo Boheme.png" alt="Bohème Fleurs" class="logo-image">
+        </div>
+        <img src="images/_DSC8128-Modifier.jpg" alt="Arrangement floral artistique" class="hero-image">
+        <div class="hero-content">
+            <p class="reveal-text">Chez Bohème Fleurs, notre boutique évolue au rythme des saisons. Respectueux du cycle naturel, nous créons des compositions uniques qui répondent à vos attentes, et reflètent cette poésie bohème qui caractérise notre univers.</p>
+        </div>
+    </section>
+
+    <!-- Au Quotidien Section -->
+    <section id="au-quotidien" class="section grain-texture">
+        <div class="container">
+            <h2 class="section-title reveal-text">Au quotidien</h2>
+            <div class="section-content">
+                <!-- Image horizontale qui prend toute la largeur -->
+                <div class="full-width-image full-width-no-margin">
+                    <img src="images/quoti-hori.jpg" alt="Notre boutique au quotidien" loading="lazy">
+                </div>
+                
+                <!-- Texte qui parle de qui nous sommes -->
+                <div class="about-text">
+                    <p class="reveal-text">Chez Bohème Fleurs, nous sommes une équipe passionnée par l'art floral et dédiée à la création de compositions uniques. Notre approche artistique s'inspire de la nature et des saisons, créant des arrangements qui racontent une histoire. Notre boutique est un lieu où l'élégance rencontre l'imagination, offrant une expérience sensorielle authentique à chaque visite.</p>
+                </div>
+                
+                <!-- Trois photos en dessous -->
+                <div class="three-images-grid">
+                    <div class="gallery-item">
+                        <img src="images/quoti1.jpg" alt="Composition florale quotidienne" loading="lazy">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="images/quoti2.jpg" alt="Bouquet délicat" loading="lazy">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="images/quoti3.jpg" alt="Arrangement floral" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Événements Section -->
+    <section id="evenements" class="section">
+        <div class="container">
+            <h2 class="section-title reveal-text">Événements</h2>
+            <div class="section-content">
+                <div class="text-content">
+                    <p class="reveal-text">Des créations florales sur mesure pour vos moments importants. Mariages, cérémonies de deuil ou festivités, nous vous accompagnons avec des compositions qui reflètent l'émotion de l'instant.</p>
+                </div>
+                <div class="events-categories">
+                    <div class="event-category grain-texture" data-category="mariages">
+                        <h3 class="reveal-text">Mariages</h3>
+                        <p class="reveal-text">Pour votre jour unique, nous imaginons ensemble les éléments floraux qui sublimeront ce moment tant attendu. Notre expertise vous guide dans le choix des compositions, tout en respectant vos envies et idées. Nous construisons votre projet main dans la main, avec pour mission de donner vie à vos rêves et d'ajouter cette touche de poésie qui rendra votre mariage véritablement exceptionnel.</p>
+                    </div>
+                    <div class="event-category grain-texture" data-category="deuil">
+                        <h3 class="reveal-text">Deuil</h3>
+                        <p class="reveal-text">Dans ces moments où les mots manquent, nos créations florales expriment les émotions du cœur. Avec empathie et délicatesse, nous concevons des compositions respectueuses qui honorent la mémoire de l'être cher. Chaque arrangement est pensé avec soin, attentif à la symbolique des fleurs, pour offrir beauté et réconfort au cœur de l'épreuve.</p>
+                    </div>
+                    <div class="event-category grain-texture" data-category="festivites">
+                        <h3 class="reveal-text">Festivités</h3>
+                        <p class="reveal-text">Chaque célébration mérite d'être sublimée par des fleurs qui capturent l'esprit de l'événement. Du simple bouquet aux installations spectaculaires, notre créativité s'adapte à vos thèmes et couleurs pour créer des compositions joyeuses et mémorables. Nous transformons vos moments de fête en souvenirs inoubliables où les fleurs jouent un rôle central dans l'expérience de vos invités.</p>
+                    </div>
+                </div>
+                
+                <!-- Galerie photos par catégorie - initialement cachée -->
+                <div class="event-galleries">
+                    <!-- Galerie Mariages -->
+                    <div class="event-gallery" id="gallery-mariages">
+                        <div class="swiper swiper-mariages">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide">
+                                    <img src="images/mar1.jpg" alt="Décoration florale de mariage" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/mar2.jpg" alt="Bouquet de mariée" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/mar3.jpg" alt="Arrangement floral pour mariage" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/mar4.jpg" alt="Décoration de table de mariage" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/mar5.jpg" alt="Bouquet de mariée sophistiqué" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/mar6.jpg" alt="Décoration florale de mariage" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/mar7.jpg" alt="Centre de table de mariage" loading="lazy">
+                                </div>
+                            </div>
+                            <div class="swiper-button-next"></div>
+                            <div class="swiper-button-prev"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Galerie Deuil -->
+                    <div class="event-gallery" id="gallery-deuil">
+                        <div class="swiper swiper-deuil">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide">
+                                    <img src="images/deuil1.jpg" alt="Composition pour cérémonie" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/deuil2.jpeg" alt="Arrangement floral pour deuil" loading="lazy">
+                                </div>
+                                <!-- Ajouter d'autres images de compositions de deuil si disponibles -->
+                            </div>
+                            <div class="swiper-button-next"></div>
+                            <div class="swiper-button-prev"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Galerie Festivités -->
+                    <div class="event-gallery" id="gallery-festivites">
+                        <div class="swiper swiper-festivites">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide">
+                                    <img src="images/festi1.jpg" alt="Arrangement pour soirée" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/festi2.jpg" alt="Décoration florale pour événement" loading="lazy">
+                                </div>
+                                <!-- Ajouter d'autres images de festivités si disponibles -->
+                            </div>
+                            <div class="swiper-button-next"></div>
+                            <div class="swiper-button-prev"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Professionnels Section -->
+    <section id="professionnels" class="section grain-texture">
+        <div class="container">
+            <h2 class="section-title reveal-text">Professionnels</h2>
+            <div class="section-content">
+                <div class="text-content">
+                    <p class="reveal-text">Besoin d'embellir votre espace professionnel ? Nous vous conseillons sur les meilleurs choix de végétaux adaptés à votre structure, avec des options pérennes ou renouvelables via notre système d'abonnements. Nous assurons également le fleurissement de vos événements professionnels, vous offrant expertise et gain de temps précieux.</p>
+                </div>
+                <div class="pro-services">
+                    <div class="pro-service">
+                        <img src="images/IMG_20240310_153009.jpg" alt="Décoration de façade" loading="lazy">
+                        <h3 class="reveal-text">Décoration de façade</h3>
+                    </div>
+                    <div class="pro-service">
+                        <img src="images/IMG_20230928_173557.jpg" alt="Décoration d'intérieur" loading="lazy">
+                        <h3 class="reveal-text">Décoration d'intérieur</h3>
+                    </div>
+                    <div class="pro-service">
+                        <img src="images/IMG20240119123733.jpg" alt="Vitrines" loading="lazy">
+                        <h3 class="reveal-text">Vitrines</h3>
+                    </div>
+                    <div class="pro-service">
+                        <img src="images/IMG20240112092853.jpg" alt="Abonnements" loading="lazy">
+                        <h3 class="reveal-text">Abonnements</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="section">
+        <div class="container">
+            <h2 class="section-title reveal-text">Nos services</h2>
+            <div class="services-grid">
+                <div class="service-card grain-texture">
+                    <div class="service-image">
+                        <img src="images/IMG20240522095344.jpg" alt="Service de livraison" loading="lazy">
+                    </div>
+                    <div class="service-content">
+                        <h3 class="reveal-text">Livraison</h3>
+                        <p class="reveal-text">Notre service de livraison couvre toute la région lyonnaise. Vos fleurs arrivent fraîches, soigneusement préparées et emballées, que ce soit pour surprendre un être cher ou embellir votre intérieur. Comptez sur nous pour que vos messages floraux parviennent à destination en parfait état, au moment souhaité.</p>
+                    </div>
+                </div>
+                <div class="service-card grain-texture">
+                    <div class="service-image">
+                        <img src="images/IMG20240523190650.jpg" alt="Chèque cadeau" loading="lazy">
+                    </div>
+                    <div class="service-content">
+                        <h3 class="reveal-text">Chèque cadeau</h3>
+                        <p class="reveal-text">Offrez la liberté de choisir avec nos chèques cadeaux disponibles en plusieurs montants. Ils permettent de sélectionner des compositions ou de participer à nos ateliers. Élégamment présentés, ils invitent à découvrir notre univers poétique et sont valables pendant une année complète.</p>
+                    </div>
+                </div>
+                <div class="service-card grain-texture">
+                    <div class="service-image">
+                        <img src="images/IMG20240525111546.jpg" alt="Abonnements floraux" loading="lazy">
+                    </div>
+                    <div class="service-content">
+                        <h3 class="reveal-text">Abonnements</h3>
+                        <p class="reveal-text">Recevez régulièrement des créations florales fraîches et saisonnières grâce à nos formules d'abonnement. Idéales pour les particuliers ou les entreprises, elles égayent votre intérieur ou espace de travail. Personnalisables selon vos préférences de fréquence, budget et style, chaque livraison correspond parfaitement à vos attentes.</p>
+                    </div>
+                </div>
+                <div class="service-card grain-texture">
+                    <div class="service-image">
+                        <img src="images/IMG_20230923_153534.jpg" alt="Créations sur mesure" loading="lazy">
+                    </div>
+                    <div class="service-content">
+                        <h3 class="reveal-text">Sur demande</h3>
+                        <p class="reveal-text">Pour les occasions spéciales, nous créons des compositions entièrement personnalisées. Après un échange sur vos souhaits et l'ambiance recherchée, notre équipe conçoit des créations uniques qui vous ressemblent. Chaque détail est soigneusement pensé pour que le résultat final reflète parfaitement votre personnalité.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Galerie Section -->
+    <section id="galerie" class="section grain-texture">
+        <div class="container">
+            <h2 class="section-title reveal-text">Notre galerie</h2>
+            <div class="section-content">
+                <div class="text-content">
+                    <p class="reveal-text">Explorez notre collection de créations florales, renouvelée au fil des saisons. Chaque composition raconte une histoire unique et témoigne de notre passion pour l'art floral. Réalisées dans notre atelier, ces œuvres illustrent notre savoir-faire et la richesse du monde végétal sublimé par une main experte.</p>
+                </div>
+                <div class="gallery-grid">
+                    <div class="gallery-item">
+                        <img src="images/IMG_20240503_144422.jpg" alt="Création florale saison printemps" loading="lazy">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="images/IMG20230929175237.jpg" alt="Création élégante" loading="lazy">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="images/IMG20230505180723.jpg" alt="Bouquet printanier" loading="lazy">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="images/IMG20230420181015.jpg" alt="Composition florale spéciale" loading="lazy">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="images/IMG_20230323_165741.jpg" alt="Création artistique florale" loading="lazy">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="images/_DSC8333.jpg" alt="Création florale artistique" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Témoignages Section -->
+    <section id="reviews" class="section grain-texture">
+        <div class="container">
+            <h2 class="section-title reveal-text">Témoignages</h2>
+            <div class="testimonials-container">
+                <!-- Carousel pour les témoignages Google -->
+                <div class="reviews-swiper-container">
+                    <div class="swiper swiper-reviews">
+                        <div class="swiper-wrapper" id="google-reviews-container">
+                            <!-- Les avis Google seront injectés ici par JavaScript -->
+                            <!-- Note: Pour activer les avis Google, il faut activer "Places API (New)" dans la console Google Cloud -->
+                        </div>
+                        <!-- Navigation -->
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+                        <!-- Pagination -->
+                        <div class="swiper-pagination"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+        <div class="container">
+            <h2 class="section-title reveal-text">Contact</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item grain-texture">
+                        <h3 class="reveal-text">Adresse</h3>
+                        <p class="reveal-text">8, Rue de La Platière<br>69001 Lyon</p>
+                    </div>
+                    <div class="contact-item grain-texture">
+                        <h3 class="reveal-text">Téléphone</h3>
+                        <p class="reveal-text">09 80 72 21 56</p>
+                    </div>
+                    <div class="contact-item grain-texture">
+                        <h3 class="reveal-text">Horaires</h3>
+                        <p class="reveal-text">Mardi au samedi : 9h à 19h30<br>Dimanche : 9h30 à 13h<br><small>(fermeture les dimanches de juillet)</small></p>
+                    </div>
+                    <div class="contact-item grain-texture">
+                        <h3 class="reveal-text">Email</h3>
+                        <p class="reveal-text">contacts@bohemefleurs.com</p>
+                    </div>
+                    <div class="contact-item social-links grain-texture">
+                        <h3 class="reveal-text">Réseaux sociaux</h3>
+                        <div class="social-icons">
+                            <a href="https://www.instagram.com/bohemefleurs/" target="_blank" rel="noopener" class="social-link">Instagram</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form-container grain-texture">
+                    <form class="contact-form">
+                        <div class="form-group">
+                            <label for="name">Nom</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Téléphone</label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn">Envoyer</button>
+                    </form>
+                </div>
+                
+                <div class="map-container grain-texture">
+                    <!-- Carte Google Maps avec l'adresse correcte -->
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2783.1435694526207!2d4.8305663!3d45.7677557!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47f4eb01ab7bae3f%3A0x9ce0bfb5ff2cc08a!2s8%20Rue%20de%20la%20Plati%C3%A8re%2C%2069001%20Lyon!5e0!3m2!1sfr!2sfr!4v1622824123456!5m2!1sfr!2sfr&iwloc=addr" 
+                        style="border:0; width: 100%; height: 100%;" 
+                        allowfullscreen="" 
+                        loading="lazy"
+                        title="Bohème Fleurs - 8 Rue de la Platière, 69001 Lyon">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer grain-texture">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="images/Logo Boheme.png" alt="Bohème Fleurs" class="logo-image">
+                </div>
+                <div class="footer-links">
+                    <a href="pages/mentions-legales.html" class="footer-link">Mentions légales</a>
+                    <a href="pages/politique-confidentialite.html" class="footer-link">Politique de confidentialité</a>
+                </div>
+                <div class="footer-copyright">
+                    <p>&copy; 2025 Bohème Fleurs. Tous droits réservés. Site créé par Shana et Tom.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+</body>
+</html> 

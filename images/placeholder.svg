@@ -1,0 +1,8 @@
+<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="#1a1715" />
+  <g>
+    <path d="M200,100 C230,100 255,125 255,155 C255,185 230,210 200,210 C170,210 145,185 145,155 C145,125 170,100 200,100 Z" fill="none" stroke="#bd8f39" stroke-width="3"/>
+    <path d="M200,125 L200,185 M170,155 L230,155" stroke="#bd8f39" stroke-width="3"/>
+  </g>
+  <text x="200" y="250" font-family="Arial" font-size="14" fill="#FCF5E1" text-anchor="middle">Image temporairement indisponible</text>
+</svg> 

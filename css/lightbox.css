@@ -1,0 +1,129 @@
+/* Lightbox Styles for Boheme Fleurs */
+
+.boheme-lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    background-color: rgba(16, 13, 12, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    backdrop-filter: blur(8px);
+    overflow: hidden;
+}
+
+.boheme-lightbox::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAHN0lEQVR42u2Ze3BU1R3HP/fuK7vJPkggJCEvElAgvGQhMBIC4TXIQywgI9Dxj1oritXptNqxrY7WsTNqtbZjZ2xrq9VRpzpVEbCo8AgEBHkJAQLkCSTZ997d+7h3X3fvPXv3ke4Eknvv7mVh0pmdncfv/n6/c36/3/mdc35nA7SgBS1oQQta0IL/BwMeC9/D4h41VvI2ORc8Rj9Lj4WvPBYwTK3bvvXxbw1kw/pnxhSWPuU1+vlq8OaHTvQrmk1Gh8P5/MSFrwEIEQRPb3xhzILVz3mTrCl9Bn2oRVs+rBKl1xMlP/o7QHiIQMbOmbSE4MxiWdLK8kuK30+yJvVZG9dtxzrpRoNYWlj6FIDwEEDMvP/JkaOL7vJJklY+b+kz9qTEpD5tIzbSSFQqvvUPzwOIUQpRWLr2XlUTK1evfMoxfGgur4VjJdHvCZ+vLF33d4BI0Q5R9MDq8aqmVa5bu27BnWsqeLUM/k28+xZu3vB8VELMWn7vLFVTty9f/tRDpaVPoCJHLJzvFdaUa+qdcLaslsGZyRSXrv1bNLkS3L4T0iuPzi4uKg/I6vaZM+9ZPmXpKl6Ne5OHRi/kpcnPMXv0dF7fEc3t77+f6nN2pMlJJA7KZOOmF32x4sr7xHw7xN33rZmhqsEdc+ct/1X50nW8KP/T0nv0ZKxZKcwbMpvS4fczMy+f9Z/uZvOBk3y44yjX6pzkThzDMHcGG156IRALY/Yv/jCgBYPbiorvmlp2/1peMx+QrEnZS3NzWTlxMQ/nzufpT97l3KVG3t95jANnrpCbn8PQvGzeePmlgGnYrA7PfXTZnsDfQQP5aWnZ1GAwsH32nCW3r3zo57xu3s2Bsx9/CIBp1kxeHPIoKws8PLXpLY5crCdn3HAKFk7i9S2vBcwmIwl3PLRuHYAU7XoqLi7OuXnwwwFVDXywaNGKCfcuXcWfYv+elJKdw4OFhazMKWbN+9s41dDEoIwhrJg/l81vbgk4483EOOPBdQ9HYo32RMYWLLtTVbWdM+evGHffPat5JvbfBG0OZucv4IkxRazbupsT9W7Ssgbz4Lwl/H3LK35zQgIpt26PqsYSSkpK4jYNelxRVW1b0cyiiQsXreThpF3R3qj2Qp09wJQ5I3j58OdktVqxZaXxROF83tm63R+XZGf4vvHhFiWPQYoqkMdKVs0WVXX7wiXFWXffs4bnGECOPYVQMERCXCyBgApA3f56EoPw1tZtfmeyFR1Y+/yzPZb4cddWVla2G8BW70lVU7dd8AebHpqylL+aP+K+aYt4/kg1b546xeGrdXxy/irbTl/GHRvLrpPn+PBcPYnZGfxm3lI2v7vVbzBIhHI+/MbHh+6MRJ1R2/7j4+N/YIp3+X0+36vB0Oc1n+3b82D+XaSZLVy82sCnF2vZfvoiJxua8IRU4m0JXK1t5Nj1AGlZWfx6zmLeef9df2ySiVDWR9v2HF45GnVGpY/k5eVlJyQn/9Lr9T4XCoW+DBx4r6as+pPHRs1jjC0Or8/P+YYmTtU1cqXFSyCoIAkSQ5IdTM3MZtuJ/fjsVn49aykffPSB32CQMDX+aN+ug3dFKkefrx853e5fhUKhdT6v78CVIx/UlM1fmpoWF4/XH6Cp1U2jx0tA1ZAEAYdZZnCCnfkjxnLi2lV8NisPzVnCh59+5DfIEkLT3gM155aMQ51R3aKsqbn1oqKEvtl0cP/P0ofnLpTirbICCALYLGZS4+OYmJnJDw+dJtEex4Mzi9m2a4c/JslGvH3fgZNnfzoOb1S3qMIbN77QVE3dXn25dmt8ZvpoKdaGEQRVUVEUBcXnI8Vq4afrN7H/5GnunjGH7Xv3+OXYGCTHfwBGR7KlRnUiN0zE4xwkTfjlnE1b6xrr3rBlpA7HYUFBpbmlhXPXG9n+1VGaW9y4/QGeKJrP9j27/QaphWbH5wDjKRnSh0D0X1yOIU5xXPF9m9urbteZ7GnpY7CGhMkxh5HojWOfQrM/OE4DJ5rtNR7k4uL5rFj3x6/LDQTcnwJMIF7Rw4gkBsQDldaHKMfmr5p68WG2psAidZ4suxJXGnxMG3eNOQbAOIEbOYHo3FDt5XH5XIl2+3JK0Kh0DOKolwDDgJnAA8gAKnctKEbQGTAgTx2+/Ktje6Wm0CSLTYyM9JoUcBgthAfH0+CPQ5/m4B4YzI3MV7GbDYjSxJGo5FQKNSXrXLe7/dfBfzAcKAaaAS8/QpERHQDZgvsksTAXOQ/QDYaYSJZQLoBJLPNcTjc/dogtLcvIHp9FnsTSU+hBLPZDCABHlVRAkAzUE9blD4LXLnxjJ7Q+3jYA8i0W3uhhzBtIexAMjAIyGhr2x4gBDQBV4HLbcDqbgBxtynz+PxeP5Faa9vr1wM3IJRuwvBFCsQHBICrbUiugGbags7b9rcK+G4S19NkWmmbYAA4dQNYa5s3LehT+w/8Tq+I3MvvXQAAAABJRU5ErkJggg==');
+    background-repeat: repeat;
+    opacity: 0.1;
+    pointer-events: none;
+}
+
+.boheme-lightbox.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.boheme-lightbox-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+    margin: auto;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+}
+
+.boheme-lightbox.active .boheme-lightbox-content {
+    transform: scale(1);
+}
+
+.boheme-lightbox-content img {
+    display: block;
+    max-width: 100%;
+    max-height: 90vh;
+    object-fit: contain;
+}
+
+.boheme-lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(16, 13, 12, 0.7);
+    border: 1px solid var(--color-gold);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 1010;
+}
+
+.boheme-lightbox-close:hover {
+    background-color: var(--color-gold);
+}
+
+.boheme-lightbox-close::before,
+.boheme-lightbox-close::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 2px;
+    background-color: var(--color-text);
+}
+
+.boheme-lightbox-close::before {
+    transform: rotate(45deg);
+}
+
+.boheme-lightbox-close::after {
+    transform: rotate(-45deg);
+}
+
+.boheme-lightbox-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(16, 13, 12, 0.8);
+    color: var(--color-text);
+    padding: 10px 20px;
+    font-family: var(--font-secondary);
+    font-style: italic;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.boheme-lightbox-content:hover .boheme-lightbox-caption {
+    transform: translateY(0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .boheme-lightbox-content {
+        max-width: 95%;
+    }
+    
+    .boheme-lightbox-close {
+        top: 10px;
+        right: 10px;
+        width: 30px;
+        height: 30px;
+    }
+} 
