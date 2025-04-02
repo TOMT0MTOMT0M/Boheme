@@ -37,12 +37,32 @@
     <!-- Scripts -->
     <script src="https://unpkg.com/gsap@3.12.2/dist/gsap.min.js"></script>
     <script src="https://unpkg.com/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
+    
+    <!-- Configuration inline en cas de non-chargement du fichier -->
+    <script>
+        // Fallback pour config.js en cas de non-chargement
+        window.GOOGLE_API_KEY = window.GOOGLE_API_KEY || 'AIzaSyCTJ-ttYO8KkKmvDGAFFpjRwiBJf9ciXrA';
+    </script>
     <script src="js/config.js"></script>
     <script defer src="js/main.js"></script>
     <script defer src="js/lightbox.js"></script>
     <script src="js/admin-data.js"></script>
     <script src="js/google-reviews.js"></script>
     <script defer src="js/film-grain.js"></script>
+    
+    <!-- Gestionnaire d'erreurs pour les images -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestionnaire d'erreur pour les images manquantes
+            document.querySelectorAll('img').forEach(img => {
+                img.addEventListener('error', function() {
+                    if (this.src.includes('_DSC8128-Modifier.jpg')) {
+                        this.src = 'images/placeholder.jpg'; // Image de remplacement
+                    }
+                });
+            });
+        });
+    </script>
     
     <!-- Script pour la galerie d'événements -->
     <script>
@@ -56,16 +76,17 @@
                 slidesPerView: 1,
                 spaceBetween: 20,
                 grabCursor: true,
+                loop: false,
                 navigation: {
                     nextEl: '.swiper-mariages .swiper-button-next',
                     prevEl: '.swiper-mariages .swiper-button-prev',
                 },
                 breakpoints: {
                     640: {
-                        slidesPerView: 2,
+                        slidesPerView: Math.min(2, document.querySelectorAll('.swiper-mariages .swiper-slide').length),
                     },
                     1024: {
-                        slidesPerView: 3,
+                        slidesPerView: Math.min(3, document.querySelectorAll('.swiper-mariages .swiper-slide').length),
                     },
                 },
             });
@@ -74,13 +95,14 @@
                 slidesPerView: 1,
                 spaceBetween: 20,
                 grabCursor: true,
+                loop: false,
                 navigation: {
                     nextEl: '.swiper-deuil .swiper-button-next',
                     prevEl: '.swiper-deuil .swiper-button-prev',
                 },
                 breakpoints: {
                     640: {
-                        slidesPerView: 2,
+                        slidesPerView: Math.min(2, document.querySelectorAll('.swiper-deuil .swiper-slide').length),
                     },
                 },
             });
@@ -89,13 +111,14 @@
                 slidesPerView: 1,
                 spaceBetween: 20,
                 grabCursor: true,
+                loop: false,
                 navigation: {
                     nextEl: '.swiper-festivites .swiper-button-next',
                     prevEl: '.swiper-festivites .swiper-button-prev',
                 },
                 breakpoints: {
                     640: {
-                        slidesPerView: 2,
+                        slidesPerView: Math.min(2, document.querySelectorAll('.swiper-festivites .swiper-slide').length),
                     },
                 },
             });

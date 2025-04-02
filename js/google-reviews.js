@@ -48,12 +48,18 @@ function initReviewsSwiper() {
         reviewsSwiper.destroy();
     }
     
+    // Compter le nombre de slides disponibles
+    const slidesCount = document.querySelectorAll('.swiper-reviews .swiper-slide').length;
+    
+    // Déterminer si le mode loop est approprié en fonction du nombre de slides
+    const shouldEnableLoop = slidesCount > 3; // Désactiver le loop s'il y a 3 slides ou moins
+    
     // Initialiser une nouvelle instance Swiper
     reviewsSwiper = new Swiper('.swiper-reviews', {
         slidesPerView: 1,
         spaceBetween: 20,
         centeredSlides: false,
-        loop: true,
+        loop: shouldEnableLoop,
         autoplay: {
             delay: 5000,
             disableOnInteraction: false,
@@ -81,12 +87,12 @@ function initReviewsSwiper() {
             },
             // Pour les tablettes en paysage et petits laptops
             768: {
-                slidesPerView: 2,
+                slidesPerView: Math.min(2, slidesCount),
                 spaceBetween: 20,
             },
             // Pour les écrans d'ordinateur
             1024: {
-                slidesPerView: 3,
+                slidesPerView: Math.min(3, slidesCount),
                 spaceBetween: 30,
             },
         },
