@@ -46,12 +46,10 @@
                         [class*="grain-"], 
                         .grain-texture, 
                         .grain-animated,
-                        .grain-hover,
-                        .grain-texture::after, 
-                        .grain-texture::before {
+                        .grain-hover {
                             background-image: none !important;
                             animation: none !important;
-                            background: rgba(16, 13, 12, 0.7) !important; /* Fond sombre pour garantir la visibilité du texte */
+                            background-color: rgba(16, 13, 12, 0.7) !important; /* Fond sombre pour garantir la visibilité du texte */
                             opacity: 1 !important;
                             mix-blend-mode: normal !important;
                             filter: none !important;
@@ -60,14 +58,6 @@
                         .grain-overlay {
                             display: none !important;
                             visibility: hidden !important;
-                        }
-                        
-                        /* Assurer la visibilité du texte dans toutes les sections, surtout sur mobile */
-                        .section-title, .reveal-text, h3, p {
-                            color: var(--color-text, #f5f5f5) !important;
-                            text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
-                            opacity: 1 !important;
-                            visibility: visible !important;
                         }
                     `;
                     link.parentNode.replaceChild(newStyle, link);
@@ -81,26 +71,120 @@
                 if (grainOverlay && grainOverlay.parentNode) {
                     grainOverlay.parentNode.removeChild(grainOverlay);
                 }
-                
-                // NE PAS supprimer toutes les classes grain, seulement modifier leur apparence
-                document.querySelectorAll('[class*="grain-"]').forEach(function(el) {
-                    // Ajouter une classe de visibilité à la place
-                    el.classList.add('visible-section');
-                });
-                
-                // Vérifier spécifiquement la visibilité des sections problématiques
-                const criticalSections = ['evenements', 'professionnels', 'galerie'];
-                criticalSections.forEach(function(id) {
-                    const section = document.getElementById(id);
-                    if (section) {
-                        section.style.display = 'block';
-                        section.style.visibility = 'visible';
-                        section.style.opacity = '1';
-                        section.style.backgroundColor = 'rgba(16, 13, 12, 0.7)';
-                    }
-                });
             });
         })();
+    </script>
+    
+    <!-- Script spécifique pour mobile -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Supprimer les pseudo-éléments before et after qui peuvent causer des problèmes
+            const styleFixMobile = document.createElement('style');
+            styleFixMobile.innerHTML = `
+                /* Correction pour les pseudo-éléments qui peuvent causer des problèmes */
+                .grain-texture::after, 
+                .grain-texture::before,
+                [class*="grain-"]::after,
+                [class*="grain-"]::before {
+                    display: none !important;
+                    content: none !important;
+                    background: none !important;
+                }
+                
+                /* Assurer la visibilité des sections */
+                #evenements, #professionnels, #galerie {
+                    display: block !important;
+                    visibility: visible !important;
+                    opacity: 1 !important;
+                    background-color: rgba(16, 13, 12, 0.7) !important;
+                    z-index: 100 !important;
+                    position: relative !important;
+                }
+                
+                /* Restaurer le remplissage des images */
+                .full-width-image img,
+                .gallery-item img,
+                .pro-service img,
+                .swiper-slide img {
+                    width: 100% !important;
+                    height: 100% !important;
+                    object-fit: cover !important;
+                    display: block !important;
+                }
+                
+                /* Restaurer la hauteur de la galerie */
+                .gallery-item {
+                    height: 250px !important;
+                }
+                
+                /* Styles communs pour le texte */
+                .section-title, .reveal-text, h3, p {
+                    color: #f5f5f5 !important;
+                    opacity: 1 !important;
+                    visibility: visible !important;
+                }
+                
+                /* Sur mobile */
+                @media (max-width: 768px) {
+                    body {
+                        background-color: #0a0a0a !important;
+                    }
+                    
+                    .three-images-grid {
+                        grid-template-columns: 1fr !important;
+                    }
+                    
+                    .event-category, 
+                    .pro-service, 
+                    .gallery-item, 
+                    .service-card {
+                        margin-bottom: 20px !important;
+                        background-color: rgba(16, 13, 12, 0.7) !important;
+                    }
+                    
+                    .section {
+                        margin-bottom: 30px !important;
+                        padding: 40px 0 !important;
+                    }
+                }
+            `;
+            document.head.appendChild(styleFixMobile);
+            
+            // Fonction pour forcer le rendu des sections problématiques
+            function forceRender() {
+                const criticalSections = ['evenements', 'professionnels', 'galerie'];
+                criticalSections.forEach(id => {
+                    const section = document.getElementById(id);
+                    if (section) {
+                        // Force le rafraîchissement du rendu
+                        section.style.display = 'none';
+                        setTimeout(() => {
+                            section.style.display = 'block';
+                            section.style.backgroundColor = 'rgba(16, 13, 12, 0.7)';
+                            section.style.visibility = 'visible';
+                            section.style.opacity = '1';
+                            
+                            // Assurer la visibilité des enfants directs
+                            const children = section.children;
+                            for (let i = 0; i < children.length; i++) {
+                                children[i].style.visibility = 'visible';
+                                children[i].style.display = 'block';
+                                children[i].style.opacity = '1';
+                            }
+                        }, 100);
+                    }
+                });
+            }
+            
+            // Exécuter après chargement et après un petit délai
+            forceRender();
+            setTimeout(forceRender, 500);
+            
+            // Exécuter également après changement d'orientation
+            window.addEventListener('orientationchange', function() {
+                setTimeout(forceRender, 300);
+            });
+        });
     </script>
     
     <!-- Scripts -->
@@ -241,8 +325,9 @@
                 // Créer une feuille de style
                 const mobileFix = document.createElement('style');
                 mobileFix.innerHTML = `
-                    body, html {
+                    html, body {
                         background-color: #0a0a0a !important;
+                        overflow-x: hidden !important;
                     }
                     
                     .section {
@@ -254,6 +339,9 @@
                         padding: 30px 0 !important;
                         border-top: 1px solid rgba(189, 143, 57, 0.3) !important;
                         border-bottom: 1px solid rgba(189, 143, 57, 0.3) !important;
+                        overflow: visible !important;
+                        z-index: 10 !important;
+                        position: relative !important;
                     }
                     
                     #evenements, #professionnels, #galerie, #services, #reviews, #contact {
@@ -272,22 +360,63 @@
                         text-align: center !important;
                         margin-bottom: 25px !important;
                         font-size: 2.2rem !important;
+                        display: block !important;
+                    }
+                    
+                    .container {
+                        width: 100% !important;
+                        max-width: 100% !important;
+                        overflow: visible !important;
+                    }
+                    
+                    .full-width-image, .gallery-item {
+                        height: auto !important;
+                        min-height: 250px !important;
+                    }
+                    
+                    .gallery-grid, .pro-services {
+                        display: block !important;
+                    }
+                    
+                    .gallery-item, .pro-service {
+                        width: 100% !important;
+                        margin-bottom: 20px !important;
                     }
                 `;
                 document.head.appendChild(mobileFix);
                 
-                // S'assurer que toutes les sections critiques sont visibles
-                const sections = document.querySelectorAll('section');
-                sections.forEach(function(section) {
-                    section.style.display = 'block';
-                    section.style.visibility = 'visible';
-                    section.style.opacity = '1';
+                // Ajouter une classe spécifique au body pour le mobile
+                document.body.classList.add('mobile-view');
+                
+                // S'assurer que toutes les sections sont visibles
+                setTimeout(function() {
+                    const sections = document.querySelectorAll('section');
+                    sections.forEach(function(section) {
+                        section.style.display = 'block';
+                        section.style.visibility = 'visible';
+                        section.style.opacity = '1';
+                        
+                        // Garantir la visibilité des conteneurs
+                        const containers = section.querySelectorAll('.container, .section-content');
+                        containers.forEach(function(container) {
+                            container.style.display = 'block';
+                            container.style.visibility = 'visible';
+                            container.style.opacity = '1';
+                        });
+                    });
                     
-                    // Ajouter un contraste de fond si nécessaire
-                    if (!section.style.backgroundColor || section.style.backgroundColor === 'transparent') {
-                        section.style.backgroundColor = 'rgba(16, 13, 12, 0.7)';
-                    }
-                });
+                    // Restaurer le remplissage correct des images
+                    const images = document.querySelectorAll('img');
+                    images.forEach(function(img) {
+                        img.style.objectFit = 'cover';
+                        img.style.width = '100%';
+                        
+                        // Si l'image est dans une gallerie, assurer la hauteur
+                        if (img.closest('.gallery-item')) {
+                            img.closest('.gallery-item').style.height = '250px';
+                        }
+                    });
+                }, 500);
             }
         });
     </script>
@@ -773,6 +902,60 @@
                 text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.5);
             }
         }
+        
+        /* Style spécifique pour les problèmes d'images et de visibilité sur mobile */
+        img {
+            max-width: 100%;
+        }
+        
+        /* Styles spécifiques pour le mode mobile */
+        @media (max-width: 768px) {
+            /* Forcer l'affichage en colonne sur mobile */
+            .three-images-grid {
+                display: block !important;
+                grid-template-columns: 1fr !important;
+            }
+            
+            .three-images-grid .gallery-item {
+                width: 100% !important;
+                margin-bottom: 20px !important;
+            }
+            
+            /* Assurer que les sections problématiques sont visibles */
+            #evenements, 
+            #professionnels, 
+            #galerie {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                background-color: rgba(16, 13, 12, 0.7) !important;
+            }
+            
+            /* Assurer que les images de la galerie ont une bonne hauteur sur mobile */
+            .gallery-item {
+                height: 200px !important;
+                margin-bottom: 15px !important;
+            }
+            
+            /* Réduire la hauteur de l'image principale */
+            .full-width-image {
+                height: 300px !important;
+            }
+            
+            /* Assurer que les grilles s'affichent correctement */
+            .gallery-grid,
+            .pro-services,
+            .services-grid {
+                display: block !important;
+            }
+            
+            /* Forcer l'affichage des éléments de texte */
+            .section-title, h3, p, .reveal-text {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -821,8 +1004,8 @@
             <h2 class="section-title reveal-text">Au quotidien</h2>
             <div class="section-content">
                 <!-- Image horizontale qui prend toute la largeur -->
-                <div class="full-width-image full-width-no-margin">
-                    <img src="images/quoti-hori.jpg" alt="Notre boutique au quotidien" loading="lazy">
+                <div class="full-width-image full-width-no-margin" style="width:100%; margin-bottom:40px; height:600px; overflow:hidden;">
+                    <img src="images/quoti-hori.jpg" alt="Notre boutique au quotidien" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block;">
                 </div>
                 
                 <!-- Texte qui parle de qui nous sommes -->
@@ -831,15 +1014,15 @@
                 </div>
                 
                 <!-- Trois photos en dessous -->
-                <div class="three-images-grid">
-                    <div class="gallery-item">
-                        <img src="images/quoti1.jpg" alt="Composition florale quotidienne" loading="lazy">
+                <div class="three-images-grid" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:20px; margin-top:30px;">
+                    <div class="gallery-item" style="border-radius:5px; overflow:hidden; box-shadow:0 5px 15px rgba(0,0,0,0.2); height:250px;">
+                        <img src="images/quoti1.jpg" alt="Composition florale quotidienne" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block;">
                     </div>
-                    <div class="gallery-item">
-                        <img src="images/quoti2.jpg" alt="Bouquet délicat" loading="lazy">
+                    <div class="gallery-item" style="border-radius:5px; overflow:hidden; box-shadow:0 5px 15px rgba(0,0,0,0.2); height:250px;">
+                        <img src="images/quoti2.jpg" alt="Bouquet délicat" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block;">
                     </div>
-                    <div class="gallery-item">
-                        <img src="images/quoti3.jpg" alt="Arrangement floral" loading="lazy">
+                    <div class="gallery-item" style="border-radius:5px; overflow:hidden; box-shadow:0 5px 15px rgba(0,0,0,0.2); height:250px;">
+                        <img src="images/quoti3.jpg" alt="Arrangement floral" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block;">
                     </div>
                 </div>
             </div>
@@ -847,10 +1030,10 @@
     </section>
 
     <!-- Événements Section -->
-    <section id="evenements" class="section">
-        <div class="container">
-            <h2 class="section-title reveal-text">Événements</h2>
-            <div class="section-content">
+    <section id="evenements" class="section" style="display:block !important; visibility:visible !important; opacity:1 !important; background-color:rgba(16, 13, 12, 0.7) !important;">
+        <div class="container" style="display:block !important; visibility:visible !important;">
+            <h2 class="section-title reveal-text" style="color:#BD8F39 !important;">Événements</h2>
+            <div class="section-content" style="display:block !important; visibility:visible !important;">
                 <div class="text-content">
                     <p class="reveal-text">Des créations florales sur mesure pour vos moments importants. Mariages, cérémonies de deuil ou festivités, nous vous accompagnons avec des compositions qui reflètent l'émotion de l'instant.</p>
                 </div>
@@ -941,10 +1124,10 @@
     </section>
 
     <!-- Professionnels Section -->
-    <section id="professionnels" class="section grain-texture">
-        <div class="container">
-            <h2 class="section-title reveal-text">Professionnels</h2>
-            <div class="section-content">
+    <section id="professionnels" class="section grain-texture" style="display:block !important; visibility:visible !important; opacity:1 !important; background-color:rgba(16, 13, 12, 0.7) !important;">
+        <div class="container" style="display:block !important; visibility:visible !important;">
+            <h2 class="section-title reveal-text" style="color:#BD8F39 !important;">Professionnels</h2>
+            <div class="section-content" style="display:block !important; visibility:visible !important;">
                 <div class="text-content">
                     <p class="reveal-text">Besoin d'embellir votre espace professionnel ? Nous vous conseillons sur les meilleurs choix de végétaux adaptés à votre structure, avec des options pérennes ou renouvelables via notre système d'abonnements. Nous assurons également le fleurissement de vos événements professionnels, vous offrant expertise et gain de temps précieux.</p>
                 </div>
@@ -1016,31 +1199,31 @@
     </section>
 
     <!-- Galerie Section -->
-    <section id="galerie" class="section grain-texture">
-        <div class="container">
-            <h2 class="section-title reveal-text">Notre galerie</h2>
-            <div class="section-content">
+    <section id="galerie" class="section grain-texture" style="display:block !important; visibility:visible !important; opacity:1 !important; background-color:rgba(16, 13, 12, 0.7) !important;">
+        <div class="container" style="display:block !important; visibility:visible !important;">
+            <h2 class="section-title reveal-text" style="color:#BD8F39 !important;">Notre galerie</h2>
+            <div class="section-content" style="display:block !important; visibility:visible !important;">
                 <div class="text-content">
                     <p class="reveal-text">Explorez notre collection de créations florales, renouvelée au fil des saisons. Chaque composition raconte une histoire unique et témoigne de notre passion pour l'art floral. Réalisées dans notre atelier, ces œuvres illustrent notre savoir-faire et la richesse du monde végétal sublimé par une main experte.</p>
                 </div>
-                <div class="gallery-grid">
-                    <div class="gallery-item">
-                        <img src="images/IMG_20240503_144422.jpg" alt="Création florale saison printemps" loading="lazy">
+                <div class="gallery-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(250px, 1fr)); gap:20px; margin-top:30px;">
+                    <div class="gallery-item" style="border-radius:5px; overflow:hidden; box-shadow:0 5px 15px rgba(0,0,0,0.2); height:250px;">
+                        <img src="images/IMG_20240503_144422.jpg" alt="Création florale saison printemps" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block;">
                     </div>
-                    <div class="gallery-item">
-                        <img src="images/IMG20230929175237.jpg" alt="Création élégante" loading="lazy">
+                    <div class="gallery-item" style="border-radius:5px; overflow:hidden; box-shadow:0 5px 15px rgba(0,0,0,0.2); height:250px;">
+                        <img src="images/IMG20230929175237.jpg" alt="Création élégante" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block;">
                     </div>
-                    <div class="gallery-item">
-                        <img src="images/IMG20230505180723.jpg" alt="Bouquet printanier" loading="lazy">
+                    <div class="gallery-item" style="border-radius:5px; overflow:hidden; box-shadow:0 5px 15px rgba(0,0,0,0.2); height:250px;">
+                        <img src="images/IMG20230505180723.jpg" alt="Bouquet printanier" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block;">
                     </div>
-                    <div class="gallery-item">
-                        <img src="images/IMG20240109144339.jpg" alt="Composition florale spéciale" loading="lazy">
+                    <div class="gallery-item" style="border-radius:5px; overflow:hidden; box-shadow:0 5px 15px rgba(0,0,0,0.2); height:250px;">
+                        <img src="images/IMG20240109144339.jpg" alt="Composition florale spéciale" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block;">
                     </div>
-                    <div class="gallery-item">
-                        <img src="images/IMG_20230323_165741.jpg" alt="Création artistique florale" loading="lazy">
+                    <div class="gallery-item" style="border-radius:5px; overflow:hidden; box-shadow:0 5px 15px rgba(0,0,0,0.2); height:250px;">
+                        <img src="images/IMG_20230323_165741.jpg" alt="Création artistique florale" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block;">
                     </div>
-                    <div class="gallery-item">
-                        <img src="images/_DSC8128-Modifier.jpg" alt="Création florale artistique" loading="lazy">
+                    <div class="gallery-item" style="border-radius:5px; overflow:hidden; box-shadow:0 5px 15px rgba(0,0,0,0.2); height:250px;">
+                        <img src="images/_DSC8128-Modifier.jpg" alt="Création florale artistique" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block;">
                     </div>
                 </div>
             </div>
