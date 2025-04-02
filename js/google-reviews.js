@@ -50,7 +50,7 @@ function initReviewsSwiper() {
     // Initialiser une nouvelle instance Swiper
     reviewsSwiper = new Swiper('.swiper-reviews', {
         slidesPerView: 1,
-        spaceBetween: 30,
+        spaceBetween: 20,
         centeredSlides: false,
         loop: true,
         autoplay: {
@@ -66,20 +66,35 @@ function initReviewsSwiper() {
             prevEl: '.swiper-button-prev',
         },
         direction: 'horizontal',
+        // Ajuster pour une meilleure transition entre mobile et desktop
         breakpoints: {
+            // Pour les très petits écrans (mobiles)
+            320: {
+                slidesPerView: 1,
+                spaceBetween: 10,
+            },
+            // Pour les tablettes en portrait
             640: {
                 slidesPerView: 1,
                 spaceBetween: 20,
             },
+            // Pour les tablettes en paysage et petits laptops
             768: {
                 slidesPerView: 2,
                 spaceBetween: 20,
             },
+            // Pour les écrans d'ordinateur
             1024: {
                 slidesPerView: 3,
                 spaceBetween: 30,
             },
         },
+        // Forcer la mise à jour lors des changements d'orientation
+        on: {
+            resize: function() {
+                this.update();
+            }
+        }
     });
 }
 
@@ -128,6 +143,12 @@ function displayGoogleReviews(reviews) {
         return;
     }
 
+    // Déterminer la longueur maximale du texte en fonction de la taille de l'écran
+    let maxTextLength = 150;
+    if (window.innerWidth <= 768) {
+        maxTextLength = 100; // Réduire sur mobile
+    }
+
     recentReviews.forEach(review => {
         // Créer un slide Swiper pour chaque avis
         const testimonialSlide = document.createElement('div');
@@ -140,10 +161,10 @@ function displayGoogleReviews(reviews) {
         const content = document.createElement('div');
         content.classList.add('testimonial-content');
         
-        // Ajouter le texte du témoignage (limiter à 150 caractères pour uniformité)
+        // Ajouter le texte du témoignage avec longueur adaptative
         const text = document.createElement('p');
         text.classList.add('testimonial-text');
-        const reviewText = review.text.length > 150 ? review.text.substring(0, 150) + '...' : review.text;
+        const reviewText = review.text.length > maxTextLength ? review.text.substring(0, maxTextLength) + '...' : review.text;
         text.textContent = `"${reviewText}"`;
         
         // Ajouter le nom de l'auteur uniquement
@@ -163,6 +184,15 @@ function displayGoogleReviews(reviews) {
     
     // Initialiser le carousel Swiper une fois que tous les avis sont ajoutés
     initReviewsSwiper();
+    
+    // Ajouter un écouteur d'événement pour la réinitialisation lors des changements d'orientation
+    window.addEventListener('orientationchange', function() {
+        setTimeout(function() {
+            if (reviewsSwiper) {
+                reviewsSwiper.update();
+            }
+        }, 300); // Petit délai pour laisser le temps au navigateur de se réorienter
+    });
 }
 
 // Initialiser les avis Google au chargement de la page

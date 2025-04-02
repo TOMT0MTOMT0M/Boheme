@@ -293,7 +293,6 @@
             width: 100%;
             padding: 20px 0;
             overflow: hidden;
-            height: 350px; /* Hauteur fixe pour le conteneur */
             box-sizing: border-box;
         }
         
@@ -307,7 +306,6 @@
         .swiper-reviews {
             width: 100%;
             padding-bottom: 50px; /* Espace pour la pagination */
-            height: 300px; /* Hauteur fixe pour le swiper */
         }
         
         /* Styles pour la nouvelle mise en page de la section Au Quotidien */
@@ -539,13 +537,14 @@
         }
         
         .swiper-reviews .testimonial-card {
-            height: 250px; /* Hauteur fixe pour tous les témoignages */
+            min-height: 200px; /* Utiliser min-height au lieu de height fixe */
             width: 100%;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             margin: 0 auto;
             overflow: hidden;
+            padding: 15px;
         }
         
         .swiper-reviews .testimonial-text {
@@ -583,7 +582,25 @@
         
         /* Pour les écrans plus petits */
         @media (max-width: 768px) {
-            /* ... existing code ... */
+            .swiper-reviews .testimonial-card {
+                min-height: 180px;
+                padding: 10px;
+            }
+            
+            .swiper-reviews .testimonial-text {
+                font-size: 0.9rem;
+                -webkit-line-clamp: 4; /* Réduire le nombre de lignes sur mobile */
+                margin-bottom: 10px;
+            }
+            
+            .swiper-reviews .testimonial-author {
+                font-size: 0.9rem;
+            }
+            
+            .swiper-reviews .swiper-button-next,
+            .swiper-reviews .swiper-button-prev {
+                transform: scale(0.8);
+            }
         }
     </style>
 </head>
