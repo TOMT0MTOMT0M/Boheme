@@ -8,6 +8,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const navList = document.querySelector('.nav-list');
     const revealElements = document.querySelectorAll('.reveal-text');
     
+    // Vérifier si GSAP et ScrollTrigger sont chargés correctement
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+        console.warn('GSAP ou ScrollTrigger non chargé. Les animations sont désactivées.');
+        return; // Arrêter l'exécution si les dépendances ne sont pas chargées
+    }
+    
+    // Vérification de la clé API 
+    if (typeof window.GOOGLE_API_KEY === 'undefined') {
+        console.warn('Config.js non chargé. Utilisation de la valeur de secours.');
+        window.GOOGLE_API_KEY = 'AIzaSyCTJ-ttYO8KkKmvDGAFFpjRwiBJf9ciXrA';
+    }
+    
     // Fonction pour s'assurer que GSAP et ScrollTrigger sont chargés
     function ensureGSAPLoaded() {
         if (typeof gsap === 'undefined') {
@@ -225,32 +237,42 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialiser les animations de la galerie
     function initGalleryAnimation() {
-        const galleryGrid = document.querySelector('.gallery-grid');
-        if (!galleryGrid) return;
-        
-        const galleryItems = galleryGrid.querySelectorAll('.gallery-item');
-        if (!galleryItems.length) return;
-        
         try {
-            galleryItems.forEach((galleryItem, i) => {
-                gsap.from(galleryItem, {
-                    y: 50,
-                    opacity: 0,
-                    duration: 0.6,
-                    delay: i * 0.1,
-                    scrollTrigger: {
-                        trigger: galleryGrid,
-                        start: "top 85%",
-                        once: true
-                    }
-                });
+            if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+                console.warn('GSAP ou ScrollTrigger non chargé. Animation de galerie désactivée.');
+                return;
+            }
+            
+            // Sélectionner les éléments de la galerie
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            
+            // Vérifier si des éléments de galerie existent
+            if (galleryItems.length === 0) {
+                console.log('Aucun élément de galerie trouvé');
+                return;
+            }
+            
+            // Animation pour chaque élément de la galerie
+            galleryItems.forEach((item) => {
+                try {
+                    gsap.from(item, {
+                        y: 50,
+                        opacity: 0,
+                        duration: 1,
+                        ease: "power2.out",
+                        scrollTrigger: {
+                            trigger: item,
+                            start: "top bottom-=100",
+                            end: "bottom center",
+                            toggleActions: "play none none none"
+                        }
+                    });
+                } catch (error) {
+                    console.warn('Erreur lors de l\'animation d\'un élément de galerie:', error);
+                }
             });
         } catch (error) {
-            console.error('Error in gallery animation:', error);
-            galleryItems.forEach(item => {
-                item.style.opacity = 1;
-                item.style.transform = 'translateY(0)';
-            });
+            console.error('Erreur dans l\'animation de la galerie:', error);
         }
     }
     

@@ -56,8 +56,10 @@
             // Gestionnaire d'erreur pour les images manquantes
             document.querySelectorAll('img').forEach(img => {
                 img.addEventListener('error', function() {
-                    if (this.src.includes('_DSC8128-Modifier.jpg')) {
-                        this.src = 'images/placeholder.jpg'; // Image de remplacement
+                    // Image de remplacement en cas d'erreur
+                    console.warn('Image non trouvée:', this.src);
+                    if (!this.src.includes('placeholder.jpg')) {
+                        this.src = 'images/placeholder.jpg';
                     }
                 });
             });
@@ -737,7 +739,9 @@
         <div class="hero-logo">
             <img src="images/Logo Boheme.png" alt="Bohème Fleurs" class="logo-image">
         </div>
-        <img src="images/_DSC8128-Modifier.jpg" alt="Arrangement floral artistique" class="hero-image">
+        <img src="images/placeholder.jpg" alt="Arrangement floral artistique" class="hero-image" 
+             data-original-src="images/_DSC8128-Modifier.jpg" 
+             onerror="this.onerror=null; if(!this.src.includes('placeholder.jpg')) this.src='images/placeholder.jpg';">
         <div class="hero-content">
             <p class="reveal-text">Chez Bohème Fleurs, notre boutique évolue au rythme des saisons. Respectueux du cycle naturel, nous créons des compositions uniques qui répondent à vos attentes, et reflètent cette poésie bohème qui caractérise notre univers.</p>
         </div>
@@ -999,7 +1003,7 @@
                         <img src="images/IMG_20230323_165741.jpg" alt="Création artistique florale" loading="lazy">
                     </div>
                     <div class="gallery-item">
-                        <img src="images/_DSC8128-Modifier.jpg" alt="Création florale artistique" loading="lazy">
+                        <img src="images/IMG_3170 (2).JPG" alt="Création florale artistique" loading="lazy">
                     </div>
                 </div>
             </div>
