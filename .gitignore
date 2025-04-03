@@ -34,7 +34,7 @@ __pycache__/
 .env.production.local
 
 # Fichiers de clés API et de sécurité
-config.js
+# config.js  # Commenté pour permettre le déploiement sur GitHub Pages
 
 # Fichiers de sauvegarde et anciennes versions
 *-backup/
