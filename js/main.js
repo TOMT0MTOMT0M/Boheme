@@ -2,6 +2,9 @@
 
 // Attendre que le document soit chargé
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialiser le loader
+    initAdvancedLoader();
+    
     // Variables globales
     const header = document.querySelector('.site-header');
     const menuToggle = document.querySelector('.menu-toggle');
@@ -11,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Vérifier si GSAP et ScrollTrigger sont chargés correctement
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
         console.warn('GSAP ou ScrollTrigger non chargé. Les animations sont désactivées.');
-        return; // Arrêter l'exécution si les dépendances ne sont pas chargées
+        forceTextVisibility(); // Assurer la visibilité du contenu même sans animations
     }
     
     // Vérification de la clé API 
@@ -20,45 +23,158 @@ document.addEventListener('DOMContentLoaded', function() {
         window.GOOGLE_API_KEY = 'AIzaSyCTJ-ttYO8KkKmvDGAFFpjRwiBJf9ciXrA';
     }
     
-    // Fonction pour s'assurer que GSAP et ScrollTrigger sont chargés
-    function ensureGSAPLoaded() {
-        if (typeof gsap === 'undefined') {
-            console.error('GSAP n\'est pas chargé. Les animations ne fonctionneront pas correctement.');
-            return false;
+    // Fonction avancée pour initialiser le loader de style Awwwards
+    function initAdvancedLoader() {
+        // Créer le loader
+        const loaderContainer = document.createElement('div');
+        loaderContainer.className = 'loader-container';
+        
+        // Structure du loader
+        loaderContainer.innerHTML = `
+            <div class="loader-content">
+                <img src="images/Logo Boheme.png" alt="Bohème Fleurs" class="loader-logo">
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <div class="loading-text">
+                    Chargement 
+                    <span class="loader-dot"></span>
+                    <span class="loader-dot"></span>
+                    <span class="loader-dot"></span>
+                </div>
+            </div>
+            <div class="counter">0%</div>
+        `;
+        
+        document.body.appendChild(loaderContainer);
+        document.body.style.overflow = 'hidden'; // Empêcher le défilement pendant le chargement
+        
+        // Liste des ressources à précharger
+        const resources = [
+            { type: 'image', src: 'images/herobg.jpg', weight: 30 },
+            { type: 'image', src: 'images/Logo Boheme.png', weight: 10 },
+            { type: 'image', src: 'images/quoti-hori.jpg', weight: 15 },
+            { type: 'image', src: 'images/quoti1.jpg', weight: 10 },
+            { type: 'image', src: 'images/quoti2.jpg', weight: 10 },
+            { type: 'image', src: 'images/quoti3.jpg', weight: 10 },
+            { type: 'script', src: 'js/config.js', weight: 5 },
+            { type: 'font', weight: 10 } // Simulation du chargement des polices
+        ];
+        
+        const progressFill = loaderContainer.querySelector('.progress-fill');
+        const counterElement = loaderContainer.querySelector('.counter');
+        let loadedWeight = 0;
+        let totalWeight = resources.reduce((sum, resource) => sum + resource.weight, 0);
+        
+        // Fonction pour mettre à jour la progression
+        function updateProgress(additionalWeight) {
+            loadedWeight += additionalWeight;
+            const percentage = Math.round((loadedWeight / totalWeight) * 100);
+            
+            // Mettre à jour la barre de progression et le compteur
+            progressFill.style.width = `${percentage}%`;
+            counterElement.textContent = `${percentage}%`;
+            
+            // Si tout est chargé, masquer le loader
+            if (percentage >= 100) {
+                setTimeout(() => {
+                    loaderContainer.classList.add('loader-hidden');
+                    document.body.style.overflow = ''; // Réactiver le défilement
+                    
+                    // Animer l'apparition des éléments de la page
+                    animatePageElements();
+                    
+                    // Supprimer le loader une fois l'animation terminée
+                    setTimeout(() => {
+                        loaderContainer.remove();
+                    }, 1000);
+                }, 600); // Petit délai pour montrer 100%
+            }
         }
         
-        if (typeof ScrollTrigger === 'undefined') {
-            console.error('ScrollTrigger n\'est pas chargé. Les animations de défilement ne fonctionneront pas.');
-            return false;
+        // Précharger les images
+        function preloadResource(resource) {
+            return new Promise((resolve) => {
+                if (resource.type === 'image') {
+                    const img = new Image();
+                    
+                    img.onload = () => {
+                        updateProgress(resource.weight);
+                        resolve();
+                    };
+                    
+                    img.onerror = () => {
+                        console.warn(`Erreur lors du chargement de l'image: ${resource.src}`);
+                        updateProgress(resource.weight / 2); // Compter partiellement même en cas d'erreur
+                        resolve();
+                    };
+                    
+                    img.src = resource.src;
+                } else if (resource.type === 'script') {
+                    // Simuler le chargement d'un script
+                    setTimeout(() => {
+                        updateProgress(resource.weight);
+                        resolve();
+                    }, 200);
+                } else if (resource.type === 'font') {
+                    // Simuler le chargement des polices
+                    setTimeout(() => {
+                        updateProgress(resource.weight);
+                        resolve();
+                    }, 500);
+                }
+            });
         }
         
-        try {
-            gsap.registerPlugin(ScrollTrigger);
-            return true;
-        } catch (error) {
-            console.error('Erreur lors de l\'enregistrement de ScrollTrigger:', error);
-            return false;
+        // Ajouter un petit délai initial pour l'effet
+        setTimeout(() => {
+            // Précharger toutes les ressources
+            Promise.all(resources.map(resource => preloadResource(resource)))
+                .catch(err => {
+                    console.error('Erreur lors du préchargement des ressources:', err);
+                    // En cas d'erreur, finir le chargement quand même
+                    updateProgress(totalWeight - loadedWeight);
+                });
+        }, 300);
+    }
+    
+    // Animer l'apparition des éléments de la page
+    function animatePageElements() {
+        // Ajouter la classe fade-in aux éléments principaux
+        const elementsToAnimate = [
+            '.hero-content',
+            '.section-title',
+            '.section-content',
+            '.gallery-item',
+            '.service-card',
+            '.testimonial-card'
+        ];
+        
+        elementsToAnimate.forEach(selector => {
+            document.querySelectorAll(selector).forEach((el, index) => {
+                el.classList.add('fade-in');
+                // Ajouter un délai progressif pour une apparition en cascade
+                setTimeout(() => {
+                    el.classList.add('visible');
+                }, 100 + (index * 100));
+            });
+        });
+        
+        // Initialiser les autres fonctionnalités du site
+        initMenuToggle();
+        initScrollHeader();
+        handleMissingImages();
+        
+        // Initialiser les animations GSAP si disponibles
+        if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+            try {
+                gsap.registerPlugin(ScrollTrigger);
+                initGalleryAnimation();
+            } catch (error) {
+                console.error('Erreur lors de l\'initialisation des animations GSAP:', error);
+            }
         }
     }
-    
-    // S'assurer que GSAP est chargé avant d'initialiser
-    const isGSAPReady = ensureGSAPLoaded();
-    
-    // Initialisation
-    if (isGSAPReady) {
-        initGSAP();
-        initScrollAnimations();
-        initSectionAnimations();
-        initGalleryAnimation();
-    } else {
-        // Fallback pour garantir la visibilité du contenu si GSAP n'est pas chargé
-        forceTextVisibility();
-    }
-    
-    // Initialiser les fonctions qui ne dépendent pas de GSAP
-    initMenuToggle();
-    initScrollHeader();
-    handleMissingImages();
     
     // Fonction pour initialiser GSAP
     function initGSAP() {
