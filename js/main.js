@@ -253,26 +253,30 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Animation pour chaque élément de la galerie
-            galleryItems.forEach((item) => {
+            galleryItems.forEach((item, index) => {
                 try {
+                    // Animation simple sans ScrollTrigger pour éviter les erreurs sur GitHub Pages
                     gsap.from(item, {
-                        y: 50,
+                        y: 30,
                         opacity: 0,
-                        duration: 1,
-                        ease: "power2.out",
-                        scrollTrigger: {
-                            trigger: item,
-                            start: "top bottom-=100",
-                            end: "bottom center",
-                            toggleActions: "play none none none"
-                        }
+                        duration: 0.8,
+                        delay: index * 0.1 + 0.2,
+                        ease: "power2.out"
                     });
                 } catch (error) {
                     console.warn('Erreur lors de l\'animation d\'un élément de galerie:', error);
+                    // Assurer la visibilité en cas d'erreur
+                    item.style.opacity = 1;
+                    item.style.transform = 'translateY(0)';
                 }
             });
         } catch (error) {
             console.error('Erreur dans l\'animation de la galerie:', error);
+            // Assurer que tous les éléments sont visibles en cas d'erreur
+            document.querySelectorAll('.gallery-item').forEach(el => {
+                el.style.opacity = 1;
+                el.style.transform = 'translateY(0)';
+            });
         }
     }
     
