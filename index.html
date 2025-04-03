@@ -58,8 +58,14 @@
                 img.addEventListener('error', function() {
                     // Image de remplacement en cas d'erreur
                     console.warn('Image non trouvée:', this.src);
-                    if (!this.src.includes('placeholder.jpg')) {
-                        this.src = 'images/placeholder.jpg';
+                    if (!this.src.includes('Logo Boheme.png')) {
+                        // Utiliser logo comme fallback car on sait qu'il existe
+                        this.src = 'images/Logo Boheme.png';
+                        // Ajuster le style pour que le logo soit visible
+                        this.style.maxWidth = '200px';
+                        this.style.maxHeight = '200px';
+                        this.style.margin = 'auto';
+                        this.style.display = 'block';
                     }
                 });
             });
@@ -739,9 +745,9 @@
         <div class="hero-logo">
             <img src="images/Logo Boheme.png" alt="Bohème Fleurs" class="logo-image">
         </div>
-        <img src="images/placeholder.jpg" alt="Arrangement floral artistique" class="hero-image" 
+        <img src="images/mar1.jpg" alt="Arrangement floral artistique" class="hero-image" 
              data-original-src="images/_DSC8128-Modifier.jpg" 
-             onerror="this.onerror=null; if(!this.src.includes('placeholder.jpg')) this.src='images/placeholder.jpg';">
+             onerror="this.onerror=null; this.src='images/mar1.jpg';">
         <div class="hero-content">
             <p class="reveal-text">Chez Bohème Fleurs, notre boutique évolue au rythme des saisons. Respectueux du cycle naturel, nous créons des compositions uniques qui répondent à vos attentes, et reflètent cette poésie bohème qui caractérise notre univers.</p>
         </div>
