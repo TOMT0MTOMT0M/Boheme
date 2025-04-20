@@ -11,6 +11,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const navList = document.querySelector('.nav-list');
     const revealElements = document.querySelectorAll('.reveal-text');
     
+    // Initialiser les attributs d'accessibilité pour le menu
+    initMenuAccessibility();
+    
     // Vérifier si GSAP et ScrollTrigger sont chargés correctement
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
         console.warn('GSAP ou ScrollTrigger non chargé. Les animations sont désactivées.');
@@ -22,6 +25,9 @@ document.addEventListener('DOMContentLoaded', function() {
         console.warn('Config.js non chargé. Utilisation de la valeur de secours.');
         window.GOOGLE_API_KEY = 'AIzaSyCTJ-ttYO8KkKmvDGAFFpjRwiBJf9ciXrA';
     }
+    
+    // Initialiser et actualiser tous les swipers
+    initAllSwipers();
     
     // Fonction avancée pour initialiser le loader de style Awwwards
     function initAdvancedLoader() {
@@ -161,7 +167,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Initialiser les autres fonctionnalités du site
-        initMenuToggle();
+        // Commenté pour éviter un conflit avec le menu dans index.html
+        // initMenuToggle();
         initScrollHeader();
         handleMissingImages();
         
@@ -254,21 +261,89 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Fonction pour gérer le menu mobile
     function initMenuToggle() {
-        if (menuToggle) {
-            menuToggle.addEventListener('click', function() {
-                navList.classList.toggle('active');
-                document.body.classList.toggle('menu-open');
-            });
-            
-            // Fermer le menu quand on clique sur un lien
-            const navLinks = document.querySelectorAll('.nav-list a');
-            navLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    navList.classList.remove('active');
-                    document.body.classList.remove('menu-open');
-                });
-            });
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navList = document.querySelector('.nav-list');
+        const navLinks = document.querySelectorAll('.nav-list a');
+        const body = document.body;
+        
+        if (!menuToggle || !navList) {
+            console.warn('Éléments du menu non trouvés');
+            return;
         }
+        
+        // Fonction pour ouvrir le menu
+        function openMenu() {
+            menuToggle.classList.add('active');
+            navList.classList.add('active');
+            body.classList.add('menu-open');
+            
+            // Ajouter aria-expanded pour l'accessibilité
+            menuToggle.setAttribute('aria-expanded', 'true');
+            
+            // Focus trap (empêche le focus de sortir du menu)
+            document.addEventListener('keydown', handleKeydown);
+        }
+        
+        // Fonction pour fermer le menu
+        function closeMenu() {
+            menuToggle.classList.remove('active');
+            navList.classList.remove('active');
+            body.classList.remove('menu-open');
+            
+            // Mettre à jour aria-expanded
+            menuToggle.setAttribute('aria-expanded', 'false');
+            
+            // Retirer l'écouteur d'événement
+            document.removeEventListener('keydown', handleKeydown);
+        }
+        
+        // Gérer les touches clavier (Echap pour fermer, Tab pour la navigation)
+        function handleKeydown(e) {
+            if (e.key === 'Escape') {
+                closeMenu();
+            }
+        }
+        
+        // Toggle le menu quand on clique sur le bouton hamburger
+        menuToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            if (menuToggle.classList.contains('active')) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+        });
+        
+        // Fermer le menu quand on clique sur un lien
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                // Si nous sommes sur mobile, fermer le menu
+                if (window.innerWidth <= 768) {
+                    closeMenu();
+                }
+            });
+        });
+        
+        // Fermer le menu quand on clique en dehors
+        document.addEventListener('click', function(e) {
+            if (navList.classList.contains('active') && 
+                !navList.contains(e.target) && 
+                !menuToggle.contains(e.target)) {
+                closeMenu();
+            }
+        });
+        
+        // Réinitialiser le menu quand la fenêtre est redimensionnée
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768 && navList.classList.contains('active')) {
+                closeMenu();
+            }
+        });
+        
+        // Initialiser l'état du bouton
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.setAttribute('aria-label', 'Menu principal');
     }
     
     // Fonction pour gérer le header au défilement
@@ -456,6 +531,44 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 300);
             });
         });
+        
+        // Amélioration spécifique pour les catégories d'événements
+        const eventCategories = document.querySelectorAll('.event-category');
+        eventCategories.forEach(category => {
+            // Feedback visuel sur touch
+            category.addEventListener('touchstart', function(e) {
+                // Ajouter une classe temporaire pour indiquer l'état touched
+                this.classList.add('category-touched');
+                
+                // Si c'est juste un tap simple (pas un swipe), empêcher le comportement par défaut
+                if (e.touches && e.touches.length === 1) {
+                    // Permettre au processus de clic de se produire naturellement
+                    // mais ajouter un feedback visuel
+                }
+                
+                // Retirer la classe après un délai
+                setTimeout(() => {
+                    this.classList.remove('category-touched');
+                }, 500);
+            });
+            
+            // Annuler l'état touché si l'utilisateur fait un mouvement de swipe
+            category.addEventListener('touchmove', function() {
+                this.classList.remove('category-touched');
+            });
+            
+            // S'assurer que l'état touché est annulé si l'utilisateur retire son doigt
+            category.addEventListener('touchend', function() {
+                setTimeout(() => {
+                    this.classList.remove('category-touched');
+                }, 200);
+            });
+            
+            // S'assurer que l'état touché est annulé si le toucher est annulé
+            category.addEventListener('touchcancel', function() {
+                this.classList.remove('category-touched');
+            });
+        });
     }
     
     // Détecter iOS pour les correctifs spécifiques
@@ -472,6 +585,208 @@ document.addEventListener('DOMContentLoaded', function() {
                     window.scrollBy(0, -100);
                 }, 300);
             });
+        });
+    }
+
+    // Fonctionnalité pour afficher plus d'images dans la galerie
+    const showMoreBtn = document.getElementById('gallery-show-more');
+    const galleryGrid = document.querySelector('.gallery-grid');
+    
+    if (showMoreBtn && galleryGrid) {
+        showMoreBtn.addEventListener('click', function() {
+            galleryGrid.classList.toggle('show-all');
+            
+            if (galleryGrid.classList.contains('show-all')) {
+                showMoreBtn.querySelector('span').textContent = 'Voir moins';
+                showMoreBtn.classList.add('active');
+            } else {
+                showMoreBtn.querySelector('span').textContent = 'Voir plus';
+                showMoreBtn.classList.remove('active');
+                
+                // Scroll up to gallery top if closing
+                const gallerySection = document.getElementById('galerie');
+                gallerySection.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    }
+    
+    // Fonction pour initialiser et actualiser tous les swipers
+    function initAllSwipers() {
+        // Detect if it's a touch device
+        const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
+        
+        // Configuration des événements pour les carrousels
+        const eventCategories = document.querySelectorAll('.event-category');
+        const eventGalleries = document.querySelectorAll('.event-gallery');
+        
+        // Nettoyer tous les écouteurs existants
+        eventCategories.forEach(category => {
+            // Créer un clone pour supprimer tous les écouteurs d'événements
+            const newCategory = category.cloneNode(true);
+            category.parentNode.replaceChild(newCategory, category);
+        });
+        
+        // Ajouter des écouteurs d'événements pour chaque catégorie et ses enfants
+        document.querySelectorAll('.event-category').forEach(category => {
+            // Fonction pour gérer le clic sur une catégorie
+            const handleCategoryClick = function() {
+                const categoryName = category.getAttribute('data-category');
+                const targetGallery = document.getElementById('gallery-' + categoryName);
+                
+                // Si la galerie est déjà active, la fermer
+                if (targetGallery.classList.contains('active')) {
+                    targetGallery.classList.remove('active');
+                    return;
+                }
+                
+                // Fermer toutes les galeries
+                eventGalleries.forEach(gallery => {
+                    gallery.classList.remove('active');
+                });
+                
+                // Ouvrir la galerie sélectionnée
+                targetGallery.classList.add('active');
+                
+                // Effet visuel de feedback pour les appareils tactiles
+                if (isTouchDevice) {
+                    category.classList.add('touched');
+                    setTimeout(() => {
+                        category.classList.remove('touched');
+                    }, 300);
+                }
+                
+                // Forcer la mise à jour des Swiper après l'affichage
+                setTimeout(() => {
+                    if (window.swiperInstances) {
+                        const swiperKey = `swiper-${categoryName}`;
+                        if (window.swiperInstances[swiperKey]) {
+                            window.swiperInstances[swiperKey].update();
+                        }
+                    }
+                    console.log('Galerie ouverte:', categoryName);
+                }, 50);
+                
+                // Faire défiler jusqu'à la galerie
+                setTimeout(() => {
+                    const galleryRect = targetGallery.getBoundingClientRect();
+                    const offset = galleryRect.top + window.scrollY - (window.innerHeight / 2) + (galleryRect.height / 2);
+                    window.scrollTo({
+                        top: offset,
+                        behavior: 'smooth'
+                    });
+                }, 100);
+            };
+            
+            // Ajouter l'écouteur d'événement principal à la catégorie
+            category.addEventListener('click', handleCategoryClick);
+            
+            // Rendre TOUS les éléments à l'intérieur de la catégorie cliquables individuellement
+            // Le titre de la catégorie
+            const categoryTitle = category.querySelector('h3');
+            if (categoryTitle) {
+                categoryTitle.style.cursor = 'pointer'; // Assurer que le curseur indique que c'est cliquable
+                categoryTitle.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Empêcher la propagation pour éviter un double déclenchement
+                    handleCategoryClick();
+                });
+            }
+            
+            // Le texte descriptif
+            const categoryDesc = category.querySelector('p');
+            if (categoryDesc) {
+                categoryDesc.style.cursor = 'pointer'; // Assurer que le curseur indique que c'est cliquable
+                categoryDesc.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Empêcher la propagation pour éviter un double déclenchement
+                    handleCategoryClick();
+                });
+            }
+            
+            // Tout autre élément potentiellement présent dans la catégorie
+            const otherElements = category.querySelectorAll('*:not(h3):not(p)');
+            otherElements.forEach(element => {
+                if (element.nodeType === 1) { // Uniquement les éléments (pas les nœuds texte)
+                    element.style.cursor = 'pointer'; // Assurer que le curseur indique que c'est cliquable
+                    element.addEventListener('click', function(e) {
+                        e.stopPropagation(); // Empêcher la propagation pour éviter un double déclenchement
+                        handleCategoryClick();
+                    });
+                }
+            });
+        });
+        
+        // Empêcher la fermeture lorsqu'on clique sur le swiper
+        eventGalleries.forEach(gallery => {
+            gallery.addEventListener('click', (e) => {
+                // Vérifier si c'est un bouton de navigation
+                const isNavButton = e.target.closest('.swiper-button-next, .swiper-button-prev');
+                
+                // Si c'est un bouton de navigation, ne pas arrêter la propagation pour permettre le clic
+                if (isNavButton) {
+                    return; // Laisser l'événement se propager
+                }
+                
+                // Sinon, si c'est dans le swiper, empêcher la fermeture de la galerie
+                if (e.target.closest('.swiper')) {
+                    e.stopPropagation();
+                }
+            });
+        });
+        
+        // Permettre de fermer les galeries en cliquant ailleurs dans la page
+        document.addEventListener('click', function(event) {
+            // Si on clique à l'extérieur d'une galerie et d'une catégorie
+            if (!event.target.closest('.event-gallery') && 
+                !event.target.closest('.event-category')) {
+                // Fermer toutes les galeries
+                eventGalleries.forEach(gallery => {
+                    gallery.classList.remove('active');
+                });
+            }
+        });
+        
+        // Vérifier si les instances précédentes doivent être détruites
+        document.addEventListener('beforeunload', function() {
+            const swiperInstances = ['swiperMariages', 'swiperDeuil', 'swiperFestivites'];
+            
+            swiperInstances.forEach(instance => {
+                if (window[instance]) {
+                    try {
+                        window[instance].destroy(true, true);
+                        console.log(`Instance ${instance} détruite.`);
+                    } catch (error) {
+                        console.warn(`Impossible de détruire l'instance ${instance}:`, error);
+                    }
+                }
+            });
+            
+            /* Désactivation de l'initialisation des Swipers ici, car maintenant gérée directement dans index.html */
+            
+            console.log('Les initialisations des Swipers sont maintenant gérées directement dans index.html');
+        });
+    }
+
+    // Fonction pour initialiser les attributs d'accessibilité du menu
+    function initMenuAccessibility() {
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navList = document.querySelector('.nav-list');
+        
+        if (!menuToggle || !navList) return;
+        
+        // Ajouter les attributs ARIA au bouton hamburger
+        menuToggle.setAttribute('role', 'button');
+        menuToggle.setAttribute('aria-controls', 'main-nav');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.setAttribute('aria-label', 'Menu principal');
+        
+        // Ajouter les attributs ARIA à la navigation
+        navList.setAttribute('id', 'main-nav');
+        navList.setAttribute('role', 'navigation');
+        navList.setAttribute('aria-label', 'Menu principal');
+        
+        // Ajouter l'attribut tabindex aux liens de navigation
+        const navLinks = navList.querySelectorAll('a');
+        navLinks.forEach(link => {
+            link.setAttribute('tabindex', '0');
         });
     }
 }); 

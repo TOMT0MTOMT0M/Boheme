@@ -1,0 +1,18 @@
+/* Correctifs CSS pour Bohème Fleurs */
+
+/* Supprimer le padding-left pour les descriptions de services professionnels sur mobile */
+@media (max-width: 768px) {
+    .pro-service-description {
+        padding-left: 20px !important; /* Écraser le padding-left de 260px sur mobile */
+    }
+    
+    /* S'applique aussi pour les appareils tactiles */
+    .is-touch-device .pro-service-card.tapped .pro-service-description {
+        padding-left: 20px !important;
+    }
+    
+    /* S'applique également pour les cartes actives */
+    .pro-service-card.active .pro-service-description {
+        padding-left: 20px !important;
+    }
+} 

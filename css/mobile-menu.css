@@ -1,0 +1,319 @@
+/* Styles pour le menu mobile - Refonte complète */
+
+/* Règle spécifique pour résoudre le problème d'opacité du ::before */
+.menu-toggle.active .hamburger-inner::before,
+.hamburger-inner.cross-active::before {
+    opacity: 1 !important;
+    background-color: #fff !important;
+}
+
+/* Classe utilitaire pour le texte accessible uniquement aux lecteurs d'écran */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* État du body quand le menu est ouvert */
+body.menu-open {
+    overflow: hidden !important;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+/* Styles pour le menu mobile */
+@media (max-width: 768px) {
+    /* Style du bouton hamburger */
+    .menu-toggle {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        z-index: 1010; /* Plus élevé que le menu */
+        position: relative;
+        outline: none;
+        transition: transform 0.3s ease;
+    }
+    
+    /* État focus du menu hamburger */
+    .menu-toggle:focus {
+        outline: 1px dashed var(--color-gold);
+        outline-offset: 4px;
+    }
+    
+    /* Style du hamburger avec la structure HTML actuelle */
+    .hamburger-box {
+        width: 30px;
+        height: 24px;
+        display: inline-block;
+        position: relative;
+        transform: translateZ(0); /* Activer l'accélération matérielle pour des animations plus fluides */
+    }
+    
+    .hamburger-inner {
+        display: block;
+        top: 50%;
+        margin-top: -1.5px; /* Moitié de la hauteur pour un centrage parfait */
+        left: 0;
+        right: 0;
+    }
+    
+    .hamburger-inner, 
+    .hamburger-inner::before, 
+    .hamburger-inner::after {
+        width: 30px;
+        height: 3px;
+        background-color: var(--color-gold);
+        border-radius: 4px;
+        position: absolute;
+        transition: transform 0.3s cubic-bezier(0.55, 0.055, 0.675, 0.19),
+                    opacity 0.2s ease,
+                    background-color 0.3s ease,
+                    top 0.2s ease,
+                    bottom 0.2s ease,
+                    box-shadow 0.3s ease;
+    }
+    
+    .hamburger-inner::before, 
+    .hamburger-inner::after {
+        content: "";
+        display: block;
+        left: 0; /* S'assurer que les éléments before/after sont alignés à gauche */
+    }
+    
+    .hamburger-inner::before {
+        top: -10px;
+    }
+    
+    .hamburger-inner::after {
+        bottom: -10px;
+    }
+    
+    /* Nouvelle animation améliorée du hamburger quand il est actif */
+    .menu-toggle.active .hamburger-inner {
+        transform: rotate(0deg);
+        background-color: transparent !important; /* Forcer la transparence */
+        transition: background-color 0.2s ease;
+    }
+    
+    .menu-toggle.active .hamburger-inner::before {
+        top: 0 !important; /* Forcer la position */
+        transform: rotate(45deg) !important; /* Forcer la rotation */
+        background-color: #fff !important; /* Forcer la couleur */
+        opacity: 1 !important; /* S'assurer qu'il est visible */
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+        transition: top 0.2s ease, transform 0.3s cubic-bezier(0.215, 0.61, 0.355, 1) 0.1s, box-shadow 0.3s ease, opacity 0s linear;
+        width: 30px !important; /* Maintenir la largeur cohérente */
+    }
+    
+    .menu-toggle.active .hamburger-inner::after {
+        bottom: 0 !important; /* Forcer la position */
+        top: 0 !important; /* Forcer la position */
+        transform: rotate(-45deg) !important; /* Forcer la rotation */
+        background-color: #fff !important; /* Forcer la couleur */
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+        transition: bottom 0.2s ease, top 0.2s ease, transform 0.3s cubic-bezier(0.215, 0.61, 0.355, 1) 0.1s, box-shadow 0.3s ease;
+        width: 30px !important; /* Maintenir la largeur cohérente */
+    }
+    
+    /* Style supplémentaire pour améliorer l'apparence en mode actif */
+    .menu-toggle.active {
+        transform: scale(1.05); /* Léger agrandissement pour effet de focus */
+        animation: pulse 2s infinite ease-in-out; /* Animation subtile de pulsation */
+    }
+    
+    /* Animation de pulsation pour la croix */
+    @keyframes pulse {
+        0% { transform: scale(1.05); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1.05); }
+    }
+    
+    /* Effet de transition lors du hover sur la croix */
+    .menu-toggle.active:hover .hamburger-inner::before,
+    .menu-toggle.active:hover .hamburger-inner::after {
+        box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+    }
+    
+    /* Animation d'entrée/sortie pour la croix */
+    .menu-toggle.active .hamburger-inner::before,
+    .menu-toggle.active .hamburger-inner::after {
+        animation: glowPulse 1.5s infinite alternate;
+    }
+    
+    @keyframes glowPulse {
+        0% { box-shadow: 0 0 5px rgba(255, 255, 255, 0.3); }
+        100% { box-shadow: 0 0 10px rgba(255, 255, 255, 0.6); }
+    }
+    
+    /* Style pour la classe cross-active qui sera ajoutée par JS */
+    .hamburger-inner.cross-active,
+    .hamburger-inner.cross-active::before,
+    .hamburger-inner.cross-active::after {
+        transition: transform 0.3s cubic-bezier(0.215, 0.61, 0.355, 1),
+                    background-color 0.3s ease,
+                    box-shadow 0.3s ease,
+                    opacity 0s linear;
+    }
+    
+    .hamburger-inner.cross-active {
+        background-color: transparent !important;
+    }
+    
+    .hamburger-inner.cross-active::before {
+        top: 0 !important;
+        transform: rotate(45deg) !important;
+        background-color: #fff !important;
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.3) !important;
+        opacity: 1 !important;
+    }
+    
+    .hamburger-inner.cross-active::after {
+        bottom: 0 !important;
+        top: 0 !important;
+        transform: rotate(-45deg) !important;
+        background-color: #fff !important;
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.3) !important;
+    }
+    
+    /* Animation d'entrée/sortie pour la croix active */
+    .hamburger-inner.cross-active::before,
+    .hamburger-inner.cross-active::after {
+        animation: glowPulse 1.5s infinite alternate;
+    }
+    
+    /* Style du menu de navigation mobile */
+    .nav-list {
+        position: fixed;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background-color: rgba(16, 13, 12, 0.97);
+        z-index: 1000;
+        gap: 20px;
+        padding: 80px 20px 30px;
+        transform: translateX(100%);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow-y: auto;
+        visibility: hidden;
+    }
+    
+    .nav-list.active {
+        transform: translateX(0);
+        visibility: visible;
+    }
+    
+    /* Menu backdrop - arrière-plan sombre quand le menu est ouvert */
+    .menu-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 997; /* Juste en-dessous du menu */
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        display: none;
+    }
+    
+    body.menu-open .menu-backdrop {
+        opacity: 1;
+        visibility: visible;
+        display: block;
+    }
+    
+    .nav-list a {
+        font-size: 1.5rem;
+        padding: 15px;
+        width: 100%;
+        text-align: center;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: slideIn 0.5s forwards;
+        animation-delay: calc(var(--i) * 0.1s);
+        position: relative;
+    }
+    
+    /* Ajouter un effet sur le focus pour l'accessibilité */
+    .nav-list a:focus {
+        outline: 2px solid var(--color-gold);
+        outline-offset: 2px;
+    }
+    
+    /* Ajouter une zone tactile plus grande pour les liens */
+    .nav-list a::before {
+        content: "";
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+        z-index: -1;
+    }
+    
+    .nav-list.active a {
+        --i: 0;
+        animation-name: slideIn;
+        animation-duration: 0.5s;
+        animation-fill-mode: forwards;
+    }
+    
+    /* Délais d'animation pour chaque lien */
+    .nav-list.active a:nth-child(1) { --i: 1; }
+    .nav-list.active a:nth-child(2) { --i: 2; }
+    .nav-list.active a:nth-child(3) { --i: 3; }
+    .nav-list.active a:nth-child(4) { --i: 4; }
+    .nav-list.active a:nth-child(5) { --i: 5; }
+    .nav-list.active a:nth-child(6) { --i: 6; }
+    .nav-list.active a:nth-child(7) { --i: 7; }
+    
+    /* Un état actif plus clair pour les liens sur mobile */
+    .nav-list a:active {
+        background-color: rgba(189, 143, 57, 0.2);
+        border-radius: 4px;
+    }
+}
+
+/* Animation pour les liens du menu */
+@keyframes slideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Ajustements supplémentaires pour très petits écrans */
+@media (max-width: 576px) {
+    .nav-list {
+        padding-top: 70px;
+        position: static !important;
+    }
+    
+    .nav-list a {
+        font-size: 1.3rem;
+        padding: 12px;
+    }
+} 

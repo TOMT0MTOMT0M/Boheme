@@ -43,6 +43,10 @@ function showErrorMessage(message) {
 
 // Fonction pour initialiser le carousel Swiper
 function initReviewsSwiper() {
+    // Désactivée car maintenant gérée dans index.html
+    console.log('Initialisation du swiper des avis désactivée - gérée dans index.html');
+    
+    /*
     // Détruire l'instance précédente si elle existe
     if (reviewsSwiper) {
         reviewsSwiper.destroy();
@@ -103,6 +107,7 @@ function initReviewsSwiper() {
             }
         }
     });
+    */
 }
 
 // Fonction pour charger les détails du lieu avec la nouvelle API
@@ -211,12 +216,14 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
     
-    // Charger les scripts Google Maps avec la nouvelle approche
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&loading=async&callback=initGooglePlaces`;
-    script.async = true;
-    script.defer = true;
-    document.head.appendChild(script);
+    // L'initialisation de l'API Google Maps est maintenant gérée de manière centralisée dans index.html
+    // La fonction initGooglePlaces sera appelée automatiquement une fois l'API chargée
+    
+    // Si Google Maps est déjà chargé (cas de navigation entre pages), initialiser immédiatement
+    if (typeof google !== 'undefined' && typeof google.maps !== 'undefined') {
+        initGooglePlaces();
+    }
+    // Sinon, l'initialisation sera faite par le script central dans index.html
 });
 
 // Exposer la fonction d'initialisation globalement pour le callback

@@ -83,7 +83,8 @@ document.addEventListener('DOMContentLoaded', function() {
         '.carousel-item img', 
         '.service-image img',
         '.pro-service img',
-        '.testimonial-image img'
+        '.testimonial-image img',
+        '.swiper-slide img'
     ];
     
     // Find all images matching our selectors
@@ -231,6 +232,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Prevent scrolling on body
         document.body.style.overflow = 'hidden';
+        
+        // Store the original event target (image) for reference
+        lightbox.dataset.originalTarget = img.classList.toString();
         
         // Show instructions briefly
         instructions.style.opacity = '1';
@@ -386,6 +390,9 @@ document.addEventListener('DOMContentLoaded', function() {
             zoomInfo.style.opacity = '0';
             instructions.style.opacity = '0';
             
+            // Remove the stored original target reference
+            delete lightbox.dataset.originalTarget;
+            
             // No need to remove event listeners as they're set up each time
             // the lightbox is opened in the setupMagnifier function
         }, 300); // Wait for fade out animation
@@ -403,6 +410,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Close on click outside the image
     lightbox.addEventListener('click', function(e) {
         if (e.target === lightbox) {
+            e.stopPropagation(); // Empêche la propagation du clic aux éléments sous-jacents
             closeLightbox();
         }
     });
@@ -413,4 +421,23 @@ document.addEventListener('DOMContentLoaded', function() {
             closeLightbox();
         }
     });
+    
+    // Stop propagation for swiper navigation elements
+    document.addEventListener('click', function(e) {
+        // Empêcher les clics sur les éléments de navigation du carousel de fermer le lightbox
+        if (e.target.closest('.swiper-button-next') || 
+            e.target.closest('.swiper-button-prev') || 
+            e.target.closest('.swiper-pagination')) {
+            e.stopPropagation();
+        }
+        
+        // Empêcher les clics dans le lightbox de fermer les galeries d'événements
+        if (lightbox.classList.contains('active') && 
+            (e.target === lightbox || e.target.closest('.boheme-lightbox-content'))) {
+            // Vérifie si l'image provient d'un carousel d'événements
+            if (lightbox.dataset.originalTarget && lightbox.dataset.originalTarget.includes('swiper-slide')) {
+                e.stopPropagation();
+            }
+        }
+    }, true); // Utilisez la phase de capture pour intercepter les événements avant qu'ils n'atteignent d'autres gestionnaires
 }); 

@@ -6,6 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#100d0c">
+    <meta http-equiv="Content-Language" content="fr">
     <title>Bohème Fleurs | Fleuriste Sophistiqué</title>
     <meta name="description" content="Bohème Fleurs - Fleuriste proposant des créations florales sophistiquées pour particuliers et professionnels. Services pour mariages, événements et décorations d'intérieur.">
     
@@ -23,13 +24,258 @@
     <link rel="stylesheet" href="css/gallery.css">
     <link rel="stylesheet" href="css/lightbox.css">
     
+    <!-- Nouveau style pour le menu mobile pleine page -->
+    <style>
+        /* Base styles pour le header */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: #100d0c;
+            height: 60px;
+            border-bottom: 1px solid transparent;
+            transition: background-color 0.3s ease;
+        }
+        
+        .site-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+            padding: 0 2rem;
+        }
+        
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: #bd8f39;
+            font-size: 2rem;
+            font-family: 'Bebas Neue', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 1100; /* Au-dessus du menu pleine page */
+        }
+        
+        .header-title .logo-image {
+            height: 45px;
+            width: auto;
+        }
+        
+        .header-title-link {
+            color: #bd8f39;
+            text-decoration: none;
+        }
+        
+        /* Style de base pour la navigation */
+        .nav-list {
+            display: flex;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        
+        .nav-list a {
+            color: #bd8f39;
+            text-decoration: none;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        
+        .nav-list a:hover {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+        
+        /* Masquer le bouton menu en mode desktop */
+        .menu-toggle {
+            display: none;
+        }
+        
+        /* Styles pour le menu mobile pleine page */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+                background: none;
+                border: none;
+                cursor: pointer;
+                width: 30px;
+                height: 24px;
+                position: relative;
+                z-index: 1100; /* Au-dessus du menu pleine page */
+                margin-left: auto;
+            }
+            
+            .hamburger-inner, 
+            .hamburger-inner::before, 
+            .hamburger-inner::after {
+                width: 100%;
+                height: 3px;
+                background-color: #bd8f39;
+                position: absolute;
+                transition: transform 0.3s ease, opacity 0.3s ease, background-color 0.3s ease;
+                border-radius: 3px;
+            }
+            
+            .hamburger-inner {
+                top: 50%;
+                transform: translateY(-50%);
+            }
+            
+            .hamburger-inner::before {
+                content: '';
+                top: -8px;
+            }
+            
+            .hamburger-inner::after {
+                content: '';
+                bottom: -8px;
+            }
+            
+            /* Animation du hamburger */
+            .menu-toggle.active .hamburger-inner {
+                transform: rotate(45deg);
+                background-color: #fff;
+            }
+            
+            .menu-toggle.active .hamburger-inner::before {
+                opacity: 0;
+            }
+            
+            .menu-toggle.active .hamburger-inner::after {
+                transform: rotate(-90deg) translateX(8px);
+                background-color: #fff;
+            }
+            
+            /* Menu mobile pleine page */
+            .nav-list {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                background-color: rgba(16, 13, 12, 0.98);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 2.5rem;
+                z-index: 1050;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.4s ease, visibility 0.4s ease;
+                padding: 80px 20px 20px;
+                overflow-y: auto;
+                box-sizing: border-box;
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+            }
+            
+            .nav-list.active {
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .nav-list li {
+                opacity: 0;
+                transform: translateY(20px);
+                transition: opacity 0.4s ease, transform 0.4s ease;
+                transition-delay: 0.1s;
+                width: 100%;
+                text-align: center;
+                position: relative;
+            }
+            
+            .nav-list.active li {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            
+            /* Animation séquentielle des éléments du menu */
+            .nav-list.active li:nth-child(1) { transition-delay: 0.1s; }
+            .nav-list.active li:nth-child(2) { transition-delay: 0.2s; }
+            .nav-list.active li:nth-child(3) { transition-delay: 0.3s; }
+            .nav-list.active li:nth-child(4) { transition-delay: 0.4s; }
+            .nav-list.active li:nth-child(5) { transition-delay: 0.5s; }
+            .nav-list.active li:nth-child(6) { transition-delay: 0.6s; }
+            .nav-list.active li:nth-child(7) { transition-delay: 0.7s; }
+            
+            /* Améliorer la visibilité des liens du menu */
+            .nav-list a {
+                color: #fff;
+                font-size: 1.5rem;
+                padding: 10px 20px;
+                display: block;
+                text-transform: uppercase;
+                letter-spacing: 3px;
+                position: relative;
+                overflow: hidden;
+                transition: all 0.3s ease;
+            }
+            
+            .nav-list a::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 2px;
+                background-color: #bd8f39;
+                transform: scaleX(0);
+                transform-origin: right;
+                transition: transform 0.3s ease;
+            }
+            
+            .nav-list a:hover::after {
+                transform: scaleX(1);
+                transform-origin: left;
+            }
+            
+            .nav-list a:hover {
+                color: #bd8f39;
+            }
+            
+            /* Bloquer le scroll quand le menu est ouvert */
+            body.menu-open {
+                overflow: hidden;
+            }
+            
+            /* Meilleure gestion du menu de langues sur mobile */
+            .language-toggle {
+                margin-top: 20px;
+            }
+            
+            .lang-dropdown-content {
+                position: relative;
+                display: none;
+                width: 100%;
+                margin-top: 15px;
+                background-color: rgba(16, 13, 12, 0.9);
+                border-radius: 5px;
+                padding: 10px 0;
+                max-height: 200px;
+                overflow-y: auto;
+            }
+            
+            .language-toggle.active .lang-dropdown-content {
+                display: block;
+            }
+        }
+    </style>
+    
     <!-- Polices -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     
-    <!-- Font Awesome pour les icônes -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
@@ -37,18 +283,122 @@
     <!-- Scripts -->
     <script src="https://unpkg.com/gsap@3.12.2/dist/gsap.min.js"></script>
     <script src="https://unpkg.com/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
-    
-    <!-- Configuration inline en cas de non-chargement du fichier -->
-    <script>
-        // Fallback pour config.js en cas de non-chargement
-        window.GOOGLE_API_KEY = window.GOOGLE_API_KEY || 'AIzaSyCTJ-ttYO8KkKmvDGAFFpjRwiBJf9ciXrA';
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="js/config.js"></script>
     <script defer src="js/main.js"></script>
     <script defer src="js/lightbox.js"></script>
     <script src="js/admin-data.js"></script>
     <script src="js/google-reviews.js"></script>
-    <script defer src="js/film-grain.js"></script>
+    <script defer src="js/menu-fix.js"></script>
+    
+    <!-- Initialisation des Swipers -->
+    <script>
+        // Variable globale pour suivre les Swipers créés
+        window.swiperInstances = {};
+        
+        // Fonction pour initialiser ou réinitialiser un Swiper spécifique
+        function initSwiper(swiperEl) {
+            if (!swiperEl) return;
+            
+            const swiperClass = swiperEl.classList[1]; // Obtenir la deuxième classe (ex: swiper-mariages)
+            if (!swiperClass) return;
+            
+            // Détruire l'instance précédente si elle existe
+            if (window.swiperInstances[swiperClass]) {
+                try {
+                    window.swiperInstances[swiperClass].destroy(true, true);
+                } catch (error) {
+                    console.warn(`Erreur lors de la destruction de ${swiperClass}:`, error);
+                }
+            }
+            
+            // Configuration de base pour tous les swipers
+            const config = {
+                slidesPerView: 1,
+                spaceBetween: 20,
+                loop: true,
+                grabCursor: true,
+                navigation: {
+                    nextEl: `.${swiperClass}-next, .${swiperClass} .swiper-button-next`,
+                    prevEl: `.${swiperClass}-prev, .${swiperClass} .swiper-button-prev`
+                },
+                breakpoints: {
+                    640: {
+                        slidesPerView: 2,
+                    },
+                    1024: {
+                        slidesPerView: 3,
+                    }
+                }
+            };
+            
+            // Ajustements spécifiques pour les avis
+            if (swiperClass === 'swiper-reviews') {
+                config.pagination = {
+                    el: '.swiper-pagination',
+                    clickable: true
+                };
+                config.autoplay = {
+                    delay: 5000,
+                    disableOnInteraction: false
+                };
+            }
+            
+            try {
+                // Créer le Swiper avec la configuration
+                const swiperInstance = new Swiper(`.${swiperClass}`, config);
+                window.swiperInstances[swiperClass] = swiperInstance;
+                
+                // Forcer une mise à jour après la création
+                setTimeout(() => {
+                    swiperInstance.update();
+                }, 100);
+                
+                return swiperInstance;
+            } catch (error) {
+                console.error(`Erreur lors de l'initialisation de ${swiperClass}:`, error);
+                return null;
+            }
+        }
+        
+        // Initialiser tous les Swipers au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialiser les événements
+            document.querySelectorAll('.event-category').forEach(category => {
+                category.addEventListener('click', function() {
+                    const categoryName = this.getAttribute('data-category');
+                    const targetGallery = document.getElementById('gallery-' + categoryName);
+                    
+                    // Si la galerie est déjà active, la fermer
+                    if (targetGallery.classList.contains('active')) {
+                        targetGallery.classList.remove('active');
+                        return;
+                    }
+                    
+                    // Fermer toutes les galeries
+                    document.querySelectorAll('.event-gallery').forEach(gallery => {
+                        gallery.classList.remove('active');
+                    });
+                    
+                    // Ouvrir la galerie sélectionnée
+                    targetGallery.classList.add('active');
+                    
+                    // Initialiser le swiper correspondant avec un délai
+                    setTimeout(() => {
+                        const swiperEl = targetGallery.querySelector('.swiper');
+                        if (swiperEl) {
+                            initSwiper(swiperEl);
+                        }
+                    }, 100);
+                });
+            });
+            
+            // Initialiser tous les autres Swipers
+            document.querySelectorAll('.swiper:not(.event-gallery .swiper)').forEach(swiperEl => {
+                initSwiper(swiperEl);
+            });
+        });
+    </script>
     
     <!-- Gestionnaire d'erreurs pour les images -->
     <script>
@@ -74,119 +424,1584 @@
     
     <!-- Script pour la galerie d'événements -->
     <script>
+        // Le code d'initialisation des carrousels a été déplacé dans main.js
+        // pour une meilleure gestion des dépendances et de l'ordre de chargement
+    </script>
+    
+    <!-- Ajout de script pour la gestion des interactions tactiles -->
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Sélectionner tous les éléments nécessaires
-            const eventCategories = document.querySelectorAll('.event-category');
-            const eventGalleries = document.querySelectorAll('.event-gallery');
-            
-            // Initialiser les swipers pour chaque galerie
-            const swiperMariages = new Swiper('.swiper-mariages', {
-                slidesPerView: 1,
-                spaceBetween: 20,
-                grabCursor: true,
-                loop: false,
-                navigation: {
-                    nextEl: '.swiper-mariages .swiper-button-next',
-                    prevEl: '.swiper-mariages .swiper-button-prev',
-                },
-                breakpoints: {
-                    640: {
-                        slidesPerView: Math.min(2, document.querySelectorAll('.swiper-mariages .swiper-slide').length),
-                    },
-                    1024: {
-                        slidesPerView: Math.min(3, document.querySelectorAll('.swiper-mariages .swiper-slide').length),
-                    },
-                },
-            });
-            
-            const swiperDeuil = new Swiper('.swiper-deuil', {
-                slidesPerView: 1,
-                spaceBetween: 20,
-                grabCursor: true,
-                loop: false,
-                navigation: {
-                    nextEl: '.swiper-deuil .swiper-button-next',
-                    prevEl: '.swiper-deuil .swiper-button-prev',
-                },
-                breakpoints: {
-                    640: {
-                        slidesPerView: Math.min(2, document.querySelectorAll('.swiper-deuil .swiper-slide').length),
-                    },
-                },
-            });
-            
-            const swiperFestivites = new Swiper('.swiper-festivites', {
-                slidesPerView: 1,
-                spaceBetween: 20,
-                grabCursor: true,
-                loop: false,
-                navigation: {
-                    nextEl: '.swiper-festivites .swiper-button-next',
-                    prevEl: '.swiper-festivites .swiper-button-prev',
-                },
-                breakpoints: {
-                    640: {
-                        slidesPerView: Math.min(2, document.querySelectorAll('.swiper-festivites .swiper-slide').length),
-                    },
-                },
-            });
-            
-            // Ajouter des écouteurs d'événements pour chaque catégorie
-            eventCategories.forEach(category => {
-                category.addEventListener('click', function() {
-                    const categoryName = this.getAttribute('data-category');
-                    const targetGallery = document.getElementById('gallery-' + categoryName);
+            if ('ontouchstart' in window || navigator.maxTouchPoints) {
+                // Détection des appareils tactiles
+                document.body.classList.add('is-touch-device');
+                
+                // Variables pour suivre le défilement et les interactions tactiles
+                let touchStartTime = 0;
+                let touchStartY = 0;
+                let isTouchScrolling = false;
+                let activeCard = null;
+                let touchTimeout = null;
+                let longTouchActivated = false; // Pour savoir si l'activation par toucher long a eu lieu
+                
+                // Gestionnaire d'événements pour le début du toucher
+                document.addEventListener('touchstart', function(e) {
+                    touchStartTime = Date.now();
+                    touchStartY = e.touches[0].clientY;
+                    isTouchScrolling = false;
+                    longTouchActivated = false;
                     
-                    // Si la galerie est déjà active, la fermer
-                    if (targetGallery.classList.contains('active')) {
-                        targetGallery.classList.remove('active');
+                    // Cibler uniquement les cartes de service professionnel
+                    if (e.target.closest('.pro-service-card')) {
+                        const card = e.target.closest('.pro-service-card');
+                        
+                        // Effacer tout délai précédent
+                        if (touchTimeout) {
+                            clearTimeout(touchTimeout);
+                        }
+                        
+                        // Définir un délai avant d'activer la carte
+                        touchTimeout = setTimeout(() => {
+                            if (!isTouchScrolling) {
+                                // Désactiver toute carte active précédente
+                                if (activeCard && activeCard !== card) {
+                                    activeCard.classList.remove('active');
+                                }
+                                
+                                // Activer la carte tant que le doigt est maintenu
+                                card.classList.add('active');
+                                activeCard = card;
+                                longTouchActivated = true;
+                            }
+                        }, 500);
+                    } else if (activeCard) {
+                        // Si on touche ailleurs, fermer la carte active immédiatement
+                        activeCard.classList.remove('active');
+                        activeCard = null;
+                    }
+                }, {passive: true});
+                
+                // Gestionnaire d'événements pour le mouvement du toucher
+                document.addEventListener('touchmove', function(e) {
+                    const touchCurrentY = e.touches[0].clientY;
+                    const touchDeltaY = Math.abs(touchCurrentY - touchStartY);
+                    
+                    // Si le défilement vertical est détecté (plus de 10px)
+                    if (touchDeltaY > 10) {
+                        isTouchScrolling = true;
+                        
+                        // Annuler le délai si l'utilisateur défile
+                        if (touchTimeout) {
+                            clearTimeout(touchTimeout);
+                            touchTimeout = null;
+                        }
+                        
+                        // Fermer la carte active si le défilement est détecté
+                        if (activeCard) {
+                            activeCard.classList.remove('active');
+                            activeCard = null;
+                        }
+                    }
+                }, {passive: true});
+                
+                // Gestionnaire d'événements pour la fin du toucher - TOUJOURS fermer la carte
+                document.addEventListener('touchend', function() {
+                    // Annuler le délai si l'utilisateur termine le toucher avant le délai
+                    if (touchTimeout) {
+                        clearTimeout(touchTimeout);
+                        touchTimeout = null;
+                    }
+                    
+                    // Fermer TOUJOURS la carte active quand on relâche le doigt
+                    if (activeCard) {
+                        activeCard.classList.remove('active');
+                        activeCard = null;
+                    }
+                }, {passive: true});
+                
+                // Fermer la carte active lors du défilement de la page
+                window.addEventListener('scroll', function() {
+                    if (activeCard) {
+                        activeCard.classList.remove('active');
+                        activeCard = null;
+                    }
+                }, {passive: true});
+            }
+        });
+    </script>
+    
+    <!-- Pour la persistance de l'effet hover sur les catégories professionnelles -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sélectionner toutes les cartes de services professionnels
+            const proServiceCards = document.querySelectorAll('.pro-service-card');
+            let activeCard = null;
+            
+            // Ajouter un écouteur d'événement pour chaque carte
+            proServiceCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Si une carte est déjà active, on retire sa classe active
+                    if (activeCard && activeCard !== this) {
+                        activeCard.classList.remove('active-hover');
+                    }
+                    
+                    // Si on clique sur la carte déjà active, on la désactive
+                    if (activeCard === this) {
+                        this.classList.remove('active-hover');
+                        activeCard = null;
+                    } else {
+                        // Sinon, on active la nouvelle carte
+                        this.classList.add('active-hover');
+                        activeCard = this;
+                    }
+                });
+            });
+            
+            // Fermer la carte active si on clique ailleurs sur la page
+            document.addEventListener('click', function(event) {
+                if (activeCard && !event.target.closest('.pro-service-card')) {
+                    activeCard.classList.remove('active-hover');
+                    activeCard = null;
+                }
+            });
+        });
+    </script>
+    
+    <!-- Script pour la traduction automatique -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configuration
+            const defaultLanguage = 'fr';
+            let currentLanguage = localStorage.getItem('preferredLanguage') || navigator.language.split('-')[0] || defaultLanguage;
+            let translationInProgress = false; // Drapeau pour éviter les traductions simultanées
+            let languageChangeCount = 0; // Compteur de changements de langue
+            const MAX_LANGUAGE_CHANGES = 2; // Nombre maximum de changements autorisés avant rechargement
+            
+            // Textes traduits - Initialement vide, sera rempli dynamiquement
+            let translations = {
+                'fr': {}, // Langue source, pas besoin de traductions
+                'en': {},  // Sera rempli dynamiquement
+                'es': {},  // Espagnol
+                'de': {},  // Allemand
+                'it': {}   // Italien
+            };
+            
+            // Élément de chargement
+            const loadingIndicator = document.getElementById('translation-loading');
+            
+            // Éléments à exclure de la traduction (classes ou IDs)
+            const excludeElements = [
+                '.logo-image', 
+                '.header-title-link',
+                'script', 
+                'style',
+                '.language-toggle',
+                'code',
+                'iframe',
+                'input[type="submit"]',
+                'button[type="submit"]'
+            ];
+            
+            // Fonctions utilitaires de traduction
+            const translationUtils = {
+                // Affiche l'indicateur de chargement
+                showLoading: () => {
+                    if (loadingIndicator) loadingIndicator.classList.add('active');
+                },
+                
+                // Cache l'indicateur de chargement
+                hideLoading: () => {
+                    if (loadingIndicator) loadingIndicator.classList.remove('active');
+                },
+                
+                // Détecte si le navigateur est en français
+                isFrenchBrowser: () => {
+                    return navigator.language.startsWith('fr');
+                },
+                
+                // Détecte si nous devons traduire initialement
+                shouldTranslateInitially: () => {
+                    const savedLang = localStorage.getItem('preferredLanguage');
+                    return savedLang ? savedLang !== 'fr' : !translationUtils.isFrenchBrowser();
+                },
+                
+                // Fonction pour vérifier si un élément doit être exclu
+                shouldExcludeElement: (element) => {
+                    if (!element || !element.parentElement) return true;
+                    
+                    // Exclure par classe/id
+                    for (const selector of excludeElements) {
+                        if (selector.startsWith('.') && element.classList.contains(selector.substring(1))) {
+                            return true;
+                        } else if (selector.startsWith('#') && element.id === selector.substring(1)) {
+                            return true;
+                        } else if (element.matches && element.matches(selector)) {
+                            return true;
+                        }
+                    }
+                    
+                    // Vérifier si un parent est exclu
+                    let parent = element.parentElement;
+                    while (parent) {
+                        for (const selector of excludeElements) {
+                            if (selector.startsWith('.') && parent.classList.contains(selector.substring(1))) {
+                                return true;
+                            } else if (selector.startsWith('#') && parent.id === selector.substring(1)) {
+                                return true;
+                            } else if (parent.matches && parent.matches(selector)) {
+                                return true;
+                            }
+                        }
+                        parent = parent.parentElement;
+                    }
+                    
+                    return false;
+                },
+                
+                // Fonction pour extraire le texte de tous les éléments
+                extractAllText: () => {
+                    // Liste complète de tous les types d'éléments à traduire
+                    const textSelectors = [
+                        '*'  // Sélectionne absolument tous les éléments
+                    ];
+                    
+                    // Éléments à exclure de la traduction (uniquement les éléments essentiels)
+                    const exclusionSelectors = [
+                        'script', 
+                        'style',
+                        '.language-toggle',
+                        'code',
+                        'meta',
+                        'link',
+                        'noscript',
+                        'svg',
+                        'iframe'
+                        // Ne pas exclure les boutons et inputs pour traduire leurs valeurs
+                    ];
+                    
+                    // Remplacer la fonction shouldExcludeElement pour être plus permissive
+                    translationUtils.shouldExcludeElement = (element) => {
+                        if (!element || !element.parentElement) return true;
+                        
+                        // Vérifier si c'est un élément à exclure explicitement
+                        for (const selector of exclusionSelectors) {
+                            if (element.matches && element.matches(selector)) {
+                                return true;
+                            }
+                            if (element.tagName && element.tagName.toLowerCase() === selector.replace('.', '')) {
+                                return true;
+                            }
+                        }
+                        
+                        // N'exclure que les éléments explicitement marqués comme non-traduisibles
+                        if (element.hasAttribute && element.hasAttribute('data-no-translate')) {
+                            return true;
+                        }
+                        
+                        // Vérifier si un parent est explicitement marqué comme non-traduisible
+                        let parent = element.parentElement;
+                        while (parent) {
+                            if (parent.hasAttribute && parent.hasAttribute('data-no-translate')) {
+                                return true;
+                            }
+                            parent = parent.parentElement;
+                        }
+                        
+                        return false;
+                    };
+                    
+                    const textMap = {};
+                    
+                    // Fonction optimisée pour collecter les textes
+                    function collectAllText() {
+                        console.log("Début de la collecte des textes pour la traduction...");
+                        
+                        // Sélectionner directement les sections problématiques et s'assurer qu'elles sont traduites
+                        const criticalSections = [
+                            '.hero-content p',
+                            '#au-quotidien .section-content p',
+                            '#professionnels .section-content p',
+                            '#services .service-content p',
+                            '.event-category p',
+                            '.pro-service-description p'
+                        ];
+                        
+                        // Traiter en priorité les sections critiques
+                        criticalSections.forEach(selector => {
+                            document.querySelectorAll(selector).forEach(element => {
+                                if (element.textContent && element.textContent.trim()) {
+                                    console.log(`Section critique trouvée: ${selector} avec texte: ${element.textContent.substring(0, 30)}...`);
+                                    // Si l'élément n'a pas déjà un wrapper de traduction, le créer
+                                    if (!element.hasAttribute('data-translation-key')) {
+                                        // Assigner une clé directement à l'élément s'il n'est pas déjà dans un span de traduction
+                                        const key = `critical_${Math.random().toString(36).substring(2, 8)}`;
+                                        textMap[key] = element.textContent.trim();
+                                        element.setAttribute('data-translation-key', key);
+                                    }
+                                }
+                            });
+                        });
+                        
+                        // Créer une queue pour le parcours en largeur d'abord
+                        const queue = [document.body];
+                        const processed = new Set();
+                        
+                        // Compteurs pour le suivi
+                        let elementsProcessed = 0;
+                        let textsCollected = 0;
+                        
+                        while (queue.length > 0) {
+                            const node = queue.shift();
+                            
+                            // Éviter les boucles infinies
+                            if (processed.has(node)) continue;
+                            processed.add(node);
+                            
+                            elementsProcessed++;
+                            
+                            // Traiter le texte direct du nœud si c'est un élément
+                            if (node.nodeType === Node.ELEMENT_NODE) {
+                                // Ne pas traiter les éléments exclus
+                                if (translationUtils.shouldExcludeElement(node)) continue;
+                                
+                                // Ajouter ses enfants à la queue pour traitement
+                                const children = node.childNodes;
+                                for (let i = 0; i < children.length; i++) {
+                                    queue.push(children[i]);
+                                }
+                                
+                                // Traiter certains attributs spéciaux
+                                const attributesToTranslate = ['title', 'alt', 'placeholder', 'data-title', 'aria-label'];
+                                attributesToTranslate.forEach(attr => {
+                                    if (node.hasAttribute && node.hasAttribute(attr)) {
+                                        const attrText = node.getAttribute(attr);
+                                        if (attrText && attrText.trim() && attrText.length > 1) {
+                                            const key = `attr_${attr}_${Math.random().toString(36).substring(2, 8)}`;
+                                            textMap[key] = attrText.trim();
+                                            node.setAttribute(`data-translation-${attr}-key`, key);
+                                            textsCollected++;
+                                        }
+                                    }
+                                });
+                                
+                                // Traiter les attributs de valeur pour les input/button
+                                if ((node.tagName === 'INPUT' || node.tagName === 'BUTTON') && 
+                                    node.hasAttribute && node.hasAttribute('value')) {
+                                    const valueText = node.getAttribute('value');
+                                    if (valueText && valueText.trim() && valueText.length > 1) {
+                                        const key = `value_${Math.random().toString(36).substring(2, 8)}`;
+                                        textMap[key] = valueText.trim();
+                                        node.setAttribute('data-translation-value-key', key);
+                                        textsCollected++;
+                                    }
+                                }
+                            } 
+                            // Traiter les nœuds texte
+                            else if (node.nodeType === Node.TEXT_NODE) {
+                                const parent = node.parentElement;
+                                if (!parent || translationUtils.shouldExcludeElement(parent)) continue;
+                                
+                                const text = node.textContent.trim();
+                                if (text && text.length > 1) { // Ignorer les nœuds texte vides ou trop courts
+                                    // Générer une clé unique pour ce nœud texte
+                                    const key = `text_${Math.random().toString(36).substring(2, 8)}`;
+                                    textMap[key] = text;
+                                    textsCollected++;
+                                    
+                                    // Créer un span pour envelopper ce nœud texte
+                                    const wrapper = document.createElement('span');
+                                    wrapper.setAttribute('data-translation-key', key);
+                                    wrapper.classList.add('translation-node');
+                                    
+                                    // Remplacer le nœud texte par le span
+                                    if (parent) {
+                                        parent.replaceChild(wrapper, node);
+                                        wrapper.appendChild(document.createTextNode(text));
+                                    }
+                                }
+                            }
+                        }
+                        
+                        console.log(`Translation: Processed ${elementsProcessed} elements, collected ${textsCollected} texts`);
+                        return textMap;
+                    }
+                    
+                    return collectAllText();
+                },
+                
+                // Traduit un texte avec l'API de traduction IA
+                translateText: async (text, targetLang) => {
+                    try {
+                        // Vérification de texte vide
+                        if (!text || !text.trim()) return text;
+                        
+                        // Système de traduction basé sur des dictionnaires pour éviter les problèmes CORS
+                        // Retourne la traduction si disponible dans les dictionnaires prédéfinis
+                        // ou génère une traduction simple pour la démo (en préfixant la langue cible)
+                        
+                        // Base de dictionnaires communs pour les expressions fréquentes
+                        const commonDict = {
+                            // Navigation et boutons
+                            'Au quotidien': { 
+                                'en': 'Daily',
+                                'es': 'Lo cotidiano',
+                                'de': 'Alltägliches',
+                                'it': 'Quotidiano'
+                            },
+                            'Événements': { 
+                                'en': 'Events',
+                                'es': 'Eventos',
+                                'de': 'Veranstaltungen',
+                                'it': 'Eventi'
+                            },
+                            'Évènements': { 
+                                'en': 'Events',
+                                'es': 'Eventos',
+                                'de': 'Veranstaltungen',
+                                'it': 'Eventi'
+                            },
+                            'Professionnels': { 
+                                'en': 'Professionals',
+                                'es': 'Profesionales',
+                                'de': 'Professionelle',
+                                'it': 'Professionisti'
+                            },
+                            'Services': { 
+                                'en': 'Services',
+                                'es': 'Servicios',
+                                'de': 'Dienstleistungen',
+                                'it': 'Servizi'
+                            },
+                            'Avis': { 
+                                'en': 'Reviews',
+                                'es': 'Opiniones',
+                                'de': 'Bewertungen',
+                                'it': 'Recensioni'
+                            },
+                            'Contact': { 
+                                'en': 'Contact',
+                                'es': 'Contacto',
+                                'de': 'Kontakt',
+                                'it': 'Contatto'
+                            },
+                            // Catégories d'événements
+                            'Mariages': { 
+                                'en': 'Weddings',
+                                'es': 'Bodas',
+                                'de': 'Hochzeiten',
+                                'it': 'Matrimoni'
+                            },
+                            'Deuil': { 
+                                'en': 'Mourning',
+                                'es': 'Luto',
+                                'de': 'Trauer',
+                                'it': 'Lutto'
+                            },
+                            'Festivités': { 
+                                'en': 'Celebrations',
+                                'es': 'Festividades',
+                                'de': 'Festlichkeiten',
+                                'it': 'Festività'
+                            },
+                            // Formulaire de contact
+                            'Écrivez-nous': {
+                                'en': 'Write to us',
+                                'es': 'Escríbanos',
+                                'de': 'Schreiben Sie uns',
+                                'it': 'Scrivici'
+                            },
+                            'Votre nom': {
+                                'en': 'Your name',
+                                'es': 'Su nombre',
+                                'de': 'Ihr Name',
+                                'it': 'Il tuo nome'
+                            },
+                            'Votre adresse email': {
+                                'en': 'Your email address',
+                                'es': 'Su dirección de correo electrónico',
+                                'de': 'Ihre E-Mail-Adresse',
+                                'it': 'Il tuo indirizzo email'
+                            },
+                            'Votre numéro de téléphone': {
+                                'en': 'Your phone number',
+                                'es': 'Su número de teléfono',
+                                'de': 'Ihre Telefonnummer',
+                                'it': 'Il tuo numero di telefono'
+                            },
+                            'Votre message...': {
+                                'en': 'Your message...',
+                                'es': 'Su mensaje...',
+                                'de': 'Ihre Nachricht...',
+                                'it': 'Il tuo messaggio...'
+                            },
+                            'Envoyer': {
+                                'en': 'Send',
+                                'es': 'Enviar',
+                                'de': 'Senden',
+                                'it': 'Inviare'
+                            },
+                            // Horaires
+                            'Horaires d\'ouverture': {
+                                'en': 'Opening hours',
+                                'es': 'Horarios de apertura',
+                                'de': 'Öffnungszeiten',
+                                'it': 'Orari di apertura'
+                            },
+                            'Lundi': {
+                                'en': 'Monday',
+                                'es': 'Lunes',
+                                'de': 'Montag',
+                                'it': 'Lunedì'
+                            },
+                            'Mardi': {
+                                'en': 'Tuesday',
+                                'es': 'Martes',
+                                'de': 'Dienstag',
+                                'it': 'Martedì'
+                            },
+                            'Mercredi': {
+                                'en': 'Wednesday',
+                                'es': 'Miércoles',
+                                'de': 'Mittwoch',
+                                'it': 'Mercoledì'
+                            },
+                            'Jeudi': {
+                                'en': 'Thursday',
+                                'es': 'Jueves',
+                                'de': 'Donnerstag',
+                                'it': 'Giovedì'
+                            },
+                            'Vendredi': {
+                                'en': 'Friday',
+                                'es': 'Viernes',
+                                'de': 'Freitag',
+                                'it': 'Venerdì'
+                            },
+                            'Samedi': {
+                                'en': 'Saturday',
+                                'es': 'Sábado',
+                                'de': 'Samstag',
+                                'it': 'Sabato'
+                            },
+                            'Dimanche': {
+                                'en': 'Sunday',
+                                'es': 'Domingo',
+                                'de': 'Sonntag',
+                                'it': 'Domenica'
+                            },
+                            // Mots courants
+                            'et': {
+                                'en': 'and',
+                                'es': 'y',
+                                'de': 'und',
+                                'it': 'e'
+                            },
+                            'ou': {
+                                'en': 'or',
+                                'es': 'o',
+                                'de': 'oder',
+                                'it': 'o'
+                            },
+                            'pour': {
+                                'en': 'for',
+                                'es': 'para',
+                                'de': 'für',
+                                'it': 'per'
+                            },
+                            'avec': {
+                                'en': 'with',
+                                'es': 'con',
+                                'de': 'mit',
+                                'it': 'con'
+                            },
+                            'par': {
+                                'en': 'by',
+                                'es': 'por',
+                                'de': 'von',
+                                'it': 'da'
+                            },
+                            'à': {
+                                'en': 'at',
+                                'es': 'a',
+                                'de': 'bei',
+                                'it': 'a'
+                            },
+                            'de': {
+                                'en': 'of',
+                                'es': 'de',
+                                'de': 'von',
+                                'it': 'di'
+                            },
+                            'le': {
+                                'en': 'the',
+                                'es': 'el',
+                                'de': 'der',
+                                'it': 'il'
+                            },
+                            'la': {
+                                'en': 'the',
+                                'es': 'la',
+                                'de': 'die',
+                                'it': 'la'
+                            },
+                            'les': {
+                                'en': 'the',
+                                'es': 'los',
+                                'de': 'die',
+                                'it': 'i'
+                            },
+                            'un': {
+                                'en': 'a',
+                                'es': 'un',
+                                'de': 'ein',
+                                'it': 'un'
+                            },
+                            'une': {
+                                'en': 'a',
+                                'es': 'una',
+                                'de': 'eine',
+                                'it': 'una'
+                            },
+                            'des': {
+                                'en': 'some',
+                                'es': 'unos',
+                                'de': 'einige',
+                                'it': 'dei'
+                            },
+                            // Mots spécifiques au domaine floral
+                            'fleurs': {
+                                'en': 'flowers',
+                                'es': 'flores',
+                                'de': 'Blumen',
+                                'it': 'fiori'
+                            },
+                            'bouquet': {
+                                'en': 'bouquet',
+                                'es': 'ramo',
+                                'de': 'Strauß',
+                                'it': 'bouquet'
+                            },
+                            'composition': {
+                                'en': 'arrangement',
+                                'es': 'composición',
+                                'de': 'Komposition',
+                                'it': 'composizione'
+                            },
+                            'saison': {
+                                'en': 'season',
+                                'es': 'temporada',
+                                'de': 'Saison',
+                                'it': 'stagione'
+                            },
+                            'naturel': {
+                                'en': 'natural',
+                                'es': 'natural',
+                                'de': 'natürlich',
+                                'it': 'naturale'
+                            },
+                            'boutique': {
+                                'en': 'shop',
+                                'es': 'tienda',
+                                'de': 'Laden',
+                                'it': 'negozio'
+                            },
+                            'personnalisé': {
+                                'en': 'customized',
+                                'es': 'personalizado',
+                                'de': 'personalisiert',
+                                'it': 'personalizzato'
+                            },
+                            // Footer
+                            'Tous droits réservés.': {
+                                'en': 'All rights reserved.',
+                                'es': 'Todos los derechos reservados.',
+                                'de': 'Alle Rechte vorbehalten.',
+                                'it': 'Tutti i diritti riservati.'
+                            },
+                            'Mentions légales': {
+                                'en': 'Legal notice',
+                                'es': 'Aviso legal',
+                                'de': 'Impressum',
+                                'it': 'Note legali'
+                            },
+                            'Politique de confidentialité': {
+                                'en': 'Privacy policy',
+                                'es': 'Política de privacidad',
+                                'de': 'Datenschutzerklärung',
+                                'it': 'Politica sulla privacy'
+                            },
+                            
+                            // Section Gallerie
+                            'Gallerie': {
+                                'en': 'Gallery',
+                                'es': 'Galería',
+                                'de': 'Galerie',
+                                'it': 'Galleria'
+                            },
+                            'Découvrez notre collection de créations florales': {
+                                'en': 'Discover our collection of floral creations',
+                                'es': 'Descubra nuestra colección de creaciones florales',
+                                'de': 'Entdecken Sie unsere Sammlung von Blumenkreationen',
+                                'it': 'Scopri la nostra collezione di creazioni floreali'
+                            },
+                            'Chaque composition est une œuvre d\'art unique, reflétant notre passion pour l\'artisanat floral.': {
+                                'en': 'Each composition is a unique work of art, reflecting our passion for floral craftsmanship.',
+                                'es': 'Cada composición es una obra de arte única, que refleja nuestra pasión por la artesanía floral.',
+                                'de': 'Jede Komposition ist ein einzigartiges Kunstwerk, das unsere Leidenschaft für florale Handwerkskunst widerspiegelt.',
+                                'it': 'Ogni composizione è un\'opera d\'arte unica, che riflette la nostra passione per l\'artigianato floreale.'
+                            },
+                            'Nos créations': {
+                                'en': 'Our creations',
+                                'es': 'Nuestras creaciones',
+                                'de': 'Unsere Kreationen',
+                                'it': 'Le nostre creazioni'
+                            },
+                            'Mariages': {
+                                'en': 'Weddings',
+                                'es': 'Bodas',
+                                'de': 'Hochzeiten',
+                                'it': 'Matrimoni'
+                            },
+                            'Événements': {
+                                'en': 'Events',
+                                'es': 'Eventos',
+                                'de': 'Veranstaltungen',
+                                'it': 'Eventi'
+                            },
+                            'Compositions': {
+                                'en': 'Compositions',
+                                'es': 'Composiciones',
+                                'de': 'Kompositionen',
+                                'it': 'Composizioni'
+                            },
+                            'Végétalisation': {
+                                'en': 'Plant Design',
+                                'es': 'Diseño con plantas',
+                                'de': 'Pflanzgestaltung',
+                                'it': 'Design con piante'
+                            },
+                            'Témoignages': {
+                                'en': 'Testimonials',
+                                'es': 'Testimonios',
+                                'de': 'Kundenmeinungen',
+                                'it': 'Testimonianze'
+                            },
+                            'Ce que nos clients disent': {
+                                'en': 'What our customers say',
+                                'es': 'Lo que dicen nuestros clientes',
+                                'de': 'Was unsere Kunden sagen',
+                                'it': 'Cosa dicono i nostri clienti'
+                            }
+                        };
+                        
+                        // Dictionnaires spécifiques par langue pour les phrases courantes
+                        const englishPhrases = {
+                            'Chez Bohème Fleurs, notre boutique évolue au rythme des saisons.': 
+                                'At Bohème Fleurs, our shop evolves with the rhythm of the seasons.',
+                            'Respectueux du cycle naturel, nous créons des compositions uniques qui répondent à vos attentes': 
+                                'Respectful of the natural cycle, we create unique compositions that meet your expectations',
+                            'Compositions florales pour votre cérémonie': 
+                                'Floral compositions for your ceremony',
+                            'Hommages floraux pour vos proches': 
+                                'Floral tributes for your loved ones',
+                            'Décorations pour vos événements spéciaux': 
+                                'Decorations for your special events',
+                            'Nos créations': 
+                                'Our creations',
+                            'Une équipe à votre écoute': 
+                                'A team at your service',
+                            'Prendre rendez-vous': 
+                                'Make an appointment',
+                            'Voir plus': 
+                                'See more',
+                            'Fermer': 
+                                'Close'
+                        };
+                        
+                        const spanishPhrases = {
+                            'Chez Bohème Fleurs, notre boutique évolue au rythme des saisons.': 
+                                'En Bohème Fleurs, nuestra tienda evoluciona al ritmo de las estaciones.',
+                            'Respectueux du cycle naturel, nous créons des compositions uniques qui répondent à vos attentes': 
+                                'Respetuosos del ciclo natural, creamos composiciones únicas que responden a sus expectativas',
+                            'Compositions florales pour votre cérémonie': 
+                                'Composiciones florales para su ceremonia',
+                            'Hommages floraux pour vos proches': 
+                                'Homenajes florales para sus seres queridos',
+                            'Décorations pour vos événements spéciaux': 
+                                'Decoraciones para sus eventos especiales',
+                            'Nos créations': 
+                                'Nuestras creaciones',
+                            'Une équipe à votre écoute': 
+                                'Un equipo a su servicio',
+                            'Prendre rendez-vous': 
+                                'Concertar una cita',
+                            'Voir plus': 
+                                'Ver más',
+                            'Fermer': 
+                                'Cerrar'
+                        };
+                        
+                        const germanPhrases = {
+                            'Chez Bohème Fleurs, notre boutique évolue au rythme des saisons.': 
+                                'Bei Bohème Fleurs entwickelt sich unser Geschäft im Rhythmus der Jahreszeiten.',
+                            'Respectueux du cycle naturel, nous créons des compositions uniques qui répondent à vos attentes': 
+                                'Respektvoll gegenüber dem natürlichen Zyklus erschaffen wir einzigartige Kompositionen, die Ihren Erwartungen entsprechen',
+                            'Compositions florales pour votre cérémonie': 
+                                'Blumenkompositionen für Ihre Zeremonie',
+                            'Hommages floraux pour vos proches': 
+                                'Blumige Hommagen für Ihre Lieben',
+                            'Décorations pour vos événements spéciaux': 
+                                'Dekorationen für Ihre besonderen Anlässe',
+                            'Nos créations': 
+                                'Unsere Kreationen',
+                            'Une équipe à votre écoute': 
+                                'Ein Team zu Ihren Diensten',
+                            'Prendre rendez-vous': 
+                                'Einen Termin vereinbaren',
+                            'Voir plus': 
+                                'Mehr sehen',
+                            'Fermer': 
+                                'Schließen'
+                        };
+                        
+                        const italianPhrases = {
+                            'Chez Bohème Fleurs, notre boutique évolue au rythme des saisons.': 
+                                'Da Bohème Fleurs, il nostro negozio si evolve al ritmo delle stagioni.',
+                            'Respectueux du cycle naturel, nous créons des compositions uniques qui répondent à vos attentes': 
+                                'Rispettosi del ciclo naturale, creiamo composizioni uniche che soddisfano le vostre aspettative',
+                            'Compositions florales pour votre cérémonie': 
+                                'Composizioni floreali per la vostra cerimonia',
+                            'Hommages floraux pour vos proches': 
+                                'Omaggi floreali per i vostri cari',
+                            'Décorations pour vos événements spéciaux': 
+                                'Decorazioni per i vostri eventi speciali',
+                            'Nos créations': 
+                                'Le nostre creazioni',
+                            'Une équipe à votre écoute': 
+                                'Un team al vostro servizio',
+                            'Prendre rendez-vous': 
+                                'Prendere un appuntamento',
+                            'Voir plus': 
+                                'Vedi di più',
+                            'Fermer': 
+                                'Chiudere'
+                        };
+                        
+                        // Si le texte est dans le dictionnaire commun
+                        if (commonDict[text] && commonDict[text][targetLang]) {
+                            return commonDict[text][targetLang];
+                        }
+                        
+                        // Vérifier les dictionnaires spécifiques par langue
+                        if (targetLang === 'en' && englishPhrases[text]) {
+                            return englishPhrases[text];
+                        } else if (targetLang === 'es' && spanishPhrases[text]) {
+                            return spanishPhrases[text];
+                        } else if (targetLang === 'de' && germanPhrases[text]) {
+                            return germanPhrases[text];
+                        } else if (targetLang === 'it' && italianPhrases[text]) {
+                            return italianPhrases[text];
+                        }
+                        
+                        // Ajouter des traductions spécifiques pour les sections critiques qui ne sont pas traduites
+                        const criticalPhrases = {
+                            // Hero section
+                            'Chez Bohème Fleurs, notre boutique évolue au rythme des saisons. Respectueux du cycle naturel, nous créons des compositions uniques qui répondent à vos attentes, et reflètent cette poésie bohème qui caractérise notre univers.': {
+                                'en': 'At Bohème Fleurs, our shop evolves with the rhythm of the seasons. Respectful of the natural cycle, we create unique compositions that meet your expectations and reflect the bohemian poetry that characterizes our universe.',
+                                'es': 'En Bohème Fleurs, nuestra tienda evoluciona al ritmo de las estaciones. Respetuosos del ciclo natural, creamos composiciones únicas que responden a sus expectativas y reflejan esa poesía bohemia que caracteriza nuestro universo.',
+                                'de': 'Bei Bohème Fleurs entwickelt sich unser Geschäft im Rhythmus der Jahreszeiten. Respektvoll gegenüber dem natürlichen Zyklus erschaffen wir einzigartige Kompositionen, die Ihren Erwartungen entsprechen und die bohemische Poesie widerspiegeln, die unser Universum charakterisiert.',
+                                'it': 'Da Bohème Fleurs, il nostro negozio si evolve al ritmo delle stagioni. Rispettosi del ciclo naturale, creiamo composizioni uniche che soddisfano le vostre aspettative e riflettono quella poesia bohémien che caratterizza il nostro universo.'
+                            },
+                            
+                            // Au quotidien section
+                            'Chez Bohème Fleurs, nous sommes une équipe passionnée par l\'art floral et dédiée à la création de compositions uniques. Notre approche artistique s\'inspire de la nature et des saisons, créant des arrangements qui racontent une histoire. Notre boutique est un lieu où l\'élégance rencontre l\'imagination, offrant une expérience sensorielle authentique à chaque visite.': {
+                                'en': 'At Bohème Fleurs, we are a team passionate about floral art and dedicated to creating unique compositions. Our artistic approach is inspired by nature and the seasons, creating arrangements that tell a story. Our shop is a place where elegance meets imagination, offering an authentic sensory experience with each visit.',
+                                'es': 'En Bohème Fleurs, somos un equipo apasionado por el arte floral y dedicado a la creación de composiciones únicas. Nuestro enfoque artístico se inspira en la naturaleza y las estaciones, creando arreglos que cuentan una historia. Nuestra tienda es un lugar donde la elegancia se encuentra con la imaginación, ofreciendo una experiencia sensorial auténtica en cada visita.',
+                                'de': 'Bei Bohème Fleurs sind wir ein Team, das sich mit Leidenschaft der Blumenkunst widmet und einzigartige Kompositionen erschafft. Unser künstlerischer Ansatz ist von der Natur und den Jahreszeiten inspiriert und schafft Arrangements, die eine Geschichte erzählen. Unser Geschäft ist ein Ort, an dem Eleganz auf Fantasie trifft und bei jedem Besuch ein authentisches Sinneserlebnis bietet.',
+                                'it': 'Da Bohème Fleurs, siamo un team appassionato di arte floreale e dedicato alla creazione di composizioni uniche. Il nostro approccio artistico è ispirato dalla natura e dalle stagioni, creando arrangiamenti che raccontano una storia. Il nostro negozio è un luogo dove l\'eleganza incontra l\'immaginazione, offrendo un\'autentica esperienza sensoriale ad ogni visita.'
+                            },
+                            
+                            // Événements section
+                            'Des créations florales sur mesure pour vos moments importants. Mariages, cérémonies de deuil ou festivités, nous vous accompagnons avec des compositions qui reflètent l\'émotion de l\'instant.': {
+                                'en': 'Custom floral creations for your important moments. Weddings, mourning ceremonies, or celebrations, we accompany you with compositions that reflect the emotion of the moment.',
+                                'es': 'Creaciones florales personalizadas para sus momentos importantes. Bodas, ceremonias de duelo o festividades, le acompañamos con composiciones que reflejan la emoción del momento.',
+                                'de': 'Maßgeschneiderte Blumenkreationen für Ihre wichtigen Momente. Hochzeiten, Trauerfeiern oder Festlichkeiten – wir begleiten Sie mit Kompositionen, die die Emotionen des Augenblicks widerspiegeln.',
+                                'it': 'Creazioni floreali su misura per i vostri momenti importanti. Matrimoni, cerimonie funebri o festività, vi accompagniamo con composizioni che riflettono l\'emozione del momento.'
+                            },
+                            
+                            // Professionnels section
+                            'Besoin d\'embellir votre espace professionnel ? Nous vous conseillons sur les meilleurs choix de végétaux adaptés à votre structure, avec des options pérennes ou renouvelables via notre système d\'abonnements. Nous assurons également le fleurissement de vos événements professionnels, vous offrant expertise et gain de temps précieux.': {
+                                'en': 'Need to beautify your professional space? We advise you on the best plant choices suited to your structure, with sustainable or renewable options through our subscription system. We also ensure the flowering of your professional events, offering expertise and valuable time savings.',
+                                'es': '¿Necesita embellecer su espacio profesional? Le asesoramos sobre las mejores opciones de plantas adaptadas a su estructura, con opciones sostenibles o renovables a través de nuestro sistema de suscripción. También aseguramos la decoración floral de sus eventos profesionales, ofreciendo experiencia y un valioso ahorro de tiempo.',
+                                'de': 'Möchten Sie Ihren Arbeitsbereich verschönern? Wir beraten Sie zu den besten Pflanzenoptionen, die zu Ihrer Struktur passen, mit nachhaltigen oder erneuerbaren Optionen über unser Abonnementsystem. Wir sorgen auch für die Blumengestaltung Ihrer beruflichen Veranstaltungen und bieten Fachwissen und wertvolle Zeitersparnis.',
+                                'it': 'Bisogno di abbellire il vostro spazio professionale? Vi consigliamo sulle migliori scelte di piante adatte alla vostra struttura, con opzioni sostenibili o rinnovabili attraverso il nostro sistema di abbonamento. Garantiamo anche la fioritura dei vostri eventi professionali, offrendo competenza e prezioso risparmio di tempo.'
+                            },
+                            
+                            // Titre Sections
+                            'Au quotidien': {
+                                'en': 'Daily Services',
+                                'es': 'Servicios diarios',
+                                'de': 'Tägliche Dienstleistungen',
+                                'it': 'Servizi quotidiani'
+                            },
+                            'Évènements': {
+                                'en': 'Events',
+                                'es': 'Eventos',
+                                'de': 'Veranstaltungen',
+                                'it': 'Eventi'
+                            },
+                            'Professionnels': {
+                                'en': 'Professional Services',
+                                'es': 'Servicios profesionales',
+                                'de': 'Professionelle Dienstleistungen',
+                                'it': 'Servizi professionali'
+                            },
+                            'Nos services': {
+                                'en': 'Our Services',
+                                'es': 'Nuestros servicios',
+                                'de': 'Unsere Dienstleistungen',
+                                'it': 'I nostri servizi'
+                            },
+                            'Notre galerie': {
+                                'en': 'Our Gallery',
+                                'es': 'Nuestra galería',
+                                'de': 'Unsere Galerie',
+                                'it': 'La nostra galleria'
+                            },
+                            'Témoignages': {
+                                'en': 'Testimonials',
+                                'es': 'Testimonios',
+                                'de': 'Erfahrungsberichte',
+                                'it': 'Testimonianze'
+                            },
+                            
+                            // Catégories Événements
+                            'Mariages': {
+                                'en': 'Weddings',
+                                'es': 'Bodas',
+                                'de': 'Hochzeiten',
+                                'it': 'Matrimoni'
+                            },
+                            'Deuil': {
+                                'en': 'Mourning',
+                                'es': 'Luto',
+                                'de': 'Trauer',
+                                'it': 'Lutto'
+                            },
+                            'Festivités': {
+                                'en': 'Celebrations',
+                                'es': 'Festividades',
+                                'de': 'Festlichkeiten',
+                                'it': 'Festività'
+                            },
+                            
+                            // Catégories Professionnels
+                            'Façade & Vitrine': {
+                                'en': 'Facade & Showcase',
+                                'es': 'Fachada y Escaparate',
+                                'de': 'Fassade & Schaufenster',
+                                'it': 'Facciata e Vetrina'
+                            },
+                            'évènementiel': {
+                                'en': 'Events',
+                                'es': 'Eventos',
+                                'de': 'Veranstaltungen',
+                                'it': 'Eventi'
+                            },
+                            'Abonnements Floraux': {
+                                'en': 'Floral Subscriptions',
+                                'es': 'Suscripciones florales',
+                                'de': 'Blumen-Abonnements',
+                                'it': 'Abbonamenti floreali'
+                            },
+                            'Végétalisation': {
+                                'en': 'Greening',
+                                'es': 'Vegetalización',
+                                'de': 'Begrünung',
+                                'it': 'Inverdimento'
+                            },
+                            
+                            // Catégories Services
+                            'Livraison': {
+                                'en': 'Delivery',
+                                'es': 'Entrega',
+                                'de': 'Lieferung',
+                                'it': 'Consegna'
+                            },
+                            'Chèque cadeau': {
+                                'en': 'Gift Voucher',
+                                'es': 'Cheque regalo',
+                                'de': 'Geschenkgutschein',
+                                'it': 'Buono regalo'
+                            },
+                            'Abonnements': {
+                                'en': 'Subscriptions',
+                                'es': 'Suscripciones',
+                                'de': 'Abonnements',
+                                'it': 'Abbonamenti'
+                            },
+                            'Sur demande': {
+                                'en': 'On request',
+                                'es': 'A petición',
+                                'de': 'Auf Anfrage',
+                                'it': 'Su richiesta'
+                            },
+                            
+                            // Texte Galerie
+                            'Explorez notre collection de créations florales, renouvelée au fil des saisons. Chaque composition raconte une histoire unique et témoigne de notre passion pour l\'art floral. Réalisées dans notre atelier, ces œuvres illustrent notre savoir-faire et la richesse du monde végétal sublimé par une main experte.': {
+                                'en': 'Explore our collection of floral creations, renewed throughout the seasons. Each composition tells a unique story and testifies to our passion for floral art. Created in our workshop, these works illustrate our expertise and the richness of the plant world sublimated by an expert hand.',
+                                'es': 'Explore nuestra colección de creaciones florales, renovada a lo largo de las estaciones. Cada composición cuenta una historia única y testimonia nuestra pasión por el arte floral. Realizadas en nuestro taller, estas obras ilustran nuestro saber hacer y la riqueza del mundo vegetal sublimado por una mano experta.',
+                                'de': 'Entdecken Sie unsere Sammlung von Blumenkreationen, die sich im Laufe der Jahreszeiten erneuern. Jede Komposition erzählt eine einzigartige Geschichte und zeugt von unserer Leidenschaft für die Blumenkunst. In unserer Werkstatt geschaffen, veranschaulichen diese Werke unser Können und den Reichtum der Pflanzenwelt, der von einer Expertenhand sublimiert wird.',
+                                'it': 'Esplorate la nostra collezione di creazioni floreali, rinnovata nel corso delle stagioni. Ogni composizione racconta una storia unica e testimonia la nostra passione per l\'arte floreale. Realizzate nel nostro laboratorio, queste opere illustrano il nostro know-how e la ricchezza del mondo vegetale sublimato da una mano esperta.'
+                            },
+                            
+                            // Bouton Voir plus
+                            'Voir plus': {
+                                'en': 'See more',
+                                'es': 'Ver más',
+                                'de': 'Mehr sehen',
+                                'it': 'Vedere di più'
+                            },
+                            
+                            // Service descriptions
+                            'Sublimez l\'entrée de votre établissement et attirez l\'attention des passants avec nos compositions florales qui captent l\'attention, reflètent votre image de marque et se renouvellent selon vos besoins et événements spéciaux.': {
+                                'en': 'Enhance the entrance of your establishment and attract the attention of passersby with our floral compositions that catch the eye, reflect your brand image, and are renewed according to your needs and special events.',
+                                'es': 'Sublime la entrada de su establecimiento y atraiga la atención de los transeúntes con nuestras composiciones florales que captan la atención, reflejan su imagen de marca y se renuevan según sus necesidades y eventos especiales.',
+                                'de': 'Verschönern Sie den Eingang Ihres Unternehmens und ziehen Sie die Aufmerksamkeit von Passanten mit unseren Blumenarrangements auf sich, die Blicke auf sich ziehen, Ihr Markenimage widerspiegeln und je nach Ihren Bedürfnissen und besonderen Anlässen erneuert werden.',
+                                'it': 'Sublimate l\'ingresso del vostro stabilimento e attira l\'attenzione dei passanti con le nostre composizioni floreali che catturano l\'attenzione, riflettono la vostra immagine di marca e si rinnovano secondo le vostre necessità ed eventi speciali.'
+                            },
+                            
+                            'Créez une ambiance unique dans vos espaces professionnels avec nos compositions sur mesure qui s\'intègrent parfaitement à votre décoration.': {
+                                'en': 'Create a unique atmosphere in your professional spaces with our custom compositions that integrate perfectly with your decoration.',
+                                'es': 'Cree un ambiente único en sus espacios profesionales con nuestras composiciones a medida que se integran perfectamente con su decoración.',
+                                'de': 'Schaffen Sie eine einzigartige Atmosphäre in Ihren Arbeitsräumen mit unseren maßgeschneiderten Kompositionen, die sich perfekt in Ihre Dekoration einfügen.',
+                                'it': 'Create un\'atmosfera unica nei vostri spazi professionali con le nostre composizioni su misura che si integrano perfettamente con la vostra decorazione.'
+                            },
+                            
+                            'Profitez de compositions florales renouvelées régulièrement pour maintenir la fraîcheur et l\'élégance de vos espaces professionnels.': {
+                                'en': 'Enjoy regularly renewed floral compositions to maintain the freshness and elegance of your professional spaces.',
+                                'es': 'Disfrute de composiciones florales renovadas regularmente para mantener la frescura y elegancia de sus espacios profesionales.',
+                                'de': 'Genießen Sie regelmäßig erneuerte Blumenarrangements, um die Frische und Eleganz Ihrer Arbeitsräume zu erhalten.',
+                                'it': 'Godete di composizioni floreali rinnovate regolarmente per mantenere la freschezza e l\'eleganza dei vostri spazi professionali.'
+                            },
+                            
+                            'Transformez vos espaces professionnels avec nos solutions de végétalisation durable qui apportent fraîcheur, bien-être et esthétique naturelle à votre environnement de travail.': {
+                                'en': 'Transform your professional spaces with our sustainable greening solutions that bring freshness, well-being, and natural aesthetics to your work environment.',
+                                'es': 'Transforme sus espacios profesionales con nuestras soluciones de vegetación sostenible que aportan frescura, bienestar y estética natural a su entorno de trabajo.',
+                                'de': 'Verwandeln Sie Ihre Arbeitsräume mit unseren nachhaltigen Begrünungslösungen, die Frische, Wohlbefinden und natürliche Ästhetik in Ihre Arbeitsumgebung bringen.',
+                                'it': 'Trasformate i vostri spazi professionali con le nostre soluzioni di vegetalizzazione sostenibile che portano freschezza, benessere ed estetica naturale al vostro ambiente di lavoro.'
+                            },
+                            
+                            // Services descriptions
+                            'Nous livrons dans tout Lyon grâce à notre partenaire <a href="https://goneenselle.fr/" target="_blank" style="color: var(--color-gold); font-weight: bold;" data-no-translate>Gone en Selle</a>, un service de livraison à vélo-cargo écologique et rapide. Vos fleurs arrivent fraîches et soigneusement préparées, accompagnées si vous le souhaitez d\'un message personnalisé pour rendre votre attention encore plus spéciale.': {
+                                'en': 'We deliver throughout Lyon thanks to our partner <a href="https://goneenselle.fr/" target="_blank" style="color: var(--color-gold); font-weight: bold;" data-no-translate>Gone en Selle</a>, an ecological and fast cargo bike delivery service. Your flowers arrive fresh and carefully prepared, accompanied if you wish by a personalized message to make your gesture even more special.',
+                                'es': 'Entregamos en todo Lyon gracias a nuestro socio <a href="https://goneenselle.fr/" target="_blank" style="color: var(--color-gold); font-weight: bold;" data-no-translate>Gone en Selle</a>, un servicio de entrega ecológico y rápido en bicicleta de carga. Sus flores llegan frescas y cuidadosamente preparadas, acompañadas si lo desea de un mensaje personalizado para hacer su atención aún más especial.',
+                                'de': 'Wir liefern in ganz Lyon dank unseres Partners <a href="https://goneenselle.fr/" target="_blank" style="color: var(--color-gold); font-weight: bold;" data-no-translate>Gone en Selle</a>, einem ökologischen und schnellen Lastenfahrrad-Lieferservice. Ihre Blumen kommen frisch und sorgfältig vorbereitet an, auf Wunsch begleitet von einer persönlichen Nachricht, um Ihre Aufmerksamkeit noch besonderer zu machen.',
+                                'it': 'Consegniamo in tutta Lione grazie al nostro partner <a href="https://goneenselle.fr/" target="_blank" style="color: var(--color-gold); font-weight: bold;" data-no-translate>Gone en Selle</a>, un servizio di consegna ecologico e veloce con bici cargo. I vostri fiori arrivano freschi e accuratamente preparati, accompagnati se lo desiderate da un messaggio personalizzato per rendere il vostro pensiero ancora più speciale.'
+                            },
+                            
+                            'Offrez la liberté de choisir avec nos chèques cadeaux disponibles en plusieurs montants. Ils permettent de sélectionner des compositions ou de participer à nos ateliers. Élégamment présentés, ils invitent à découvrir notre univers poétique et sont valables pendant une année complète.': {
+                                'en': 'Offer the freedom to choose with our gift certificates available in several amounts. They allow you to select compositions or participate in our workshops. Elegantly presented, they invite you to discover our poetic universe and are valid for a full year.',
+                                'es': 'Ofrezca la libertad de elegir con nuestros cheques regalo disponibles en varios importes. Permiten seleccionar composiciones o participar en nuestros talleres. Elegantemente presentados, invitan a descubrir nuestro universo poético y son válidos durante un año completo.',
+                                'de': 'Bieten Sie die Freiheit zu wählen mit unseren Geschenkgutscheinen, die in verschiedenen Beträgen erhältlich sind. Sie ermöglichen die Auswahl von Kompositionen oder die Teilnahme an unseren Workshops. Elegant präsentiert laden sie dazu ein, unser poetisches Universum zu entdecken und sind ein ganzes Jahr gültig.',
+                                'it': 'Offrite la libertà di scegliere con i nostri buoni regalo disponibili in diversi importi. Permettono di selezionare composizioni o partecipare ai nostri laboratori. Elegantemente presentati, invitano a scoprire il nostro universo poetico e sono validi per un anno intero.'
+                            },
+                            
+                            'Recevez régulièrement des créations florales fraîches et saisonnières grâce à nos formules d\'abonnement. Idéales pour les particuliers ou les entreprises, elles égayent votre intérieur ou espace de travail. Personnalisables selon vos préférences de fréquence, budget et style, chaque livraison correspond parfaitement à vos attentes.': {
+                                'en': 'Regularly receive fresh and seasonal floral creations through our subscription formulas. Ideal for individuals or businesses, they brighten your interior or workspace. Customizable according to your preferences for frequency, budget, and style, each delivery perfectly matches your expectations.',
+                                'es': 'Reciba regularmente creaciones florales frescas y de temporada gracias a nuestras fórmulas de suscripción. Ideales para particulares o empresas, alegran su interior o espacio de trabajo. Personalizables según sus preferencias de frecuencia, presupuesto y estilo, cada entrega se corresponde perfectamente con sus expectativas.',
+                                'de': 'Erhalten Sie regelmäßig frische und saisonale Blumenkreationen durch unsere Abonnementformeln. Ideal für Einzelpersonen oder Unternehmen, verschönern sie Ihr Zuhause oder Ihren Arbeitsplatz. Anpassbar nach Ihren Vorlieben für Häufigkeit, Budget und Stil, entspricht jede Lieferung perfekt Ihren Erwartungen.',
+                                'it': 'Ricevete regolarmente creazioni floreali fresche e stagionali grazie alle nostre formule di abbonamento. Ideali per privati o aziende, rallegrano il vostro interno o spazio di lavoro. Personalizzabili secondo le vostre preferenze di frequenza, budget e stile, ogni consegna corrisponde perfettamente alle vostre aspettative.'
+                            },
+                            
+                            'Pour les occasions spéciales, nous créons des compositions entièrement personnalisées. Après un échange sur vos souhaits et l\'ambiance recherchée, notre équipe conçoit des créations uniques qui vous ressemblent. Chaque détail est soigneusement pensé pour que le résultat final reflète parfaitement votre personnalité.': {
+                                'en': 'For special occasions, we create fully customized compositions. After discussing your wishes and the desired atmosphere, our team designs unique creations that resemble you. Every detail is carefully considered so that the final result perfectly reflects your personality.',
+                                'es': 'Para ocasiones especiales, creamos composiciones totalmente personalizadas. Después de un intercambio sobre sus deseos y el ambiente deseado, nuestro equipo diseña creaciones únicas que se parecen a usted. Cada detalle está cuidadosamente pensado para que el resultado final refleje perfectamente su personalidad.',
+                                'de': 'Für besondere Anlässe kreieren wir vollständig personalisierte Kompositionen. Nach einem Austausch über Ihre Wünsche und die gewünschte Atmosphäre entwirft unser Team einzigartige Kreationen, die Ihnen ähneln. Jedes Detail wird sorgfältig durchdacht, damit das Endergebnis Ihre Persönlichkeit perfekt widerspiegelt.',
+                                'it': 'Per occasioni speciali, creiamo composizioni completamente personalizzate. Dopo uno scambio sui vostri desideri e l\'atmosfera ricercata, il nostro team progetta creazioni uniche che vi assomigliano. Ogni dettaglio è accuratamente pensato affinché il risultato finale rifletta perfettamente la vostra personalità.'
+                            },
+                            
+                            // Descriptions des événements
+                            'Compositions florales pour votre cérémonie': {
+                                'en': 'Floral compositions for your ceremony',
+                                'es': 'Composiciones florales para su ceremonia',
+                                'de': 'Blumenkompositionen für Ihre Zeremonie',
+                                'it': 'Composizioni floreali per la vostra cerimonia'
+                            },
+                            
+                            'Hommages floraux pour vos proches': {
+                                'en': 'Floral tributes for your loved ones',
+                                'es': 'Homenajes florales para sus seres queridos',
+                                'de': 'Blumige Ehrungen für Ihre Liebsten',
+                                'it': 'Omaggi floreali per i vostri cari'
+                            },
+                            
+                            'Décorations pour vos événements spéciaux': {
+                                'en': 'Decorations for your special events',
+                                'es': 'Decoraciones para sus eventos especiales',
+                                'de': 'Dekorationen für Ihre besonderen Anlässe',
+                                'it': 'Decorazioni per i vostri eventi speciali'
+                            },
+                            
+                            // Section Contact améliorée
+                            'Contact': {
+                                'en': 'Contact Us',
+                                'es': 'Contáctenos',
+                                'de': 'Kontaktieren Sie uns',
+                                'it': 'Contattaci'
+                            },
+                            'Écrivez-nous': {
+                                'en': 'Write to Us',
+                                'es': 'Escríbanos',
+                                'de': 'Schreiben Sie uns',
+                                'it': 'Scrivici'
+                            },
+                            'Horaires d\'ouverture': {
+                                'en': 'Opening Hours',
+                                'es': 'Horarios de Apertura',
+                                'de': 'Öffnungszeiten',
+                                'it': 'Orari di Apertura'
+                            },
+                            
+                            // Champs du formulaire de contact
+                            'Votre nom': {
+                                'en': 'Your name',
+                                'es': 'Su nombre',
+                                'de': 'Ihr Name',
+                                'it': 'Il tuo nome'
+                            },
+                            'Votre adresse email': {
+                                'en': 'Your email address',
+                                'es': 'Su dirección de correo electrónico',
+                                'de': 'Ihre E-Mail-Adresse',
+                                'it': 'Il tuo indirizzo email'
+                            },
+                            'Votre numéro de téléphone': {
+                                'en': 'Your phone number',
+                                'es': 'Su número de teléfono',
+                                'de': 'Ihre Telefonnummer',
+                                'it': 'Il tuo numero di telefono'
+                            },
+                            'Votre message...': {
+                                'en': 'Your message...',
+                                'es': 'Su mensaje...',
+                                'de': 'Ihre Nachricht...',
+                                'it': 'Il tuo messaggio...'
+                            },
+                            'Envoyer': {
+                                'en': 'Send',
+                                'es': 'Enviar',
+                                'de': 'Senden',
+                                'it': 'Invia'
+                            },
+                            
+                            // Jours de la semaine et horaires
+                            'Lundi – Vendredi:': {
+                                'en': 'Monday – Friday:',
+                                'es': 'Lunes – Viernes:',
+                                'de': 'Montag – Freitag:',
+                                'it': 'Lunedì – Venerdì:'
+                            },
+                            'Samedi:': {
+                                'en': 'Saturday:',
+                                'es': 'Sábado:',
+                                'de': 'Samstag:',
+                                'it': 'Sabato:'
+                            },
+                            'Dimanche:': {
+                                'en': 'Sunday:',
+                                'es': 'Domingo:',
+                                'de': 'Sonntag:',
+                                'it': 'Domenica:'
+                            },
+                            
+                            // Pied de page et mentions légales
+                            'Tous droits réservés.': {
+                                'en': 'All rights reserved.',
+                                'es': 'Todos los derechos reservados.',
+                                'de': 'Alle Rechte vorbehalten.',
+                                'it': 'Tutti i diritti riservati.'
+                            },
+                            'Mentions légales': {
+                                'en': 'Legal Notice',
+                                'es': 'Aviso Legal',
+                                'de': 'Impressum',
+                                'it': 'Note Legali'
+                            },
+                            'Politique de confidentialité': {
+                                'en': 'Privacy Policy',
+                                'es': 'Política de Privacidad',
+                                'de': 'Datenschutzrichtlinie',
+                                'it': 'Politica sulla Privacy'
+                            },
+                            
+                            // Section Gallerie
+                            'Gallerie': {
+                                'en': 'Gallery',
+                                'es': 'Galería',
+                                'de': 'Galerie',
+                                'it': 'Galleria'
+                            },
+                            'Découvrez notre collection de créations florales': {
+                                'en': 'Discover our collection of floral creations',
+                                'es': 'Descubra nuestra colección de creaciones florales',
+                                'de': 'Entdecken Sie unsere Sammlung von Blumenkreationen',
+                                'it': 'Scopri la nostra collezione di creazioni floreali'
+                            },
+                            'Chaque composition est une œuvre d\'art unique, reflétant notre passion pour l\'artisanat floral.': {
+                                'en': 'Each composition is a unique work of art, reflecting our passion for floral craftsmanship.',
+                                'es': 'Cada composición es una obra de arte única, que refleja nuestra pasión por la artesanía floral.',
+                                'de': 'Jede Komposition ist ein einzigartiges Kunstwerk, das unsere Leidenschaft für florale Handwerkskunst widerspiegelt.',
+                                'it': 'Ogni composizione è un\'opera d\'arte unica, che riflette la nostra passione per l\'artigianato floreale.'
+                            },
+                            'Nos créations': {
+                                'en': 'Our creations',
+                                'es': 'Nuestras creaciones',
+                                'de': 'Unsere Kreationen',
+                                'it': 'Le nostre creazioni'
+                            },
+                            'Mariages': {
+                                'en': 'Weddings',
+                                'es': 'Bodas',
+                                'de': 'Hochzeiten',
+                                'it': 'Matrimoni'
+                            },
+                            'Événements': {
+                                'en': 'Events',
+                                'es': 'Eventos',
+                                'de': 'Veranstaltungen',
+                                'it': 'Eventi'
+                            },
+                            'Compositions': {
+                                'en': 'Compositions',
+                                'es': 'Composiciones',
+                                'de': 'Kompositionen',
+                                'it': 'Composizioni'
+                            },
+                            'Végétalisation': {
+                                'en': 'Plant Design',
+                                'es': 'Diseño con plantas',
+                                'de': 'Pflanzgestaltung',
+                                'it': 'Design con piante'
+                            },
+                            'Témoignages': {
+                                'en': 'Testimonials',
+                                'es': 'Testimonios',
+                                'de': 'Kundenmeinungen',
+                                'it': 'Testimonianze'
+                            },
+                            'Ce que nos clients disent': {
+                                'en': 'What our customers say',
+                                'es': 'Lo que dicen nuestros clientes',
+                                'de': 'Was unsere Kunden sagen',
+                                'it': 'Cosa dicono i nostri clienti'
+                            }
+                        };
+                        
+                        // Rechercher dans les phrases critiques
+                        if (criticalPhrases[text] && criticalPhrases[text][targetLang]) {
+                            return criticalPhrases[text][targetLang];
+                        }
+                        
+                        // Pour la démonstration, créer une "traduction" en préfixant le texte
+                        // Cette approche est utilisée car nous n'avons pas accès à une API de traduction
+                        // fonctionnelle en raison des restrictions CORS
+                        
+                        // Algorithme simple de traduction approximative
+                        // 1. Diviser le texte en mots
+                        const words = text.split(/\s+/);
+                        let translatedWords = [];
+                        
+                        // 2. Tenter de traduire chaque mot individuellement
+                        for (const word of words) {
+                            const lowerWord = word.toLowerCase();
+                            // Vérifier si le mot (en minuscule) est dans le dictionnaire
+                            if (commonDict[lowerWord] && commonDict[lowerWord][targetLang]) {
+                                // Préserver les majuscules si le mot original commençait par une majuscule
+                                if (word[0] === word[0].toUpperCase()) {
+                                    const translated = commonDict[lowerWord][targetLang];
+                                    translatedWords.push(translated.charAt(0).toUpperCase() + translated.slice(1));
+                                } else {
+                                    translatedWords.push(commonDict[lowerWord][targetLang]);
+                                }
+                            } else {
+                                // Conserver les mots qu'on ne peut pas traduire
+                                translatedWords.push(word);
+                            }
+                        }
+                        
+                        // 3. Joindre les mots traduits
+                        const approximateTranslation = translatedWords.join(' ');
+                        
+                        // Tentative de traduction mot à mot au mieux
+                        // Si cela ne donne pas un résultat convenable, préfixer avec un indicateur de langue
+                        if (approximateTranslation !== text) {
+                            return approximateTranslation;
+                        } else {
+                            return `[${targetLang.toUpperCase()}] ${text}`;
+                        }
+                        
+                    } catch (error) {
+                        console.error('Translation error:', error);
+                        
+                        // En cas d'erreur, retourner un texte formaté pour indiquer la langue
+                        return `[${targetLang.toUpperCase()}] ${text}`;
+                    }
+                },
+                
+                // Traduit tout le contenu extrait
+                translateAllText: async (textMap, targetLang) => {
+                    const translatedTextMap = {};
+                    const batchSize = 50; // Nombre de textes à traduire en même temps
+                    const allKeys = Object.keys(textMap);
+                    
+                    // Traiter par lots pour éviter de surcharger l'API
+                    for (let i = 0; i < allKeys.length; i += batchSize) {
+                        const batchKeys = allKeys.slice(i, i + batchSize);
+                        const batchPromises = batchKeys.map(async (key) => {
+                            const text = textMap[key];
+                            const translatedText = await translationUtils.translateText(text, targetLang);
+                            return { key, translatedText };
+                        });
+                        
+                        const batchResults = await Promise.all(batchPromises);
+                        batchResults.forEach(({ key, translatedText }) => {
+                            translatedTextMap[key] = translatedText;
+                        });
+                        
+                        // Mettre à jour la progression
+                        const progress = Math.min(100, Math.round((i + batchSize) / allKeys.length * 100));
+                        console.log(`Translation progress: ${progress}%`);
+                    }
+                    
+                    return translatedTextMap;
+                },
+                
+                // Applique les traductions au DOM
+                applyTranslations: (translatedTextMap) => {
+                    // Appliquer aux éléments avec des clés de traduction
+                    document.querySelectorAll('[data-translation-key]').forEach(element => {
+                        const key = element.getAttribute('data-translation-key');
+                        if (translatedTextMap[key]) {
+                            // Pour les spans de traduction créés dynamiquement, mettre à jour le nœud texte
+                            if (element.classList.contains('translation-node')) {
+                                // Le nœud texte est le premier (et seul) enfant du span
+                                if (element.firstChild && element.firstChild.nodeType === Node.TEXT_NODE) {
+                                    element.firstChild.textContent = translatedTextMap[key];
+                                } else {
+                                    element.textContent = translatedTextMap[key];
+                                }
+                            } else {
+                                element.textContent = translatedTextMap[key];
+                            }
+                        }
+                    });
+                    
+                    // Liste de tous les attributs pouvant être traduits
+                    const attributesToApply = [
+                        'alt', 'title', 'placeholder', 'data-title', 'aria-label', 'value'
+                    ];
+                    
+                    // Appliquer les traductions pour chaque type d'attribut
+                    attributesToApply.forEach(attr => {
+                        document.querySelectorAll(`[data-translation-${attr}-key]`).forEach(element => {
+                            const key = element.getAttribute(`data-translation-${attr}-key`);
+                            if (translatedTextMap[key]) {
+                                // Cas spécial pour la valeur des inputs
+                                if (attr === 'value' && element.tagName.toLowerCase() === 'input') {
+                                    element.value = translatedTextMap[key];
+                                } else {
+                                    element.setAttribute(attr, translatedTextMap[key]);
+                                }
+                            }
+                        });
+                    });
+                },
+                
+                // Change la langue de l'interface
+                changeLanguage: async (targetLang) => {
+                    // Vérifier si la langue est disponible
+                    if (!translations.hasOwnProperty(targetLang)) {
+                        console.error(`Language ${targetLang} not supported`);
                         return;
                     }
                     
-                    // Fermer toutes les galeries
-                    eventGalleries.forEach(gallery => {
-                        gallery.classList.remove('active');
-                    });
-                    
-                    // Ouvrir la galerie sélectionnée
-                    targetGallery.classList.add('active');
-                    
-                    // Mettre à jour le swiper correspondant
-                    if (categoryName === 'mariages') {
-                        swiperMariages.update();
-                    } else if (categoryName === 'deuil') {
-                        swiperDeuil.update();
-                    } else if (categoryName === 'festivites') {
-                        swiperFestivites.update();
+                    // Vérifier si une traduction est déjà en cours
+                    if (translationInProgress) {
+                        console.warn('Translation already in progress, please wait');
+                        return;
                     }
                     
-                    // Faire défiler jusqu'à la galerie
-                    setTimeout(() => {
-                        targetGallery.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }, 100);
-                });
-            });
-            
-            // Empêcher la fermeture lorsqu'on clique sur le swiper
-            eventGalleries.forEach(gallery => {
-                gallery.addEventListener('click', (e) => {
-                    if (e.target.closest('.swiper')) {
-                        e.stopPropagation();
+                    // Incrémenter le compteur de changements de langue
+                    languageChangeCount++;
+                    
+                    // Si le nombre maximum de changements est atteint, recharger la page
+                    if (languageChangeCount > MAX_LANGUAGE_CHANGES) {
+                        localStorage.setItem('preferredLanguage', targetLang);
+                        window.location.reload();
+                        return;
                     }
-                });
-            });
-            
-            // Permettre de fermer les galeries en cliquant ailleurs dans la page
-            document.addEventListener('click', function(event) {
-                // Si on clique à l'extérieur d'une galerie et d'une catégorie
-                if (!event.target.closest('.event-gallery') && 
-                    !event.target.closest('.event-category')) {
-                    // Fermer toutes les galeries
-                    eventGalleries.forEach(gallery => {
-                        gallery.classList.remove('active');
-                    });
+                    
+                    // Définir le drapeau de traduction en cours
+                    translationInProgress = true;
+                    
+                    // Afficher l'indicateur de chargement
+                    translationUtils.showLoading();
+                    
+                    // Si on revient au français, restaurer le contenu original
+                    if (targetLang === 'fr') {
+                        // Restaurer tous les textes originaux
+                        document.querySelectorAll('[data-translation-key]').forEach(element => {
+                            if (element.classList.contains('translation-node') && element.firstChild && element.firstChild.nodeType === Node.TEXT_NODE) {
+                                // Restaurer le texte original pour les nœuds texte enveloppés
+                                if (element.hasAttribute('data-original-text')) {
+                                    element.firstChild.textContent = element.getAttribute('data-original-text');
+                                }
+                            } else if (element.hasAttribute('data-original-text')) {
+                                // Restaurer le texte original pour les éléments classiques
+                                element.textContent = element.getAttribute('data-original-text');
+                            }
+                        });
+                        
+                        // Restaurer tous les attributs originaux
+                        const attributesToRestore = [
+                            'alt', 'title', 'placeholder', 'data-title', 'aria-label', 'value'
+                        ];
+                        
+                        attributesToRestore.forEach(attr => {
+                            document.querySelectorAll(`[data-translation-${attr}-key]`).forEach(element => {
+                                if (element.hasAttribute(`data-original-${attr}`)) {
+                                    if (attr === 'value' && element.tagName.toLowerCase() === 'input') {
+                                        element.value = element.getAttribute(`data-original-${attr}`);
+                                    } else {
+                                        element.setAttribute(attr, element.getAttribute(`data-original-${attr}`));
+                                    }
+                                }
+                            });
+                        });
+                        
+                        document.documentElement.lang = 'fr';
+                        currentLanguage = 'fr';
+                        localStorage.setItem('preferredLanguage', 'fr');
+                        
+                        // Mettre à jour l'affichage
+                        updateCurrentLangDisplay();
+                        
+                        // Réinitialiser le drapeau de traduction en cours
+                        translationInProgress = false;
+                        
+                        // Cacher l'indicateur de chargement
+                        setTimeout(() => translationUtils.hideLoading(), 500);
+                        
+                        return;
+                    }
+                    
+                    try {
+                        // Si on n'a pas encore les traductions pour cette langue, les extraire et traduire
+                        if (!translations[targetLang] || Object.keys(translations[targetLang]).length === 0) {
+                            // Sauvegarder le texte original avant traduction
+                            document.querySelectorAll('[data-translation-key]').forEach(element => {
+                                if (!element.hasAttribute('data-original-text')) {
+                                    // Pour les spans de traduction, sauvegarder le contenu du nœud texte
+                                    if (element.classList.contains('translation-node') && element.firstChild && element.firstChild.nodeType === Node.TEXT_NODE) {
+                                        element.setAttribute('data-original-text', element.firstChild.textContent.trim());
+                                    } else {
+                                        element.setAttribute('data-original-text', element.textContent.trim());
+                                    }
+                                }
+                            });
+                            
+                            // Sauvegarder tous les attributs originaux
+                            const attributesToSave = [
+                                'alt', 'title', 'placeholder', 'data-title', 'aria-label', 'value'
+                            ];
+                            
+                            attributesToSave.forEach(attr => {
+                                document.querySelectorAll(`[data-translation-${attr}-key]`).forEach(element => {
+                                    if (!element.hasAttribute(`data-original-${attr}`)) {
+                                        let originalValue;
+                                        if (attr === 'value' && element.tagName.toLowerCase() === 'input') {
+                                            originalValue = element.value;
+                                        } else {
+                                            originalValue = element.getAttribute(attr);
+                                        }
+                                        
+                                        if (originalValue) {
+                                            element.setAttribute(`data-original-${attr}`, originalValue.trim());
+                                        }
+                                    }
+                                });
+                            });
+                            
+                            // Extraire tout le texte
+                            const textMap = translationUtils.extractAllText();
+                            
+                            // Traduire
+                            translations[targetLang] = await translationUtils.translateAllText(textMap, targetLang);
+                        }
+                        
+                        // Appliquer les traductions
+                        translationUtils.applyTranslations(translations[targetLang]);
+                        
+                        // Mettre à jour la langue du document
+                        document.documentElement.lang = targetLang;
+                        currentLanguage = targetLang;
+                        localStorage.setItem('preferredLanguage', targetLang);
+                        
+                        // Mettre à jour l'affichage
+                        updateCurrentLangDisplay();
+                    } catch (error) {
+                        console.error('Error changing language:', error);
+                    } finally {
+                        // Réinitialiser le drapeau de traduction en cours
+                        translationInProgress = false;
+                        
+                        // Cacher l'indicateur de chargement
+                        setTimeout(() => translationUtils.hideLoading(), 500);
+                    }
                 }
+            };
+            
+            // Ajouter l'écouteur d'événement pour le bouton de changement de langue
+            const langToggle = document.getElementById('lang-toggle');
+            const langButtons = document.querySelectorAll('.lang-dropdown-content a');
+            
+            // Écouteurs pour chaque option de langue
+            langButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const newLang = this.getAttribute('data-lang');
+                    if (newLang && newLang !== currentLanguage) {
+                        translationUtils.changeLanguage(newLang);
+                    }
+                });
             });
+            
+            // Pour le bouton principal - on affiche simplement le menu
+            if (langToggle) {
+                langToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Le survol CSS affichera le menu
+                });
+            }
+            
+            // Mettre à jour l'affichage courant
+            function updateCurrentLangDisplay() {
+                const currentLangEl = document.getElementById('current-lang');
+                if (currentLangEl) {
+                    currentLangEl.textContent = currentLanguage.toUpperCase();
+                }
+            }
+            
+            // Initialiser la langue selon la préférence de l'utilisateur
+            if (translationUtils.shouldTranslateInitially()) {
+                // Traduire automatiquement selon la langue du navigateur si supportée
+                const browserLang = navigator.language.split('-')[0];
+                const targetLang = translations.hasOwnProperty(browserLang) ? browserLang : 'en';
+                translationUtils.changeLanguage(targetLang);
+            } else {
+                // Mettre à jour l'affichage courant même sans changement
+                updateCurrentLangDisplay();
+            }
         });
     </script>
     
@@ -195,6 +2010,99 @@
           font-family: "Faculty Glyphic", sans-serif;
           font-weight: 400;
           font-style: normal;
+        }
+        
+        /* Style pour le bouton de changement de langue - NOUVELLE VERSION */
+        .language-toggle {
+            position: relative;
+            z-index: 9999;
+        }
+        
+        .lang-dropdown {
+            position: relative;
+            display: inline-block;
+            z-index: 9999;
+        }
+        
+        .lang-dropdown-content {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: rgba(16, 13, 12, 0.95);
+            min-width: 120px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+            z-index: 9999;
+            border-radius: 4px;
+            margin-top: 5px;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        
+        .lang-dropdown:hover .lang-dropdown-content {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .lang-dropdown-content a {
+            color: var(--color-text);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+            transition: background-color 0.3s;
+            font-size: 1rem;
+        }
+        
+        .lang-dropdown-content a:hover {
+            background-color: var(--color-gold);
+            color: var(--color-dark);
+        }
+        
+        .language-toggle a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            background-color: rgba(16, 13, 12, 0.5);
+        }
+        
+        .language-toggle .lang-dropdown > a:hover {
+            background-color: var(--color-gold);
+            color: var(--color-dark);
+        }
+        
+        .language-toggle i {
+            font-size: 1rem;
+        }
+        
+        /* Style pour l'indicateur de chargement des traductions */
+        .translation-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--color-gold);
+            z-index: 9999;
+            transform: scaleX(0);
+            transform-origin: left;
+            animation: loading-translation 2s ease-in-out infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .translation-loading.active {
+            opacity: 1;
+        }
+        
+        @keyframes loading-translation {
+            0% { transform: scaleX(0); }
+            50% { transform: scaleX(0.7); }
+            100% { transform: scaleX(0); transform-origin: right; }
         }
         
         /* Augmentation de la taille des textes */
@@ -274,18 +2182,22 @@
             display: flex;
             align-items: center; /* Center vertically */
             justify-content: flex-start; /* Align to the left */
+            z-index: 3;
         }
         
         .pro-service-image img {
-            width: 85%; /* Reduced from 100% to not take the full width */
-            height: 180px; /* Fixed height for all images */
+            width: 250px; /* Increased to match the div height (card is 250px tall) */
+            height: 250px; /* Full height of the card */
             object-fit: cover;
             transition: transform 0.5s ease;
             margin-left: 0; /* Ensure image starts from the left */
+            border-radius: 4px; /* Optional: slight rounding of corners */
+            position: relative;
+            z-index: 3;
         }
         
         .pro-service-card:hover .pro-service-image img {
-            transform: scale(1.1);
+            transform: none;
         }
         
         .pro-service-title {
@@ -302,24 +2214,26 @@
             letter-spacing: 1px;
             border-left: none; /* Removed the vertical bar */
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Added text shadow for better visibility */
+            z-index: 4;
         }
         
         .pro-service-description {
             position: absolute;
-            left: 35%; /* Même position que le titre original */
+            left: 0; /* Commence à gauche de la carte */
             top: 0;
-            width: 65%;
+            width: 100%; /* Occupe toute la largeur */
             height: 100%;
             padding: 20px;
-            background-color: rgba(16, 13, 12, 0.95);
+            padding-left: 260px; /* Espace pour l'image qui fait 250px de large */
+            background-color: rgba(53, 80, 43, 0.3); /* Vert transparent (#35502B avec opacité de 0.3) - même que le hover */
             color: var(--color-text);
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start; /* Alignement du texte à gauche */
             opacity: 0;
             transition: all 0.4s ease;
             z-index: 1;
-            transform: translateX(100%);
+            transform: translateX(-100%); /* Commence hors écran à gauche */
         }
         
         .pro-service-description p {
@@ -334,7 +2248,40 @@
         
         .pro-service-card:hover .pro-service-description {
             opacity: 1;
-            transform: translateX(0);
+            transform: translateX(0); /* Arrive de la gauche */
+        }
+        
+        /* Fond vert transparent au hover */
+        .pro-service-card::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(53, 80, 43, 0.3); /* Vert transparent (#35502B avec opacité de 0.3) */
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 0;
+        }
+        
+        .pro-service-card:hover::after {
+            opacity: 1;
+        }
+        
+        /* S'assurer que l'image et le titre restent au-dessus du fond vert */
+        .pro-service-image {
+            position: relative;
+            z-index: 3;
+        }
+        
+        .pro-service-image img {
+            position: relative;
+            z-index: 3;
+        }
+        
+        .pro-service-title {
+            z-index: 4;
         }
         
         @media (max-width: 992px) {
@@ -356,6 +2303,64 @@
             .pro-service-description {
                 left: 30%;
                 width: 70%;
+                padding-left: 20px; /* Supprimer le padding-left de 260px sur mobile */
+            }
+            
+            /* Modification des transitions pour éviter le déclenchement au scroll sur mobile */
+            .pro-service-card {
+                transition: all 0.6s ease 0.3s; /* Ajouter un délai de 0.3s */
+            }
+            
+            .pro-service-title {
+                transition: all 0.6s ease 0.3s;
+            }
+            
+            .pro-service-description {
+                transition: all 0.6s ease 0.3s;
+            }
+            
+            .pro-service-image img {
+                transition: transform 0.6s ease 0.3s;
+            }
+            
+            /* Désactiver les effets hover pour utiliser des classes actives à la place */
+            .pro-service-card:hover {
+                transform: none;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            }
+            
+            .pro-service-card:hover .pro-service-title {
+                opacity: 1;
+                transform: translateY(-50%);
+            }
+            
+            .pro-service-card:hover .pro-service-description {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            
+            .pro-service-card:hover .pro-service-image img {
+                transform: none;
+            }
+            
+            /* Classes pour l'état actif contrôlé par JavaScript */
+            .pro-service-card.active {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            }
+            
+            .pro-service-card.active .pro-service-title {
+                opacity: 0;
+                transform: translateY(-50%) translateX(-30px);
+            }
+            
+            .pro-service-card.active .pro-service-description {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            
+            .pro-service-card.active .pro-service-image img {
+                transform: none;
             }
         }
         
@@ -503,6 +2508,21 @@
             padding: 25px;
             border-radius: 5px;
             margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .event-category h3 {
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .event-category p {
+            margin: 0;
+            line-height: 1.4;
         }
         
         .event-category:hover {
@@ -534,7 +2554,7 @@
         }
         
         .swiper-slide {
-            height: 400px;
+            height: auto; /* Changé de 400px à auto pour s'adapter à la taille réelle */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -544,13 +2564,13 @@
         
         .swiper-slide img {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            height: auto; /* Changé de 100% à auto pour garder les proportions originales */
+            object-fit: contain; /* Changé de 'cover' à 'contain' pour afficher l'image entière */
             transition: transform 0.3s ease;
         }
         
         .swiper-slide:hover img {
-            transform: scale(1.03);
+            transform: none;
         }
         
         /* Styles personnalisés pour les flèches de navigation */
@@ -562,6 +2582,23 @@
             height: 40px;
             border-radius: 50%;
             transition: all 0.3s ease;
+            z-index: 10; /* Assurer que les boutons sont au-dessus des autres éléments */
+        }
+        
+        /* Nouvelle classe pour rendre les boutons plus visibles */
+        .swiper-button-visible {
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            color: var(--color-gold, #BD8F39);
+            pointer-events: auto !important; /* Forcer la détection des événements */
+        }
+        
+        /* Effet visuel lorsqu'un bouton est cliqué */
+        .swiper-button-clicked {
+            transform: scale(1.2);
+            background-color: var(--color-gold, #BD8F39);
+            color: white;
+            box-shadow: 0 0 15px rgba(189, 143, 57, 0.5);
         }
         
         .swiper-button-next:hover, 
@@ -583,7 +2620,7 @@
             }
             
             .swiper-slide {
-                height: 300px;
+                height: auto; /* Ajusté pour maintenir les proportions d'image */
             }
             
             .swiper-button-next, 
@@ -597,6 +2634,26 @@
                 font-size: 14px;
             }
             
+            /* Amélioration des styles pour les catégories d'événements sur mobile */
+            .event-category {
+                padding: 20px 15px;
+                min-height: 100px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+            
+            .event-category h3 {
+                margin-bottom: 10px;
+                margin-top: 0;
+            }
+            
+            .event-category p {
+                margin: 0;
+                padding: 0 10px;
+            }
+            
             /* Effet de hover permanent sur mobile pour les services professionnels */
             .pro-service {
                 transform: translateY(-5px);
@@ -605,7 +2662,7 @@
             }
             
             .pro-service img {
-                transform: scale(1.05);
+                transform: none;
                 transition: transform 0.3s ease;
             }
             
@@ -705,14 +2762,632 @@
                 font-size: 0.9rem;
             }
             
+            .swiper-reviews .testimonial-author-rating {
+                font-size: 0.8rem;
+            }
+            
             .swiper-reviews .swiper-button-next,
             .swiper-reviews .swiper-button-prev {
                 transform: scale(0.8);
             }
         }
+        
+        .service-image {
+            overflow: hidden;
+            height: 375px; /* Augmenté de 25% supplémentaires (300px à 375px) */
+            position: relative;
+        }
+
+        .service-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+            display: block;
+        }
+
+        .service-card .service-image {
+            overflow: hidden;
+            height: 375px; /* Augmenté de 25% supplémentaires (300px à 375px) */
+            position: relative;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .service-card .service-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+            display: block;
+        }
+        
+        /* Style pour faire chevaucher le texte sur l'image */
+        .service-content {
+            padding: var(--spacing-md);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            margin-top: -75px; /* Négatif pour chevaucher l'image de 25% de sa hauteur */
+            background: transparent; /* Fond transparent au lieu du dégradé */
+            z-index: 5;
+            border-radius: 0 0 4px 4px;
+        }
+        
+        .service-content h3 {
+            margin-bottom: var(--spacing-xs);
+            color: var(--color-gold);
+            font-size: 1.5rem;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 0, 0, 0.8); /* Ombre portée plus prononcée */
+            position: relative;
+            z-index: 6;
+        }
+        
+        .service-content p {
+            position: relative;
+            z-index: 6;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8), 0 0 8px rgba(0, 0, 0, 0.7); /* Ombre portée pour le texte */
+            color: var(--color-text);
+            background-color: rgba(16, 13, 12, 0.5); /* Fond légèrement transparent pour le texte uniquement */
+            padding: 10px;
+            border-radius: 4px;
+        }
+        
+        .service-image {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Style pour l'état actif permanent qui simule le hover */
+        .pro-service-card.active-hover::after {
+            opacity: 1;
+        }
+        
+        .pro-service-card.active-hover .pro-service-title {
+            opacity: 0;
+            transform: translateY(-50%) translateX(-30px);
+        }
+        
+        .pro-service-card.active-hover .pro-service-description {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        /* Ajout de styles spécifiques pour corriger le problème de défilement */
+        .nav-list {
+            overflow: visible !important; /* S'assurer que les éléments peuvent déborder sans créer de défilement */
+        }
+        
+        .site-header {
+            overflow: visible !important; /* S'assurer que le header permet le débordement sans créer de défilement */
+        }
+        
+        .container {
+            overflow: visible !important; /* S'assurer que le container permet aussi le débordement */
+        }
+        
+        .lang-dropdown-content {
+            position: absolute !important;
+            top: 100% !important; /* Positionner le menu sous le bouton */
+            right: 0 !important;
+            width: auto !important;
+            max-height: none !important;
+        }
+        
+        /* Ajustements pour prévenir le débordement horizontal */
+        .main-nav {
+            position: relative;
+            overflow: visible !important;
+        }
+        
+        .site-header .container {
+            overflow: visible !important;
+        }
+        
+        body {
+            overflow-x: hidden; /* Empêche les barres de défilement horizontales sur la page entière */
+        }
+        
+        /* Ajustements pour les mobiles */
+        @media (max-width: 768px) {
+            .lang-dropdown-content {
+                right: 0;
+                left: auto;
+                position: absolute;
+                top: 100%;
+                width: auto;
+                min-width: 120px;
+                /* Assurer que le menu reste visible même en mobile */
+                visibility: hidden;
+                z-index: 10000;
+            }
+            
+            .lang-dropdown:hover .lang-dropdown-content,
+            .lang-dropdown:focus .lang-dropdown-content,
+            .lang-dropdown:active .lang-dropdown-content {
+                visibility: visible;
+                opacity: 1;
+            }
+            
+            .nav-list {
+                position: relative;
+                /* Permettre au menu de déborder sans créer de scrollbar */
+                overflow-x: visible !important;
+                overflow-y: auto;
+            }
+        }
+        
+        /* Styles pour le header */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: var(--color-dark);
+            overflow: visible !important; /* Crucial pour permettre au menu de déborder */
+        }
+        
+        .site-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            overflow: visible !important; /* Crucial pour permettre au menu de déborder */
+        }
+        
+        /* Corrections pour le header et le scroll mobile */
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }
+        
+        body {
+            padding-top: 80px; /* Hauteur du header fixe */
+        }
+        
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: var(--color-dark, #100d0c);
+            height: 80px; /* Hauteur fixe du header */
+            overflow: visible !important;
+        }
+        
+        /* Style global pour le bouton hamburger */
+        .menu-toggle {
+            display: none; /* Par défaut caché sur desktop */
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            z-index: 1001;
+            position: relative;
+            width: 44px;
+            height: 44px;
+            outline: none;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        /* Nouveau style hamburger moderne */
+        .hamburger-box {
+            width: 30px;
+            height: 24px;
+            display: inline-block;
+            position: relative;
+        }
+        
+        .hamburger-inner {
+            display: block;
+            top: 50%;
+            margin-top: -2px;
+        }
+        
+        .hamburger-inner, .hamburger-inner::before, .hamburger-inner::after {
+            width: 30px;
+            height: 3px;
+            background-color: var(--color-gold, #bd8f39);
+            border-radius: 3px;
+            position: absolute;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        
+        .hamburger-inner::before, .hamburger-inner::after {
+            content: "";
+            display: block;
+        }
+        
+        .hamburger-inner::before {
+            top: -9px;
+        }
+        
+        .hamburger-inner::after {
+            bottom: -9px;
+        }
+        
+        /* Animation spin pour le hamburger */
+        .menu-toggle.active .hamburger-inner {
+            transform: rotate(225deg);
+            transition-delay: 0.12s;
+            transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+        
+        .menu-toggle.active .hamburger-inner::before {
+            top: 0;
+            opacity: 0;
+            transition: top 0.1s ease-out, opacity 0.1s 0.12s ease-out;
+        }
+        
+        .menu-toggle.active .hamburger-inner::after {
+            bottom: 0;
+            transform: rotate(-90deg);
+            transition: bottom 0.1s ease-out, transform 0.22s 0.12s cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+        
+        /* Menu backdrop - arrière-plan sombre quand le menu est ouvert */
+        .menu-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 997; /* Juste en-dessous du menu */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            display: none;
+        }
+        
+        .menu-open .menu-backdrop {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Styles spécifiques pour mobile */
+        @media (max-width: 768px) {
+            .site-header .container {
+                width: 100%;
+                padding: 10px 15px;
+                box-sizing: border-box;
+                overflow: visible !important;
+                justify-content: space-between;
+            }
+            
+            .header-title {
+                display: flex;
+                align-items: center;
+            }
+            
+            .logo-image {
+                max-height: 60px;
+            }
+            
+            .main-nav {
+                position: static; /* Plutôt que absolute ou fixed */
+            }
+            
+            /* Afficher le bouton hamburger en mobile */
+            .menu-toggle {
+                display: flex !important; /* Forcer l'affichage en mobile avec !important */
+                align-items: center;
+                justify-content: center;
+            }
+            
+            /* Afficher le backdrop en mobile */
+            .menu-backdrop {
+                display: block;
+            }
+            
+            /* Style du menu mobile */
+            .nav-list {
+                position: fixed;
+                top: 80px; /* Juste en dessous du header */
+                left: 0; /* Commence depuis la gauche */
+                right: 0; /* S'étend jusqu'à la droite */
+                width: 100%; /* Largeur complète */
+                max-width: none; /* Pas de largeur maximale */
+                height: calc(100vh - 80px);
+                background-color: rgba(16, 13, 12, 0.95);
+                z-index: 999;
+                flex-direction: column;
+                padding: 20px 0;
+                overflow-y: auto !important;
+                overflow-x: hidden !important;
+                display: flex;
+                align-items: center;
+                justify-content: center; /* Centrer le contenu */
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3); /* Ombre en bas */
+                box-sizing: border-box; /* S'assurer que padding ne cause pas de dépassement */
+                transform: translateY(-100%); /* Caché vers le haut par défaut */
+                transition: transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1.0);
+                opacity: 0;
+                visibility: hidden;
+            }
+            
+            /* S'assurer que le menu est visible quand actif */
+            .nav-list.active {
+                transform: translateY(0); /* Affiche le menu en descendant */
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .nav-list li {
+                width: 100%;
+                text-align: center;
+                margin: 10px 0;
+                opacity: 0;
+                transform: translateY(10px);
+                transition: opacity 0.4s ease, transform 0.4s ease;
+                transition-delay: 0.05s;
+                box-sizing: border-box;
+                padding: 0 15px;
+            }
+            
+            .nav-list.active li {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            
+            .nav-list.active li:nth-child(1) { transition-delay: 0.1s; }
+            .nav-list.active li:nth-child(2) { transition-delay: 0.15s; }
+            .nav-list.active li:nth-child(3) { transition-delay: 0.2s; }
+            .nav-list.active li:nth-child(4) { transition-delay: 0.25s; }
+            .nav-list.active li:nth-child(5) { transition-delay: 0.3s; }
+            .nav-list.active li:nth-child(6) { transition-delay: 0.35s; }
+            .nav-list.active li:nth-child(7) { transition-delay: 0.4s; }
+            
+            .nav-list li a {
+                display: block;
+                padding: 15px 20px;
+                font-size: 1.5rem; /* Plus grande taille de police */
+                transition: color 0.3s ease, transform 0.3s ease;
+                letter-spacing: 1px; /* Espacement des lettres pour meilleure lisibilité */
+            }
+            
+            .nav-list li a:hover {
+                color: var(--color-gold, #bd8f39);
+                transform: scale(1.05); /* Léger agrandissement au survol */
+            }
+            
+            /* Ajouter une ligne de séparation entre les éléments du menu */
+            .nav-list li:not(:last-child) {
+                border-bottom: 1px solid rgba(189, 143, 57, 0.2);
+                padding-bottom: 10px;
+                margin-bottom: 10px;
+            }
+            
+            /* Style du sélecteur de langue en mobile */
+            .language-toggle {
+                position: static;
+                margin-top: 20px;
+            }
+            
+            .language-toggle .lang-dropdown {
+                display: inline-block;
+            }
+            
+            /* S'assurer que les dropdown s'affichent correctement */
+            .lang-dropdown-content {
+                position: absolute !important;
+                top: 100% !important;
+                right: auto !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                width: 150px !important;
+                z-index: 10000 !important;
+                text-align: center;
+            }
+            
+            /* Désactiver les transitions qui pourraient causer des problèmes de scroll */
+            * {
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            /* Assurer que tout le contenu est scrollable */
+            main, section {
+                overflow-x: hidden;
+                overflow-y: visible;
+            }
+        }
+        
+        /* Styles pour le menu de navigation */
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }
+        
+        .nav-list li {
+            margin: 0 15px;
+        }
+        
+        .nav-list a {
+            color: var(--color-light);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-list a:hover {
+            color: var(--color-gold);
+        }
+        
+        /* Ajout de styles spécifiques pour diverses tailles d'écran */
+        @media (max-width: 1024px) {
+            .nav-list li {
+                margin: 0 10px;
+            }
+            
+            .nav-list a {
+                font-size: 1rem;
+            }
+        }
+        
+        /* Ajustements pour les très petits écrans */
+        @media (max-width: 380px) {
+            .nav-list {
+                width: 85%; /* Légèrement plus large sur les petits écrans */
+            }
+            
+            .nav-list li a {
+                font-size: 1.1rem; /* Taille légèrement réduite */
+                padding: 8px 15px;
+            }
+            
+            .header-title-link {
+                font-size: 1.2rem; /* Réduire la taille du titre */
+            }
+            
+            .logo-image {
+                max-height: 50px; /* Logo légèrement plus petit */
+            }
+        }
+    </style>
+    
+    <!-- Script pour corriger le comportement du menu mobile -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fix pour le scroll bloqué en mobile
+            window.addEventListener('load', function() {
+                // Scroll en haut de la page après chargement
+                window.scrollTo(0, 0);
+                
+                // Activer le scroll sur le body
+                document.body.style.overflow = 'auto';
+                document.body.style.height = 'auto';
+            });
+            
+            // Gestion du menu mobile
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navList = document.querySelector('.nav-list');
+            const menuBackdrop = document.querySelector('.menu-backdrop');
+            
+            if (menuToggle && navList) {
+                // Ajouter une classe pour identifier que le JS est chargé
+                document.body.classList.add('js-loaded');
+                
+                // Écouteur d'événement optimisé
+                menuToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Toggle classe active sur le bouton hamburger
+                    this.classList.toggle('active');
+                    
+                    // Toggle classe active sur la liste de navigation
+                    navList.classList.toggle('active');
+                    
+                    // Ajouter/supprimer la classe menu-open pour l'arrière-plan sombre
+                    document.body.classList.toggle('menu-open');
+                    
+                    // Bloquer le défilement du body quand le menu est ouvert
+                    if (document.body.classList.contains('menu-open')) {
+                        document.body.style.overflow = 'hidden';
+                    } else {
+                        document.body.style.overflow = 'auto';
+                    }
+                });
+                
+                // Fermer le menu lorsqu'un lien est cliqué
+                document.querySelectorAll('.nav-list a').forEach(link => {
+                    link.addEventListener('click', function() {
+                        // Retirer la classe active du menu
+                        navList.classList.remove('active');
+                        
+                        // Retirer la classe active du bouton hamburger
+                        menuToggle.classList.remove('active');
+                        
+                        // Réactiver le scroll
+                        document.body.classList.remove('menu-open');
+                    });
+                });
+                
+                // Fermer le menu au clic sur l'arrière-plan sombre
+                if (menuBackdrop) {
+                    menuBackdrop.addEventListener('click', function() {
+                        navList.classList.remove('active');
+                        menuToggle.classList.remove('active');
+                        document.body.classList.remove('menu-open');
+                    });
+                }
+                
+                // Fermer le menu au clic en dehors
+                document.addEventListener('click', function(event) {
+                    if (navList.classList.contains('active') && 
+                        !navList.contains(event.target) && 
+                        !menuToggle.contains(event.target)) {
+                        navList.classList.remove('active');
+                        menuToggle.classList.remove('active');
+                        document.body.classList.remove('menu-open');
+                    }
+                });
+                
+                // Fermer le menu au redimensionnement de la fenêtre
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth > 768) {
+                        navList.classList.remove('active');
+                        menuToggle.classList.remove('active');
+                        document.body.classList.remove('menu-open');
+                    }
+                });
+            }
+        });
+    </script>
+    
+    <!-- Script de diagnostic pour le menu mobile -->
+    <!-- Script pour le menu mobile -->
+    
+    <!-- Styles supplémentaires pour le menu mobile -->
+    <style>
+        @media (max-width: 768px) {
+            /* Assure que le menu hamburger est visible */
+            .menu-toggle {
+                display: block !important;
+                z-index: 1100 !important;
+                cursor: pointer !important;
+            }
+            
+            /* Assure que le menu s'affiche correctement lorsqu'il est actif */
+            .nav-list.active {
+                display: flex !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                transform: none !important;
+            }
+            
+            /* Styles par défaut pour le menu mobile */
+            .nav-list {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100vh !important;
+                background-color: rgba(16, 13, 12, 0.98) !important;
+                flex-direction: column !important;
+                justify-content: center !important;
+                align-items: center !important;
+                z-index: 1050 !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+                padding-top: 80px !important;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Indicateur de chargement pour la traduction -->
+    <div class="translation-loading" id="translation-loading"></div>
+    
     <!-- L'élément grain-overlay a été supprimé pour désactiver l'effet de grain -->
 
     <!-- En-tête -->
@@ -720,22 +3395,36 @@
         <div class="container">
             <div class="header-title">
                 <img src="images/Logo Boheme.png" alt="Bohème Fleurs" class="logo-image">
-                <a href="#" class="header-title-link">Boheme Fleurs</a>
+                <a href="#" class="header-title-link" data-no-translate>Boheme Fleurs</a>
             </div>
             <nav class="main-nav">
-                <button class="menu-toggle" aria-label="Menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                <button class="menu-toggle" aria-label="Menu" aria-expanded="false" aria-controls="main-menu">
+                    <div class="hamburger-box">
+                        <div class="hamburger-inner"></div>
+                    </div>
+                    <span class="sr-only">Menu</span>
                 </button>
-                <ul class="nav-list">
-                    <li><a href="#quotidien">Au quotidien</a></li>
+                <ul class="nav-list" id="main-menu" role="menu">
+                    <li><a href="#au-quotidien">Au quotidien</a></li>
                     <li><a href="#evenements">Événements</a></li>
                     <li><a href="#professionnels">Professionnels</a></li>
                     <li><a href="#services">Services</a></li>
                     <li><a href="#reviews">Avis</a></li>
                     <li><a href="#footer">Contact</a></li>
+                    <li class="language-toggle">
+                        <div class="lang-dropdown">
+                            <a href="#" id="lang-toggle"><i class="fas fa-globe"></i> <span id="current-lang">FR</span></a>
+                            <div class="lang-dropdown-content">
+                                <a href="#" data-lang="fr">Français</a>
+                                <a href="#" data-lang="en">English</a>
+                                <a href="#" data-lang="es">Español</a>
+                                <a href="#" data-lang="de">Deutsch</a>
+                                <a href="#" data-lang="it">Italiano</a>
+                            </div>
+                        </div>
+                    </li>
                 </ul>
+                <div class="menu-backdrop"></div>
             </nav>
         </div>
     </header>
@@ -746,7 +3435,7 @@
             <img src="images/Logo Boheme.png" alt="Bohème Fleurs" class="logo-image">
         </div>
         <img src="images/herobg.jpg" alt="Arrangement floral artistique" class="hero-image" 
-             onerror="this.onerror=null; this.src='images/mar1.jpg';">
+             onerror="this.onerror=null; this.src='images/herobg.jpg';">
         <div class="hero-content">
             <p class="reveal-text">Chez Bohème Fleurs, notre boutique évolue au rythme des saisons. Respectueux du cycle naturel, nous créons des compositions uniques qui répondent à vos attentes, et reflètent cette poésie bohème qui caractérise notre univers.</p>
         </div>
@@ -759,7 +3448,7 @@
             <div class="section-content">
                 <!-- Image horizontale qui prend toute la largeur -->
                 <div class="full-width-image full-width-no-margin">
-                    <img src="images/quoti-hori.jpg" alt="Notre boutique au quotidien" loading="lazy">
+                    <img src="images/quoti-hori.jpg?v=2" alt="Notre boutique au quotidien" loading="lazy" style="object-position: center 63%;">
                 </div>
                 
                 <!-- Texte qui parle de qui nous sommes -->
@@ -770,7 +3459,7 @@
                 <!-- Trois photos en dessous -->
                 <div class="three-images-grid">
                     <div class="gallery-item hover-expand">
-                        <img src="images/quoti1.jpg" alt="Composition florale quotidienne" loading="lazy">
+                        <img src="images/quoti1.jpg" alt="Composition florale quotidienne" loading="lazy" style="object-position: center 12%;">
                     </div>
                     <div class="gallery-item hover-expand">
                         <img src="images/quoti2.jpg" alt="Bouquet délicat" loading="lazy">
@@ -786,7 +3475,7 @@
     <!-- Événements Section -->
     <section id="evenements" class="section">
         <div class="container">
-            <h2 class="section-title reveal-text">Événements</h2>
+            <h2 class="section-title reveal-text">Évènements</h2>
             <div class="section-content">
                 <div class="text-content">
                     <p class="reveal-text">Des créations florales sur mesure pour vos moments importants. Mariages, cérémonies de deuil ou festivités, nous vous accompagnons avec des compositions qui reflètent l'émotion de l'instant.</p>
@@ -813,29 +3502,32 @@
                         <div class="swiper swiper-mariages">
                             <div class="swiper-wrapper">
                                 <div class="swiper-slide">
-                                    <img src="images/mar1.jpg" alt="Décoration florale de mariage" loading="lazy">
+                                    <img src="images/mariage/mar1.jpg" alt="Décoration florale de mariage" loading="lazy">
                                 </div>
                                 <div class="swiper-slide">
-                                    <img src="images/mar2.jpg" alt="Bouquet de mariée" loading="lazy">
+                                    <img src="images/mariage/mar2.jpg" alt="Bouquet de mariée" loading="lazy">
                                 </div>
                                 <div class="swiper-slide">
-                                    <img src="images/mar3.jpg" alt="Arrangement floral pour mariage" loading="lazy">
+                                    <img src="images/mariage/mar3.jpg" alt="Arrangement floral pour mariage" loading="lazy">
                                 </div>
                                 <div class="swiper-slide">
-                                    <img src="images/mar4.jpg" alt="Décoration de table de mariage" loading="lazy">
+                                    <img src="images/mariage/mar4.jpg" alt="Décoration de table de mariage" loading="lazy">
                                 </div>
                                 <div class="swiper-slide">
-                                    <img src="images/mar5.jpg" alt="Bouquet de mariée sophistiqué" loading="lazy">
+                                    <img src="images/mariage/mar5.jpg" alt="Bouquet de mariée sophistiqué" loading="lazy">
                                 </div>
                                 <div class="swiper-slide">
-                                    <img src="images/mar6.jpg" alt="Décoration florale de mariage" loading="lazy">
+                                    <img src="images/mariage/mar6.jpg" alt="Décoration florale de mariage" loading="lazy">
                                 </div>
                                 <div class="swiper-slide">
-                                    <img src="images/mar7.jpg" alt="Centre de table de mariage" loading="lazy">
+                                    <img src="images/mariage/mar7.jpg" alt="Centre de table de mariage" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/mariage/IMG20230505181300.jpg" alt="Composition florale de mariage" loading="lazy">
                                 </div>
                             </div>
-                            <div class="swiper-button-next"></div>
-                            <div class="swiper-button-prev"></div>
+                            <div class="swiper-button-next swiper-mariages-next"></div>
+                            <div class="swiper-button-prev swiper-mariages-prev"></div>
                         </div>
                     </div>
                     
@@ -844,15 +3536,23 @@
                         <div class="swiper swiper-deuil">
                             <div class="swiper-wrapper">
                                 <div class="swiper-slide">
-                                    <img src="images/deuil1.jpg" alt="Composition pour cérémonie" loading="lazy">
+                                    <img src="images/deuil/deuil1.jpg" alt="Composition pour cérémonie" loading="lazy">
                                 </div>
                                 <div class="swiper-slide">
-                                    <img src="images/deuil2.jpeg" alt="Arrangement floral pour deuil" loading="lazy">
+                                    <img src="images/deuil/deuil2.jpeg" alt="Arrangement floral pour deuil" loading="lazy">
                                 </div>
-                                <!-- Ajouter d'autres images de compositions de deuil si disponibles -->
+                                <div class="swiper-slide">
+                                    <img src="images/deuil/IMG-20250204-WA0011.jpg" alt="Composition funéraire" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/deuil/IMG-20250204-WA0019.jpg" alt="Arrangement funéraire" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/deuil/IMG_20240113_121154 - Copie.jpg" alt="Composition florale deuil élégante" loading="lazy">
+                                </div>
                             </div>
-                            <div class="swiper-button-next"></div>
-                            <div class="swiper-button-prev"></div>
+                            <div class="swiper-button-next swiper-deuil-next"></div>
+                            <div class="swiper-button-prev swiper-deuil-prev"></div>
                         </div>
                     </div>
                     
@@ -861,15 +3561,23 @@
                         <div class="swiper swiper-festivites">
                             <div class="swiper-wrapper">
                                 <div class="swiper-slide">
-                                    <img src="images/festi1.jpg" alt="Arrangement pour soirée" loading="lazy">
+                                    <img src="images/festiv/festi1.jpg" alt="Arrangement pour soirée" loading="lazy">
                                 </div>
                                 <div class="swiper-slide">
-                                    <img src="images/festi2.jpg" alt="Décoration florale pour événement" loading="lazy">
+                                    <img src="images/festiv/festi2.jpg" alt="Décoration florale pour événement" loading="lazy">
                                 </div>
-                                <!-- Ajouter d'autres images de festivités si disponibles -->
+                                <div class="swiper-slide">
+                                    <img src="images/festiv/IMG_20231012_185225.jpg" alt="Décoration d'événement" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/festiv/IMG_20231211_165752.jpg" alt="Arrangement festif" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/festiv/IMG_20231217_155339.jpg" alt="Décoration florale événement" loading="lazy">
+                                </div>
                             </div>
-                            <div class="swiper-button-next"></div>
-                            <div class="swiper-button-prev"></div>
+                            <div class="swiper-button-next swiper-festivites-next"></div>
+                            <div class="swiper-button-prev swiper-festivites-prev"></div>
                         </div>
                     </div>
                 </div>
@@ -889,11 +3597,11 @@
                     <div class="pro-service-card">
                         <div class="pro-service-content">
                             <div class="pro-service-image">
-                                <img src="images/IMG_20240310_153009.jpg" alt="Décoration de façade">
+                                <img src="images/façade/facade1.png" alt="Façade & Vitrine">
                             </div>
-                            <h3 class="pro-service-title">Décoration de façade</h3>
+                            <h3 class="pro-service-title">Façade & Vitrine</h3>
                             <div class="pro-service-description">
-                                <p>Sublimez l'entrée de votre établissement avec nos compositions florales qui captent l'attention et reflètent votre image de marque.</p>
+                                <p>Sublimez l'entrée de votre établissement et attirez l'attention des passants avec nos compositions florales qui captent l'attention, reflètent votre image de marque et se renouvellent selon vos besoins et événements spéciaux.</p>
                             </div>
                         </div>
                     </div>
@@ -901,9 +3609,9 @@
                     <div class="pro-service-card">
                         <div class="pro-service-content">
                             <div class="pro-service-image">
-                                <img src="images/IMG_20230323_165741.jpg" alt="Aménagement intérieur">
+                                <img src="images/pro/eventpro.jpg" alt="évènementiel">
                             </div>
-                            <h3 class="pro-service-title">Aménagement intérieur</h3>
+                            <h3 class="pro-service-title">évènementiel</h3>
                             <div class="pro-service-description">
                                 <p>Créez une ambiance unique dans vos espaces professionnels avec nos compositions sur mesure qui s'intègrent parfaitement à votre décoration.</p>
                             </div>
@@ -913,11 +3621,11 @@
                     <div class="pro-service-card">
                         <div class="pro-service-content">
                             <div class="pro-service-image">
-                                <img src="images/IMG20240119123733.jpg" alt="Vitrine">
+                                <img src="images/pro/abopro.jpg" alt="Abonnements Floraux">
                             </div>
-                            <h3 class="pro-service-title">Vitrine</h3>
+                            <h3 class="pro-service-title">Abonnements Floraux</h3>
                             <div class="pro-service-description">
-                                <p>Attirez l'attention des passants avec des vitrines fleuries saisonnières, renouvelées selon vos besoins et événements spéciaux.</p>
+                                <p>Profitez de compositions florales renouvelées régulièrement pour maintenir la fraîcheur et l'élégance de vos espaces professionnels.</p>
                             </div>
                         </div>
                     </div>
@@ -925,11 +3633,11 @@
                     <div class="pro-service-card">
                         <div class="pro-service-content">
                             <div class="pro-service-image">
-                                <img src="images/IMG20240112092853.jpg" alt="Abonnements">
+                                <img src="images/pro/vegetapro.jpg" alt="Végétalisation">
                             </div>
-                            <h3 class="pro-service-title">Abonnements</h3>
+                            <h3 class="pro-service-title">Végétalisation</h3>
                             <div class="pro-service-description">
-                                <p>Profitez de compositions florales renouvelées régulièrement pour maintenir la fraîcheur et l'élégance de vos espaces professionnels.</p>
+                                <p>Transformez vos espaces professionnels avec nos solutions de végétalisation durable qui apportent fraîcheur, bien-être et esthétique naturelle à votre environnement de travail.</p>
                             </div>
                         </div>
                     </div>
@@ -945,16 +3653,16 @@
             <div class="services-grid">
                 <div class="service-card">
                     <div class="service-image">
-                        <img src="images/IMG20240522095344.jpg" alt="Service de livraison" loading="lazy">
+                        <img src="images/galerie/liv1.jpeg" alt="Service de livraison" loading="lazy">
                     </div>
                     <div class="service-content">
                         <h3 class="reveal-text">Livraison</h3>
-                        <p class="reveal-text">Notre service de livraison couvre toute la région lyonnaise. Vos fleurs arrivent fraîches, soigneusement préparées et emballées, que ce soit pour surprendre un être cher ou embellir votre intérieur. Comptez sur nous pour que vos messages floraux parviennent à destination en parfait état, au moment souhaité.</p>
+                        <p class="reveal-text">Nous livrons dans tout Lyon grâce à notre partenaire <a href="https://goneenselle.fr/" target="_blank" style="color: var(--color-gold); font-weight: bold;" data-no-translate>Gone en Selle</a>, un service de livraison à vélo-cargo écologique et rapide. Vos fleurs arrivent fraîches et soigneusement préparées, accompagnées si vous le souhaitez d'un message personnalisé pour rendre votre attention encore plus spéciale.</p>
                     </div>
                 </div>
                 <div class="service-card">
                     <div class="service-image">
-                        <img src="images/IMG20240525111546.jpg" alt="Chèque cadeau" loading="lazy">
+                        <img src="images/galerie/IMG_20230908_191054 - Copie.jpg" alt="Chèque cadeau" loading="lazy">
                     </div>
                     <div class="service-content">
                         <h3 class="reveal-text">Chèque cadeau</h3>
@@ -963,7 +3671,7 @@
                 </div>
                 <div class="service-card">
                     <div class="service-image">
-                        <img src="images/IMG20240112092853.jpg" alt="Abonnements floraux" loading="lazy">
+                        <img src="images/galerie/abo1.jpg" alt="Abonnements floraux" loading="lazy">
                     </div>
                     <div class="service-content">
                         <h3 class="reveal-text">Abonnements</h3>
@@ -972,7 +3680,7 @@
                 </div>
                 <div class="service-card">
                     <div class="service-image">
-                        <img src="images/IMG_20230923_153534.jpg" alt="Créations sur mesure" loading="lazy">
+                        <img src="images/galerie/gal1.JPG" alt="Créations sur mesure" loading="lazy">
                     </div>
                     <div class="service-content">
                         <h3 class="reveal-text">Sur demande</h3>
@@ -991,25 +3699,61 @@
                 <div class="text-content">
                     <p class="reveal-text">Explorez notre collection de créations florales, renouvelée au fil des saisons. Chaque composition raconte une histoire unique et témoigne de notre passion pour l'art floral. Réalisées dans notre atelier, ces œuvres illustrent notre savoir-faire et la richesse du monde végétal sublimé par une main experte.</p>
                 </div>
-                <div class="gallery-grid">
+                <div class="gallery-grid gallery-limited">
                     <div class="gallery-item">
-                        <img src="images/IMG_20240503_144422.jpg" alt="Création florale saison printemps" loading="lazy">
+                        <img src="images/galerie/IMG_20240503_144422.jpg" alt="Création florale saison printemps" loading="lazy">
                     </div>
                     <div class="gallery-item">
-                        <img src="images/IMG20230929175237.jpg" alt="Création élégante" loading="lazy">
+                        <img src="images/galerie/gal1.JPG" alt="Création élégante" loading="lazy">
                     </div>
                     <div class="gallery-item">
-                        <img src="images/IMG20230505180723.jpg" alt="Bouquet printanier" loading="lazy">
+                        <img src="images/galerie/IMG20230420165117.jpg" alt="Bouquet printanier" loading="lazy">
                     </div>
                     <div class="gallery-item">
-                        <img src="images/IMG20240109144339.jpg" alt="Composition florale spéciale" loading="lazy">
+                        <img src="images/galerie/IMG_20240222_161559.jpg" alt="Arrangement floral" loading="lazy">
                     </div>
                     <div class="gallery-item">
-                        <img src="images/IMG_20230323_165741.jpg" alt="Création artistique florale" loading="lazy">
+                        <img src="images/galerie/IMG20240109144339.jpg" alt="Composition florale spéciale" loading="lazy">
                     </div>
                     <div class="gallery-item">
-                        <img src="images/IMG_3170 (2).JPG" alt="Création florale artistique" loading="lazy">
+                        <img src="images/galerie/IMG_20230323_165741.jpg" alt="Création artistique florale" loading="lazy">
                     </div>
+                    <div class="gallery-item">
+                        <img src="images/galerie/IMG_3170 (2).JPG" alt="Création florale artistique" loading="lazy">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="images/galerie/IMG_20231012_184056.jpg" alt="Bouquet sophistiqué" loading="lazy">
+                    </div>
+                    <div class="gallery-item hidden-gallery-item">
+                        <img src="images/galerie/IMG_20230908_191054 - Copie.jpg" alt="Composition élégante" loading="lazy">
+                    </div>
+                    <div class="gallery-item hidden-gallery-item">
+                        <img src="images/galerie/IMG_20230305_103539.jpg" alt="Création saisonnière" loading="lazy">
+                    </div>
+                    <div class="gallery-item hidden-gallery-item">
+                        <img src="images/galerie/IMG_20240113_130410.jpg" alt="Arrangement sophistiqué" loading="lazy">
+                    </div>
+                    <div class="gallery-item hidden-gallery-item">
+                        <img src="images/galerie/IMG20240525111546.jpg" alt="Bouquet champêtre" loading="lazy">
+                    </div>
+                    <div class="gallery-item hidden-gallery-item">
+                        <img src="images/galerie/IMG20240112092853.jpg" alt="Création délicate" loading="lazy">
+                    </div>
+                    <div class="gallery-item hidden-gallery-item">
+                        <img src="images/galerie/IMG_20240222_175949.jpg" alt="Composition sur mesure" loading="lazy">
+                    </div>
+                    <div class="gallery-item hidden-gallery-item">
+                        <img src="images/galerie/_DSC8128-Modifier.jpg" alt="Art floral" loading="lazy">
+                    </div>
+                    <div class="gallery-item hidden-gallery-item">
+                        <img src="images/galerie/IMG20240119123733.jpg" alt="Composition artistique" loading="lazy">
+                    </div>
+                </div>
+                <div class="gallery-toggle">
+                    <button id="gallery-show-more" class="gallery-show-more">
+                        <span>Voir plus</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -1096,10 +3840,14 @@
                 
                 <div class="footer-map">
                     <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2783.1435694526207!2d4.8305663!3d45.7677557!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47f4eb01ab7bae3f%3A0x9ce0bfb5ff2cc08a!2s8%20Rue%20de%20la%20Plati%C3%A8re%2C%2069001%20Lyon!5e0!3m2!1sfr!2sfr!4v1622824123456!5m2!1sfr!2sfr&iwloc=addr" 
+                        id="snazzy-map"
+                        width="100%" 
+                        height="100%" 
                         style="border:0;" 
-                        allowfullscreen="" 
-                        loading="lazy"
+                        loading="lazy" 
+                        allowfullscreen 
+                        referrerpolicy="no-referrer-when-downgrade"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2783.1435694526207!2d4.8305663!3d45.7677557!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47f4eb01ab7bae3f%3A0x9ce0bfb5ff2cc08a!2s8%20Rue%20de%20la%20Plati%C3%A8re%2C%2069001%20Lyon!5e0!3m2!1sfr!2sfr!4v1622824123456!5m2!1sfr!2sfr"
                         title="Bohème Fleurs - 8 Rue de la Platière, 69001 Lyon">
                     </iframe>
                 </div>
@@ -1114,8 +3862,81 @@
             </div>
         </div>
     </footer>
-    
-    <!-- Swiper JS -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <!-- Script centralisant le chargement de Google Maps API -->
+    <script>
+        // Fonction pour charger l'API Google Maps uniquement pour les avis Google
+        function loadGoogleMapsAndInitialize() {
+            // Utiliser la clé API définie dans config.js
+            const apiKey = window.GOOGLE_API_KEY || 'AIzaSyCTJ-ttYO8KkKmvDGAFFpjRwiBJf9ciXrA';
+            
+            if (!apiKey) {
+                console.error("Erreur de configuration: Clé API Google Maps manquante");
+                return;
+            }
+            
+            // Vérifier si l'API Google Maps est déjà chargée
+            if (typeof google !== 'undefined' && typeof google.maps !== 'undefined') {
+                // Si déjà chargée, initialiser directement les avis Google
+                if (typeof initGooglePlaces === 'function') initGooglePlaces();
+            } else {
+                // Définir une fonction globale qui sera appelée lorsque l'API sera chargée
+                window.initGoogleMapsFeatures = function() {
+                    // Initialiser les avis Google
+                    if (typeof initGooglePlaces === 'function') {
+                        setTimeout(initGooglePlaces, 100);
+                    }
+                };
+                
+                // Charger l'API Google Maps uniquement avec la bibliothèque Places pour les avis
+                const script = document.createElement('script');
+                script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&loading=async&callback=initGoogleMapsFeatures`;
+                script.async = true;
+                script.defer = true;
+                document.head.appendChild(script);
+            }
+        }
+        
+        // Personnaliser le style de l'iframe de la carte à l'aide de CSS pour reproduire l'effet Assassin's Creed
+        document.addEventListener('DOMContentLoaded', function() {
+            // Appliquer un filtre CSS à l'iframe pour obtenir un effet visuel similaire au style Assassin's Creed
+            const mapFrame = document.getElementById('snazzy-map');
+            if (mapFrame) {
+                // Nouveau filtre plus précis, basé sur les couleurs exactes du style Assassin's Creed IV:
+                // - #24282b pour l'eau (bleu très foncé)
+                // - #4d6059 pour le paysage (vert-gris foncé)
+                // - #7f8d89 pour les routes (gris moyen)
+                // - Suppression des labels avec faible opacité
+                mapFrame.style.filter = 'grayscale(90%) brightness(80%) sepia(20%) hue-rotate(145deg) saturate(60%) contrast(130%)';
+                
+                // Ajouter un effet de vignette pour assombrir les bords (comme dans le style Assassin's Creed)
+                const footerMap = document.querySelector('.footer-map');
+                if (footerMap) {
+                    footerMap.style.position = 'relative';
+                    footerMap.style.overflow = 'hidden';
+                    
+                    // Créer un effet de vignette avec un pseudo-élément
+                    const vignetteStyle = document.createElement('style');
+                    vignetteStyle.textContent = `
+                        .footer-map::after {
+                            content: '';
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            box-shadow: inset 0 0 50px 10px rgba(0, 0, 0, 0.5);
+                            pointer-events: none;
+                            z-index: 1;
+                        }
+                    `;
+                    document.head.appendChild(vignetteStyle);
+                }
+            }
+            
+            // Charger l'API Google Maps uniquement pour les avis
+            loadGoogleMapsAndInitialize();
+        });
+    </script>
 </body>
-</html> 
+</html>

@@ -227,6 +227,7 @@ p, span, a, li {
     list-style: none;
     justify-content: flex-end;
     width: 100%;
+    position: static;
 }
 
 .nav-list a {
@@ -238,6 +239,7 @@ p, span, a, li {
     color: var(--color-gold);
     transform: scale(1);
     display: inline-block;
+    text-decoration: none;
 }
 
 .nav-list a:hover {
@@ -258,25 +260,21 @@ p, span, a, li {
     transform: scale(1.2) !important;
 }
 
-/* Styles pour le header en mode scroll */
-.site-header.scrolled {
-    background-color: rgba(16, 13, 12, 0.92);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid rgba(189, 143, 57, 0.15);
-    height: 50px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+/* État du body quand le menu est ouvert */
+body.menu-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
 }
 
-.site-header.scrolled .header-title {
-    font-size: 1.8rem;
-}
-
-.site-header.scrolled .header-title .logo-image {
-    height: 40px;
-}
-
-/* Media Queries pour le header */
+/* Styles pour le menu mobile */
 @media (max-width: 768px) {
+    /* Réinitialiser certaines propriétés de base */
+    body.menu-open {
+        overflow: hidden;
+    }
+    
     .site-header .container {
         padding: 0 var(--spacing-sm);
         justify-content: space-between;
@@ -284,31 +282,7 @@ p, span, a, li {
         max-width: 100%;
     }
     
-    .header-title {
-        font-size: 2.2rem;
-        text-align: left;
-        margin-right: var(--spacing-md);
-    }
-    
-    .header-title .logo-image {
-        display: block;
-        height: 45px;
-    }
-    
-    .site-header.scrolled .header-title {
-        font-size: 2rem;
-    }
-    
-    .site-header.scrolled .header-title .logo-image {
-        height: 40px;
-    }
-
-    /* Masquer le logo hero sur mobile */
-    .hero-logo {
-        display: none;
-    }
-
-    /* Afficher le menu hamburger sur mobile */
+    /* Style du bouton hamburger */
     .menu-toggle {
         display: flex;
         flex-direction: column;
@@ -319,12 +293,17 @@ p, span, a, li {
         border: none;
         cursor: pointer;
         padding: 0;
-        z-index: 1001;
+        z-index: 1010; /* Plus élevé que le menu */
         position: relative;
-        overflow: visible;
+        outline: none;
     }
-
-    /* Styles des barres du hamburger */
+    
+    /* État focus du menu hamburger */
+    .menu-toggle:focus {
+        outline: 1px dashed var(--color-gold);
+        outline-offset: 4px;
+    }
+    
     .menu-toggle span {
         display: block;
         width: 100%;
@@ -333,118 +312,271 @@ p, span, a, li {
         border-radius: 3px;
         position: absolute;
         left: 0;
-        transform-origin: left center;
-        transition: transform 0.5s ease-in-out,
-                    opacity 0.3s ease,
-                    left 0.3s ease;
+        transition: transform 0.3s ease, 
+                    opacity 0.3s ease, 
+                    background-color 0.3s ease;
     }
-
-    /* Position des barres */
+    
     .menu-toggle span:nth-child(1) {
         top: 0;
+        transform-origin: center;
     }
-
+    
     .menu-toggle span:nth-child(2) {
         top: 50%;
         transform: translateY(-50%);
     }
-
+    
     .menu-toggle span:nth-child(3) {
         bottom: 0;
+        transform-origin: center;
     }
-
-    /* Animation du hamburger quand actif */
+    
+    .menu-toggle.active span {
+        background-color: var(--color-gold);
+    }
+    
     .menu-toggle.active span:nth-child(1) {
-        transform: rotate(45deg);
-        top: 2px;
-        left: 5px;
-        width: 100%;
+        transform: translateY(10px) rotate(45deg);
     }
-
+    
     .menu-toggle.active span:nth-child(2) {
         opacity: 0;
-        left: -30px;
     }
-
+    
     .menu-toggle.active span:nth-child(3) {
-        transform: rotate(-45deg);
-        bottom: 1px;
-        left: 5px;
-        width: 100%;
-    }
-}
-
-@media (max-width: 576px) {
-    .header-title {
-        font-size: 2rem;
+        transform: translateY(-10px) rotate(-45deg);
     }
     
-    .header-title .logo-image {
-        height: 40px;
-    }
-    
-    .site-header.scrolled .header-title {
-        font-size: 1.8rem;
-    }
-    
-    .site-header.scrolled .header-title .logo-image {
-        height: 35px;
-    }
-
-    /* Amélioration du panneau de navigation */
+    /* Style du menu de navigation mobile */
     .nav-list {
         position: fixed;
-        top: 60px;
-        right: -100%;
-        width: 70%;
-        height: calc(100vh - 60px);
-        flex-direction: column;
-        gap: var(--spacing-md);
-        background-color: rgba(16, 13, 12, 0.98);
-        backdrop-filter: blur(15px);
-        padding: var(--spacing-md);
-        transition: right 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-        z-index: 999;
-        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.3);
-        border-left: 1px solid rgba(189, 143, 57, 0.1);
-        justify-content: flex-start;
         display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background-color: rgba(16, 13, 12, 0.97);
+        z-index: 1000;
+        gap: 20px;
+        padding: 80px 20px 30px;
+        transform: translateX(100%);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow-y: auto;
+        visibility: hidden;
     }
     
     .nav-list.active {
-        right: 0;
+        transform: translateX(0);
+        visibility: visible;
     }
     
     .nav-list a {
-        display: block;
-        padding: var(--spacing-sm) 0;
-        font-size: 1.2rem;
+        font-size: 1.5rem;
+        padding: 15px;
+        width: 100%;
+        text-align: center;
         opacity: 0;
-        transform: translateX(30px);
-        animation: fadeInRight 0.8s forwards;
+        transform: translateY(20px);
+        animation: slideIn 0.5s forwards;
+        animation-delay: calc(var(--i) * 0.1s);
+        position: relative;
     }
     
-    /* Animation séquentielle pour les liens du menu */
-    .nav-list.active a:nth-child(1) { animation-delay: 0.2s; }
-    .nav-list.active a:nth-child(2) { animation-delay: 0.3s; }
-    .nav-list.active a:nth-child(3) { animation-delay: 0.4s; }
-    .nav-list.active a:nth-child(4) { animation-delay: 0.5s; }
-    .nav-list.active a:nth-child(5) { animation-delay: 0.6s; }
-    .nav-list.active a:nth-child(6) { animation-delay: 0.7s; }
-    .nav-list.active a:nth-child(7) { animation-delay: 0.8s; }
+    /* Ajouter un effet sur le focus pour l'accessibilité */
+    .nav-list a:focus {
+        outline: 2px solid var(--color-gold);
+        outline-offset: 2px;
+    }
     
-    @keyframes fadeInRight {
-        0% {
-            opacity: 0;
-            transform: translateX(30px);
-        }
-        50% {
-            opacity: 0.5;
-        }
-        100% {
-            opacity: 1;
-            transform: translateX(0);
-        }
+    /* Ajouter une zone tactile plus grande pour les liens */
+    .nav-list a::before {
+        content: "";
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+        z-index: -1;
+    }
+    
+    .nav-list.active a {
+        --i: 0;
+        animation-name: slideIn;
+        animation-duration: 0.5s;
+        animation-fill-mode: forwards;
+    }
+    
+    /* Délais d'animation pour chaque lien */
+    .nav-list.active a:nth-child(1) { --i: 1; }
+    .nav-list.active a:nth-child(2) { --i: 2; }
+    .nav-list.active a:nth-child(3) { --i: 3; }
+    .nav-list.active a:nth-child(4) { --i: 4; }
+    .nav-list.active a:nth-child(5) { --i: 5; }
+    .nav-list.active a:nth-child(6) { --i: 6; }
+    .nav-list.active a:nth-child(7) { --i: 7; }
+    
+    /* Un état actif plus clair pour les liens sur mobile */
+    .nav-list a:active {
+        background-color: rgba(189, 143, 57, 0.2);
+        border-radius: 4px;
+    }
+}
+
+@keyframes slideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Ajustements supplémentaires pour très petits écrans */
+@media (max-width: 576px) {
+    html {
+        font-size: 14px;
+    }
+    
+    body {
+        line-height: 1.5;
+    }
+    
+    .container {
+        padding: 0 var(--spacing-sm);
+    }
+    
+    .contact-info {
+        grid-template-columns: 1fr;
+    }
+    
+    .contact-form {
+        padding: var(--spacing-sm);
+    }
+    
+    .form-group {
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .hero h2 {
+        font-size: 2.2rem;
+    }
+    
+    .hero p {
+        font-size: 1rem;
+    }
+    
+    .section {
+        padding: var(--spacing-md) 0;
+    }
+    
+    .gallery-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .services-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+    }
+    
+    .hero-logo .logo-image {
+        max-height: 110px;
+    }
+    
+    .hero-logo {
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .header-title {
+        font-size: 1.8rem;
+    }
+    
+    /* Améliorer la taille des boutons pour tactile */
+    .btn,
+    .submit-btn, 
+    .footer-submit-btn {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 16px;
+    }
+    
+    /* Améliorer l'espacement sur les formulaires mobile */
+    input, 
+    textarea, 
+    select {
+        font-size: 16px; /* Empêcher le zoom iOS sur focus */
+        padding: 12px 12px;
+        margin-bottom: 10px;
+        min-height: 44px; /* Taille minimale pour éléments tactiles */
+    }
+
+    /* Corriger les éléments trop collés */
+    .section-title {
+        margin-bottom: var(--spacing-md);
+        font-size: 2rem;
+    }
+    
+    /* Assurer une taille minimum pour les zones cliquables */
+    .social-link,
+    .footer-social a,
+    .contact-item.social-links a {
+        min-width: 44px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Assurer que les galeries s'affichent correctement */
+    .swiper-slide {
+        height: auto;
+        min-height: 250px;
+    }
+    
+    /* Styles pour le menu mobile */
+    .nav-list a {
+        font-size: 1.3rem;
+        padding: 12px;
+    }
+    
+    /* Version mobile du menu avec position absolue pour les plus petits écrans */
+    .nav-list {
+        padding-top: 70px;
+        position: static;
+    }
+}
+
+/* Ajustements supplémentaires pour les très petits écrans */
+@media (max-width: 390px) {
+    html {
+        font-size: 13px;
+    }
+    
+    .hero h2 {
+        font-size: 1.8rem;
+    }
+    
+    .section-title {
+        font-size: 1.8rem;
+    }
+    
+    .header-title {
+        font-size: 1.6rem;
+    }
+    
+    .header-title .logo-image {
+        height: 35px;
+    }
+    
+    .event-category h3 {
+        font-size: 1.5rem;
     }
 }
 
@@ -622,6 +754,28 @@ img, .img-container {
     cursor: pointer;
     text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.event-category::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(189, 143, 57, 0.1);
+    border-radius: 8px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.event-category:hover::before {
+    opacity: 1;
 }
 
 .event-category:hover {
@@ -636,16 +790,78 @@ img, .img-container {
     margin-top: 0;
     font-size: 2rem;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    cursor: pointer;
+    padding: 10px 0;
+    transition: var(--transition-standard);
+    position: relative;
+}
+
+.event-category h3::after {
+    content: "";
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background-color: var(--color-gold);
+    transition: width 0.3s ease;
+}
+
+.event-category:hover h3::after {
+    width: 50px;
 }
 
 .event-category p {
     color: white;
     font-size: 1.1rem;
+    cursor: pointer;
+    transition: var(--transition-standard);
+}
+
+.event-category:hover p {
+    color: var(--color-text);
+}
+
+/* Ajout d'un indicateur visuel que c'est cliquable */
+.event-category::after {
+    content: "\f0d7"; /* FontAwesome chevron down */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--color-gold);
+    opacity: 0.7;
+    font-size: 14px;
+    transition: var(--transition-standard);
+}
+
+.event-category:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(3px);
 }
 
 @media (max-width: 768px) {
     .events-categories {
         grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+    }
+    
+    .event-category {
+        padding: var(--spacing-md) var(--spacing-sm);
+        min-height: 120px;
+    }
+    
+    .event-category h3 {
+        font-size: 1.8rem;
+        padding: 15px 0;
+    }
+    
+    .event-category p {
+        font-size: 1rem;
     }
 }
 
@@ -1302,6 +1518,58 @@ input:focus, textarea:focus {
     font-style: italic;
 }
 
+/* Style pour la fenêtre d'info de Google Maps */
+.map-info-window {
+    font-family: var(--font-secondary);
+    padding: 5px;
+    max-width: 250px;
+}
+
+.map-info-window h3 {
+    font-family: var(--font-primary);
+    color: var(--color-gold);
+    margin-bottom: 5px;
+    font-size: 1rem;
+    letter-spacing: 1px;
+}
+
+.map-info-window p {
+    font-size: 0.9rem;
+    color: var(--color-text);
+    line-height: 1.4;
+}
+
+.gm-style .gm-style-iw-c {
+    background-color: var(--color-bg-dark) !important;
+    border: 1px solid var(--color-gold) !important;
+    border-radius: 4px !important;
+    padding: 12px !important;
+}
+
+.gm-style .gm-style-iw-t::after {
+    background: var(--color-bg-dark) !important;
+    border-left: 1px solid var(--color-gold) !important;
+    border-top: 1px solid var(--color-gold) !important;
+}
+
+.gm-style .gm-style-iw-d {
+    overflow: hidden !important;
+    max-height: none !important;
+    background-color: var(--color-bg-dark) !important;
+}
+
+.gm-ui-hover-effect {
+    background-color: var(--color-gold) !important;
+    border-radius: 50% !important;
+    opacity: 0.8 !important;
+    top: 0 !important;
+    right: 0 !important;
+}
+
+.gm-ui-hover-effect:hover {
+    opacity: 1 !important;
+}
+
 @media (max-width: 992px) {
     .footer-main {
         justify-content: center;
@@ -1396,8 +1664,7 @@ input:focus, textarea:focus {
 
 @media (max-width: 576px) {
     html {
-        font-size: 13px;
-        width: 100vw;
+        font-size: 14px;
     }
     
     body {
@@ -1455,6 +1722,62 @@ input:focus, textarea:focus {
     
     .header-title {
         font-size: 1.4rem;
+    }
+
+    /* Amélioration du panneau de navigation */
+    .nav-list {
+        position: fixed;
+        top: 60px;
+        right: -100%;
+        width: 70%;
+        height: calc(100vh - 60px);
+        flex-direction: column;
+        gap: var(--spacing-md);
+        background-color: rgba(16, 13, 12, 0.98);
+        backdrop-filter: blur(15px);
+        padding: var(--spacing-md);
+        transition: right 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        z-index: 999;
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.3);
+        border-left: 1px solid rgba(189, 143, 57, 0.1);
+        justify-content: flex-start;
+        display: flex;
+    }
+    
+    .nav-list.active {
+        right: 0;
+    }
+    
+    .nav-list a {
+        display: block;
+        padding: var(--spacing-sm) 0;
+        font-size: 1.2rem;
+        opacity: 0;
+        transform: translateX(30px);
+        animation: fadeInRight 0.8s forwards;
+    }
+    
+    /* Animation séquentielle pour les liens du menu */
+    .nav-list.active a:nth-child(1) { animation-delay: 0.2s; }
+    .nav-list.active a:nth-child(2) { animation-delay: 0.3s; }
+    .nav-list.active a:nth-child(3) { animation-delay: 0.4s; }
+    .nav-list.active a:nth-child(4) { animation-delay: 0.5s; }
+    .nav-list.active a:nth-child(5) { animation-delay: 0.6s; }
+    .nav-list.active a:nth-child(6) { animation-delay: 0.7s; }
+    .nav-list.active a:nth-child(7) { animation-delay: 0.8s; }
+    
+    @keyframes fadeInRight {
+        0% {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+        50% {
+            opacity: 0.5;
+        }
+        100% {
+            opacity: 1;
+            transform: translateX(0);
+        }
     }
 }
 
@@ -1832,6 +2155,7 @@ html, body {
 .is-touch-device .pro-service-card.tapped .pro-service-description {
     opacity: 1;
     transform: translateX(0);
+    padding-left: 20px; /* Supprimer le padding-left de 260px sur les appareils tactiles */
 }
 
 .is-touch-device .pro-service-card.tapped .pro-service-title {
@@ -1880,7 +2204,10 @@ input[type="button"] {
 /* Améliorer le retour visuel sur les interactions tactiles */
 .is-touch-device a:active,
 .is-touch-device button:active,
-.is-touch-device .event-category:active {
+.is-touch-device .btn:active,
+.is-touch-device .gallery-item:active,
+.is-touch-device .event-category:active,
+.is-touch-device .service-card:active {
     opacity: 0.8;
     transform: scale(0.98);
 }
@@ -2032,4 +2359,308 @@ input[type="button"] {
     .loading-text {
         font-size: 0.8rem;
     }
-} 
+}
+
+/* Améliorer les interactions tactiles */
+.is-touch-device .event-category {
+    position: relative;
+}
+
+.is-touch-device .event-category::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 11;
+}
+
+.is-touch-device .event-category:active,
+.is-touch-device .event-category.category-touched {
+    background-color: rgba(189, 143, 57, 0.25);
+    transform: translateY(-2px);
+    transition: all 0.2s ease;
+}
+
+/* Animation spécifique pour le feedback tactile */
+.is-touch-device .event-category.category-touched::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(189, 143, 57, 0.3) 0%, rgba(189, 143, 57, 0) 70%);
+    z-index: 10;
+    animation: touch-ripple 0.5s ease-out forwards;
+    pointer-events: none;
+}
+
+@keyframes touch-ripple {
+    0% {
+        opacity: 1;
+        transform: scale(0.3);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(2);
+    }
+}
+
+/* Améliorer l'accessibilité des formulaires tactiles */
+.is-touch-device input,
+.is-touch-device textarea,
+.is-touch-device select,
+.is-touch-device button {
+    font-size: 16px; /* Empêcher le zoom sur focus */
+    min-height: 44px;
+}
+
+/* Augmenter la taille des zones cliquables pour le tactile */
+.is-touch-device .social-link,
+.is-touch-device .footer-social a,
+.is-touch-device .nav-list a,
+.is-touch-device .btn,
+.is-touch-device .submit-btn,
+.is-touch-device .menu-toggle,
+.is-touch-device .footer-submit-btn,
+.is-touch-device .footer-link,
+.is-touch-device .contact-item.social-links a {
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+}
+
+/* Afficher des états actifs plutôt que hover sur écrans tactiles */
+.is-touch-device a:active,
+.is-touch-device button:active,
+.is-touch-device .btn:active,
+.is-touch-device .gallery-item:active,
+.is-touch-device .event-category:active,
+.is-touch-device .service-card:active {
+    transform: translateY(-2px);
+    opacity: 0.9;
+    transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+/* Styles pour le header en mode scroll */
+.site-header.scrolled {
+    background-color: rgba(16, 13, 12, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(189, 143, 57, 0.15);
+    height: 50px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.site-header.scrolled .header-title {
+    font-size: 1.8rem;
+}
+
+.site-header.scrolled .header-title .logo-image {
+    height: 40px;
+}
+
+/* État du body quand le menu est ouvert */
+body.menu-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+/* Styles pour le menu mobile */
+@media (max-width: 768px) {
+    /* Réinitialiser certaines propriétés de base */
+    body.menu-open {
+        overflow: hidden;
+    }
+    
+    .site-header .container {
+        padding: 0 var(--spacing-sm);
+        justify-content: space-between;
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .header-title {
+        font-size: 2.2rem;
+        text-align: left;
+        margin-right: var(--spacing-md);
+    }
+    
+    .header-title .logo-image {
+        display: block;
+        height: 45px;
+    }
+    
+    .site-header.scrolled .header-title {
+        font-size: 2rem;
+    }
+    
+    .site-header.scrolled .header-title .logo-image {
+        height: 40px;
+    }
+
+    /* Masquer le logo hero sur mobile */
+    .hero-logo {
+        display: none;
+    }
+    
+    /* Style du bouton hamburger */
+    .menu-toggle {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 30px;
+        height: 24px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        z-index: 1010; /* Plus élevé que le menu */
+        position: relative;
+        outline: none;
+    }
+    
+    /* État focus du menu hamburger */
+    .menu-toggle:focus {
+        outline: 1px dashed var(--color-gold);
+        outline-offset: 4px;
+    }
+    
+    .menu-toggle span {
+        display: block;
+        width: 100%;
+        height: 3px;
+        background-color: var(--color-gold);
+        border-radius: 3px;
+        position: absolute;
+        left: 0;
+        transition: transform 0.3s ease, 
+                    opacity 0.3s ease, 
+                    background-color 0.3s ease;
+    }
+    
+    .menu-toggle span:nth-child(1) {
+        top: 0;
+        transform-origin: center;
+    }
+    
+    .menu-toggle span:nth-child(2) {
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    .menu-toggle span:nth-child(3) {
+        bottom: 0;
+        transform-origin: center;
+    }
+    
+    .menu-toggle.active span {
+        background-color: var(--color-gold);
+    }
+    
+    .menu-toggle.active span:nth-child(1) {
+        transform: translateY(10px) rotate(45deg);
+    }
+    
+    .menu-toggle.active span:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .menu-toggle.active span:nth-child(3) {
+        transform: translateY(-10px) rotate(-45deg);
+    }
+    
+    /* Style du menu de navigation mobile */
+    .nav-list {
+        position: fixed;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background-color: rgba(16, 13, 12, 0.97);
+        z-index: 1000;
+        gap: 20px;
+        padding: 80px 20px 30px;
+        transform: translateX(100%);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow-y: auto;
+        visibility: hidden;
+    }
+    
+    .nav-list.active {
+        transform: translateX(0);
+        visibility: visible;
+    }
+    
+    .nav-list a {
+        font-size: 1.5rem;
+        padding: 15px;
+        width: 100%;
+        text-align: center;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: slideIn 0.5s forwards;
+        animation-delay: calc(var(--i) * 0.1s);
+        position: relative;
+    }
+    
+    /* Ajouter un effet sur le focus pour l'accessibilité */
+    .nav-list a:focus {
+        outline: 2px solid var(--color-gold);
+        outline-offset: 2px;
+    }
+    
+    /* Ajouter une zone tactile plus grande pour les liens */
+    .nav-list a::before {
+        content: "";
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+        z-index: -1;
+    }
+    
+    .nav-list.active a {
+        --i: 0;
+        animation-name: slideIn;
+        animation-duration: 0.5s;
+        animation-fill-mode: forwards;
+    }
+    
+    /* Délais d'animation pour chaque lien */
+    .nav-list.active a:nth-child(1) { --i: 1; }
+    .nav-list.active a:nth-child(2) { --i: 2; }
+    .nav-list.active a:nth-child(3) { --i: 3; }
+    .nav-list.active a:nth-child(4) { --i: 4; }
+    .nav-list.active a:nth-child(5) { --i: 5; }
+    .nav-list.active a:nth-child(6) { --i: 6; }
+    .nav-list.active a:nth-child(7) { --i: 7; }
+    
+    /* Un état actif plus clair pour les liens sur mobile */
+    .nav-list a:active {
+        background-color: rgba(189, 143, 57, 0.2);
+        border-radius: 4px;
+    }
+}
+    
+    @keyframes slideIn {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
