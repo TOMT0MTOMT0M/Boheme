@@ -248,6 +248,60 @@
             /* Meilleure gestion du menu de langues sur mobile */
             .language-toggle {
                 margin-top: 20px;
+                width: 100%;
+                text-align: center;
+            }
+            
+            /* Nouveau style pour les langues en ligne */
+            .languages-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+            
+            .lang-option {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 5px 10px;
+                border-radius: 4px;
+                color: #fff;
+                text-decoration: none;
+                font-size: 0.9rem;
+                font-weight: 500;
+                transition: all 0.3s ease;
+                background: rgba(189, 143, 57, 0.1);
+                min-width: 35px;
+            }
+            
+            .lang-option.active {
+                background-color: #bd8f39;
+                color: #fff;
+                font-weight: 700;
+            }
+            
+            .lang-option:hover {
+                background-color: rgba(189, 143, 57, 0.3);
+                transform: translateY(-2px);
+            }
+            
+            /* Style spécifique pour les écrans plus grands */
+            @media (min-width: 769px) {
+                .language-toggle {
+                    margin-top: 0;
+                    margin-left: 20px;
+                }
+                
+                .languages-container {
+                    gap: 8px;
+                }
+                
+                .lang-option {
+                    padding: 3px 8px;
+                    font-size: 0.8rem;
+                }
             }
             
             .lang-dropdown-content {
@@ -260,10 +314,35 @@
                 padding: 10px 0;
                 max-height: 200px;
                 overflow-y: auto;
+                /* Ajout du flexbox pour disposition horizontale */
+                display: none; /* Reste caché par défaut */
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
             }
             
-            .language-toggle.active .lang-dropdown-content {
+            .lang-dropdown.active .lang-dropdown-content {
+                display: flex; /* Utiliser flex au lieu de block quand actif */
+            }
+            
+            /* S'assurer que les liens de langue sont cliquables */
+            .lang-dropdown-content a {
                 display: block;
+                width: auto; /* Au lieu de 100% */
+                padding: 8px 15px;
+                color: #fff;
+                text-align: center;
+                cursor: pointer;
+                font-size: 1.2rem;
+                border-radius: 4px;
+                transition: background-color 0.3s ease, color 0.3s ease;
+                margin: 5px;
+            }
+            
+            .lang-dropdown-content a:hover {
+                background-color: rgba(189, 143, 57, 0.1);
+                color: #bd8f39;
             }
         }
     </style>
@@ -290,6 +369,7 @@
     <script src="js/admin-data.js"></script>
     <script src="js/google-reviews.js"></script>
     <script defer src="js/menu-fix.js"></script>
+    <script defer src="js/language-selector-fix.js"></script>
     
     <!-- Initialisation des Swipers -->
     <script>
@@ -3435,15 +3515,12 @@
                     <li><a href="#reviews">Avis</a></li>
                     <li><a href="#footer">Contact</a></li>
                     <li class="language-toggle">
-                        <div class="lang-dropdown">
-                            <a href="#" id="lang-toggle"><i class="fas fa-globe"></i> <span id="current-lang">FR</span></a>
-                            <div class="lang-dropdown-content">
-                                <a href="#" data-lang="fr">Français</a>
-                                <a href="#" data-lang="en">English</a>
-                                <a href="#" data-lang="es">Español</a>
-                                <a href="#" data-lang="de">Deutsch</a>
-                                <a href="#" data-lang="it">Italiano</a>
-                            </div>
+                        <div class="languages-container">
+                            <a href="#" data-lang="fr" class="lang-option active"><span>FR</span></a>
+                            <a href="#" data-lang="en" class="lang-option"><span>EN</span></a>
+                            <a href="#" data-lang="es" class="lang-option"><span>ES</span></a>
+                            <a href="#" data-lang="de" class="lang-option"><span>DE</span></a>
+                            <a href="#" data-lang="it" class="lang-option"><span>IT</span></a>
                         </div>
                     </li>
                 </ul>
