@@ -291,6 +291,83 @@ body.menu-open {
         background-color: rgba(189, 143, 57, 0.2);
         border-radius: 4px;
     }
+
+    /* Styles spécifiques pour le menu de langues sur mobile */
+    .language-toggle {
+        margin-top: 20px;
+        width: 100%;
+        text-align: center;
+    }
+    
+    .language-toggle .lang-dropdown {
+        display: inline-block;
+        position: relative;
+    }
+    
+    .lang-dropdown-content {
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(16, 13, 12, 0.95);
+        padding: 10px 0;
+        border-radius: 5px;
+        width: 150px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 10000;
+        visibility: hidden;
+        opacity: 0;
+        display: none;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    
+    /* Support touch pour les dispositifs mobiles */
+    .lang-dropdown.active .lang-dropdown-content {
+        visibility: visible;
+        opacity: 1;
+        display: block;
+    }
+    
+    .lang-dropdown-content a {
+        display: block;
+        padding: 10px 15px;
+        color: #fff;
+        text-align: center;
+        transition: background-color 0.2s ease;
+    }
+    
+    .lang-dropdown-content a:hover,
+    .lang-dropdown-content a:active {
+        background-color: rgba(189, 143, 57, 0.2);
+    }
+    
+    /* Indicateur visuel de sélection */
+    #lang-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px;
+        border-radius: 4px;
+        transition: background-color 0.2s ease;
+    }
+    
+    #lang-toggle:hover,
+    #lang-toggle:active {
+        background-color: rgba(189, 143, 57, 0.2);
+    }
+    
+    /* Animation pour l'indicateur d'ouverture */
+    #lang-toggle::after {
+        content: '▼';
+        font-size: 0.7em;
+        margin-left: 5px;
+        transition: transform 0.3s ease;
+    }
+    
+    .lang-dropdown.active #lang-toggle::after {
+        transform: rotate(180deg);
+    }
 }
 
 /* Animation pour les liens du menu */

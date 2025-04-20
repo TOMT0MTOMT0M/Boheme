@@ -1973,14 +1973,37 @@
                     if (newLang && newLang !== currentLanguage) {
                         translationUtils.changeLanguage(newLang);
                     }
+                    // Fermer le menu déroulant après sélection sur mobile
+                    if (window.innerWidth <= 768) {
+                        document.querySelector('.lang-dropdown').classList.remove('active');
+                    }
                 });
             });
             
-            // Pour le bouton principal - on affiche simplement le menu
+            // Pour le bouton principal - afficher le menu déroulant sur mobile
             if (langToggle) {
                 langToggle.addEventListener('click', function(e) {
                     e.preventDefault();
-                    // Le survol CSS affichera le menu
+                    // Vérifier si on est sur mobile
+                    if (window.innerWidth <= 768) {
+                        const dropdown = this.closest('.lang-dropdown');
+                        if (dropdown) {
+                            // Toggle la classe active pour afficher/masquer le menu déroulant
+                            dropdown.classList.toggle('active');
+                            e.stopPropagation(); // Empêcher la propagation pour éviter que le menu se ferme
+                        }
+                    }
+                    // Sinon, le survol CSS affichera le menu sur desktop
+                });
+                
+                // Fermer le menu déroulant quand on clique ailleurs dans la page
+                document.addEventListener('click', function(e) {
+                    if (window.innerWidth <= 768 && !e.target.closest('.lang-dropdown')) {
+                        const activeDropdown = document.querySelector('.lang-dropdown.active');
+                        if (activeDropdown) {
+                            activeDropdown.classList.remove('active');
+                        }
+                    }
                 });
             }
             

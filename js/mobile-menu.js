@@ -162,4 +162,48 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Vérifier l'état initial après un court délai
     setTimeout(ensureCrossIconState, 300);
+
+    // Gestion spécifique du menu de langues sur mobile
+    const langToggle = document.getElementById('lang-toggle');
+    const langDropdown = document.querySelector('.lang-dropdown');
+    
+    if (langToggle && langDropdown) {
+        // S'assurer que cet écouteur n'interfère pas avec celui dans index.html
+        // Si on est sur mobile ET que le menu est ouvert, on veut capter les clics sur le sélecteur de langues
+        const handleLangToggle = function(e) {
+            if (window.innerWidth <= 768 && document.body.classList.contains('menu-open')) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Toggle la classe active sur le dropdown
+                langDropdown.classList.toggle('active');
+                
+                // Éviter que le menu principal se ferme lors de cette action
+                return false;
+            }
+        };
+        
+        // Nettoyer les écouteurs précédents si nécessaire
+        const newLangToggle = langToggle.cloneNode(true);
+        langToggle.parentNode.replaceChild(newLangToggle, langToggle);
+        
+        // Ajouter l'écouteur d'événement
+        newLangToggle.addEventListener('click', handleLangToggle);
+        
+        // Fermer le menu déroulant des langues quand on clique sur une langue
+        document.querySelectorAll('.lang-dropdown-content a').forEach(langOption => {
+            langOption.addEventListener('click', function(e) {
+                if (window.innerWidth <= 768) {
+                    langDropdown.classList.remove('active');
+                }
+            });
+        });
+        
+        // Fermer le menu déroulant des langues quand on clique ailleurs sur la page
+        document.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768 && !e.target.closest('.lang-dropdown') && langDropdown.classList.contains('active')) {
+                langDropdown.classList.remove('active');
+            }
+        });
+    }
 }); 
