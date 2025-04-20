@@ -189,10 +189,11 @@ p, span, a, li {
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
+    z-index: 100;
 }
 
 .header-title .logo-image {
-    display: none;
+    display: block;
     height: 45px;
     width: auto;
 }
@@ -214,20 +215,211 @@ p, span, a, li {
     justify-content: flex-end;
 }
 
-/* Cacher le menu hamburger sur desktop */
+/* Force desktop display of navigation */
+@media (min-width: 769px) {
+    /* Menu toggle should never be visible on desktop */
+    .menu-toggle, 
+    .menu-toggle.active, 
+    .hamburger-box, 
+    .hamburger-inner {
+        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+    }
+    
+    /* Nav list should always be visible and properly formatted on desktop */
+    .nav-list, 
+    .nav-list.active {
+        display: flex !important;
+        flex-direction: row !important;
+        position: static !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        transform: none !important;
+        height: auto !important;
+        width: 100% !important;
+        background-color: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        gap: var(--spacing-md) !important;
+        overflow: visible !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        z-index: 1 !important;
+    }
+    
+    /* Fix nav list items display on desktop */
+    .nav-list li {
+        opacity: 1 !important;
+        transform: none !important;
+        animation: none !important;
+        position: relative !important;
+    }
+    
+    /* Fix nav list links display on desktop */
+    .nav-list a {
+        opacity: 1 !important;
+        transform: none !important;
+        animation: none !important;
+        font-size: 1.1rem !important;
+        padding: 0 !important;
+        width: auto !important;
+    }
+    
+    /* Styles pour le sélecteur de langues en desktop */
+    .language-toggle {
+        position: relative !important;
+        display: flex !important;
+        align-items: center !important;
+        z-index: 1200 !important;
+        height: 60px !important;
+    }
+    
+    /* Style de base du conteneur de langues */
+    .languages-container {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+        padding: 0.5rem !important;
+        background-color: transparent !important;
+        border-radius: 4px !important;
+        min-width: 50px !important;
+    }
+    
+    .lang-option {
+        color: var(--color-gold) !important;
+        text-decoration: none !important;
+        padding: 0.25rem 0.5rem !important;
+        border-radius: 3px !important;
+        transition: background-color 0.3s ease !important;
+        text-align: center !important;
+        min-width: 40px !important;
+        margin: 2px !important;
+    }
+    
+    .lang-option:hover {
+        background-color: rgba(189, 143, 57, 0.2) !important;
+    }
+    
+    .lang-option.active {
+        font-weight: bold !important;
+        background-color: rgba(189, 143, 57, 0.3) !important;
+    }
+    
+    /* Style du sélecteur de langue en dropdown */
+    .language-toggle {
+        cursor: pointer !important;
+        position: relative !important;
+        margin-left: 1rem !important;
+    }
+    
+    /* Version initiale - montrer seulement la langue active */
+    .language-toggle .lang-option:not(.active) {
+        display: none !important;
+    }
+    
+    /* Menu dropdown des langues (apparaît au survol) */
+    .language-toggle:hover .languages-container::after,
+    .language-toggle:focus-within .languages-container::after {
+        content: "" !important;
+        position: absolute !important;
+        top: 100% !important;
+        right: 0 !important;
+        width: 180px !important;
+        background-color: var(--color-dark) !important;
+        border: 1px solid var(--color-gold) !important;
+        border-radius: 4px !important;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+        z-index: 1050 !important;
+        padding: 0.8rem !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 0.5rem !important;
+    }
+    
+    /* Options de langue dans le dropdown */
+    .language-toggle:hover .lang-option,
+    .language-toggle:focus-within .lang-option {
+        position: relative !important;
+        z-index: 1051 !important;
+    }
+    
+    /* Afficher toutes les options de langue au survol */
+    .language-toggle:hover .lang-option:not(.active),
+    .language-toggle:focus-within .lang-option:not(.active) {
+        display: block !important;
+        position: absolute !important;
+        top: calc(100% + 10px) !important;
+        min-width: 40px !important;
+        margin: 4px !important;
+        padding: 4px 8px !important;
+        background-color: var(--color-dark) !important;
+        border-radius: 4px !important;
+    }
+    
+    /* Positionner chaque langue dans le dropdown */
+    .language-toggle:hover .lang-option:nth-child(1),
+    .language-toggle:focus-within .lang-option:nth-child(1) {
+        right: 0 !important;
+        top: calc(100% + 10px) !important;
+    }
+    
+    .language-toggle:hover .lang-option:nth-child(2),
+    .language-toggle:focus-within .lang-option:nth-child(2) {
+        right: 0 !important;
+        top: calc(100% + 50px) !important;
+    }
+    
+    .language-toggle:hover .lang-option:nth-child(3),
+    .language-toggle:focus-within .lang-option:nth-child(3) {
+        right: 0 !important;
+        top: calc(100% + 90px) !important;
+    }
+    
+    .language-toggle:hover .lang-option:nth-child(4),
+    .language-toggle:focus-within .lang-option:nth-child(4) {
+        right: 0 !important;
+        top: calc(100% + 130px) !important;
+    }
+    
+    .language-toggle:hover .lang-option:nth-child(5),
+    .language-toggle:focus-within .lang-option:nth-child(5) {
+        right: 0 !important;
+        top: calc(100% + 170px) !important;
+    }
+    
+    /* Ajouter une flèche pour indiquer le dropdown */
+    .language-toggle .active::after {
+        content: " ▼" !important;
+        font-size: 0.6rem !important;
+        vertical-align: middle !important;
+        margin-left: 0.25rem !important;
+        opacity: 0.8 !important;
+    }
+}
+
+/* Cacher le menu hamburger sur desktop - fallback */
 .menu-toggle {
-    display: none;
+    display: none !important;
 }
 
 .nav-list {
-    display: flex;
+    display: flex !important;
     gap: var(--spacing-md);
     margin: 0;
     padding: 0;
     list-style: none;
     justify-content: flex-end;
     width: 100%;
-    position: static;
+    position: static !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+    height: auto !important;
+    background-color: transparent !important;
+    flex-direction: row !important;
 }
 
 .nav-list a {
@@ -237,9 +429,12 @@ p, span, a, li {
     transition: all 0.3s ease;
     letter-spacing: 2px;
     color: var(--color-gold);
-    transform: scale(1);
+    transform: scale(1) !important;
     display: inline-block;
     text-decoration: none;
+    width: auto !important;
+    text-align: center;
+    padding: 0 !important;
 }
 
 .nav-list a:hover {
@@ -284,7 +479,7 @@ body.menu-open {
     
     /* Style du bouton hamburger */
     .menu-toggle {
-        display: flex;
+        display: flex !important;
         flex-direction: column;
         justify-content: space-between;
         width: 30px;
@@ -350,79 +545,87 @@ body.menu-open {
     
     /* Style du menu de navigation mobile */
     .nav-list {
-        position: fixed;
-        display: flex;
-        flex-direction: column;
+        position: fixed !important;
+        display: flex !important;
+        flex-direction: column !important;
         align-items: center;
-        justify-content: center;
-        top: 0;
+        justify-content: flex-start !important;
+        top: 0 !important;
         left: 0;
         width: 100%;
-        height: 100vh;
-        background-color: rgba(16, 13, 12, 0.97);
+        height: 100vh !important;
+        background-color: rgba(16, 13, 12, 0.97) !important;
         z-index: 1000;
         gap: 20px;
-        padding: 80px 20px 30px;
-        transform: translateX(100%);
+        padding-top: 80px !important;
+        padding-bottom: 30px !important;
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+        transform: translateX(100%) !important;
         transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         overflow-y: auto;
-        visibility: hidden;
+        visibility: hidden !important;
+        box-sizing: border-box !important;
     }
     
     .nav-list.active {
-        transform: translateX(0);
-        visibility: visible;
+        transform: translateX(0) !important;
+        visibility: visible !important;
+        box-sizing: border-box !important;
+        top: 0 !important;
+    }
+    
+    /* Assurer que le header en haut ne cache pas le menu */
+    .site-header {
+        z-index: 1001 !important;
+    }
+    
+    /* Adjustment pour commencer sous le header */
+    .nav-list > li:first-child {
+        margin-top: 0 !important;
     }
     
     .nav-list a {
         font-size: 1.5rem;
-        padding: 15px;
-        width: 100%;
+        padding: 15px !important;
+        width: 100% !important;
         text-align: center;
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(20px) !important;
         animation: slideIn 0.5s forwards;
         animation-delay: calc(var(--i) * 0.1s);
         position: relative;
     }
     
-    /* Ajouter un effet sur le focus pour l'accessibilité */
-    .nav-list a:focus {
-        outline: 2px solid var(--color-gold);
-        outline-offset: 2px;
+    /* Style pour le conteneur des langues en mobile */
+    .language-toggle {
+        width: 100% !important;
+        margin-top: 15px !important;
     }
     
-    /* Ajouter une zone tactile plus grande pour les liens */
-    .nav-list a::before {
-        content: "";
-        position: absolute;
-        top: -10px;
-        left: -10px;
-        right: -10px;
-        bottom: -10px;
-        z-index: -1;
+    .languages-container {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 10px !important;
+        width: 100% !important;
+        max-width: 300px !important;
+        margin: 0 auto !important;
     }
     
-    .nav-list.active a {
-        --i: 0;
-        animation-name: slideIn;
-        animation-duration: 0.5s;
-        animation-fill-mode: forwards;
+    .language-toggle .lang-option {
+        display: inline-block !important;
+        min-width: 40px !important;
+        text-align: center !important;
+        padding: 8px 12px !important;
+        border-radius: 4px !important;
+        background-color: rgba(189, 143, 57, 0.1) !important;
     }
     
-    /* Délais d'animation pour chaque lien */
-    .nav-list.active a:nth-child(1) { --i: 1; }
-    .nav-list.active a:nth-child(2) { --i: 2; }
-    .nav-list.active a:nth-child(3) { --i: 3; }
-    .nav-list.active a:nth-child(4) { --i: 4; }
-    .nav-list.active a:nth-child(5) { --i: 5; }
-    .nav-list.active a:nth-child(6) { --i: 6; }
-    .nav-list.active a:nth-child(7) { --i: 7; }
-    
-    /* Un état actif plus clair pour les liens sur mobile */
-    .nav-list a:active {
-        background-color: rgba(189, 143, 57, 0.2);
-        border-radius: 4px;
+    .language-toggle .lang-option.active {
+        background-color: rgba(189, 143, 57, 0.3) !important;
+        font-weight: bold !important;
     }
 }
 
@@ -2512,7 +2715,7 @@ body.menu-open {
     
     /* Style du bouton hamburger */
     .menu-toggle {
-        display: flex;
+        display: flex !important;
         flex-direction: column;
         justify-content: space-between;
         width: 30px;
@@ -2578,42 +2781,90 @@ body.menu-open {
     
     /* Style du menu de navigation mobile */
     .nav-list {
-        position: fixed;
-        display: flex;
-        flex-direction: column;
+        position: fixed !important;
+        display: flex !important;
+        flex-direction: column !important;
         align-items: center;
         justify-content: center;
-        top: 0;
+        top: 0 !important; /* S'assurer qu'il commence bien en haut */
         left: 0;
         width: 100%;
-        height: 100vh;
-        background-color: rgba(16, 13, 12, 0.97);
+        height: 100vh !important;
+        background-color: rgba(16, 13, 12, 0.97) !important;
         z-index: 1000;
         gap: 20px;
-        padding: 80px 20px 30px;
-        transform: translateX(100%);
+        padding: 80px 20px 30px !important; /* Augmenter le padding top */
+        transform: translateX(100%) !important;
         transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         overflow-y: auto;
-        visibility: hidden;
+        visibility: hidden !important;
     }
     
     .nav-list.active {
-        transform: translateX(0);
-        visibility: visible;
+        transform: translateX(0) !important;
+        visibility: visible !important;
+        top: 0 !important; /* Forcer la position top à 0 quand activé */
+        max-height: 100vh !important; /* Limiter la hauteur maximale */
+        overflow-y: auto !important; /* Permettre le défilement vertical si nécessaire */
     }
     
     .nav-list a {
         font-size: 1.5rem;
-        padding: 15px;
-        width: 100%;
+        padding: 15px !important;
+        width: 100% !important;
         text-align: center;
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(20px) !important;
         animation: slideIn 0.5s forwards;
         animation-delay: calc(var(--i) * 0.1s);
         position: relative;
     }
     
+    /* Style pour le conteneur des langues en mobile */
+    .language-toggle {
+        width: 100% !important;
+        margin-top: 15px !important;
+    }
+    
+    .languages-container {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 10px !important;
+        width: 100% !important;
+        max-width: 300px !important;
+        margin: 0 auto !important;
+    }
+    
+    .language-toggle .lang-option {
+        display: inline-block !important;
+        min-width: 40px !important;
+        text-align: center !important;
+        padding: 8px 12px !important;
+        border-radius: 4px !important;
+        background-color: rgba(189, 143, 57, 0.1) !important;
+    }
+    
+    .language-toggle .lang-option.active {
+        background-color: rgba(189, 143, 57, 0.3) !important;
+        font-weight: bold !important;
+    }
+}
+    
+    @keyframes slideIn {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+/* Styles pour le menu mobile - Restauration des styles manquants */
+@media (max-width: 768px) {
     /* Ajouter un effet sur le focus pour l'accessibilité */
     .nav-list a:focus {
         outline: 2px solid var(--color-gold);
@@ -2654,13 +2905,3 @@ body.menu-open {
     }
 }
     
-    @keyframes slideIn {
-        0% {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        100% {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }

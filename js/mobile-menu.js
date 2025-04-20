@@ -34,6 +34,128 @@ document.addEventListener('DOMContentLoaded', function() {
         navList.id = 'main-menu';
     }
     
+    // CORRECTIF IMPORTANT: Assurer que le menu est visible en mode desktop
+    function enforceDesktopMenu() {
+        if (window.innerWidth > 768) {
+            // Forcer la visibilité du menu sur desktop
+            navList.style.visibility = 'visible';
+            navList.style.opacity = '1';
+            navList.style.transform = 'none';
+            navList.style.position = 'static';
+            navList.style.display = 'flex';
+            navList.style.flexDirection = 'row';
+            navList.style.height = 'auto';
+            navList.style.width = '100%';
+            navList.style.backgroundColor = 'transparent';
+            
+            // Cacher le menu hamburger sur desktop
+            if (menuToggle) {
+                menuToggle.style.display = 'none';
+            }
+            
+            // Rendre tous les liens visibles
+            navLinks.forEach(link => {
+                link.style.opacity = '1';
+                link.style.transform = 'none';
+                link.style.animation = 'none';
+                link.style.padding = '0';
+                link.style.width = 'auto';
+            });
+            
+            // S'assurer que le menu de langues est configuré correctement en desktop
+            setupLanguageSelector();
+        }
+    }
+    
+    // Configuration du sélecteur de langues pour le desktop
+    function setupLanguageSelector() {
+        const languageToggle = document.querySelector('.language-toggle');
+        const languagesContainer = document.querySelector('.languages-container');
+        
+        if (!languageToggle || !languagesContainer) return;
+        
+        // Assurer les styles de base pour le conteneur de langues
+        languagesContainer.style.display = 'flex';
+        languagesContainer.style.gap = '0.5rem';
+        
+        // Configurer les liens de langues
+        const langOptions = languagesContainer.querySelectorAll('.lang-option');
+        
+        // Variable pour stocker la langue actuellement active
+        let currentLang = '';
+        
+        // Déterminer la langue active actuelle
+        langOptions.forEach(option => {
+            if (option.classList.contains('active')) {
+                currentLang = option.getAttribute('data-lang');
+            }
+            
+            // Stockez la langue actuelle dans localStorage si elle n'est pas déjà définie
+            if (currentLang && !localStorage.getItem('selectedLanguage')) {
+                localStorage.setItem('selectedLanguage', currentLang);
+            }
+        });
+        
+        // Si pas de langue active mais une langue stockée, la définir comme active
+        if (!currentLang && localStorage.getItem('selectedLanguage')) {
+            currentLang = localStorage.getItem('selectedLanguage');
+            langOptions.forEach(option => {
+                if (option.getAttribute('data-lang') === currentLang) {
+                    option.classList.add('active');
+                } else {
+                    option.classList.remove('active');
+                }
+            });
+        }
+        
+        langOptions.forEach(option => {
+            option.style.color = 'var(--color-gold)';
+            option.style.textDecoration = 'none';
+            option.style.padding = '0.25rem 0.5rem';
+            option.style.borderRadius = '3px';
+            option.style.transition = 'background-color 0.3s ease';
+            
+            // Ajouter l'événement de clic pour changer de langue
+            option.addEventListener('click', function(e) {
+                // Récupérer le code de langue
+                const lang = this.getAttribute('data-lang');
+                
+                // Si la langue est identique à la langue actuelle, empêcher le rechargement
+                if (lang === currentLang) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+                
+                // Mettre à jour la langue actuelle
+                currentLang = lang;
+                localStorage.setItem('selectedLanguage', lang);
+                
+                // Mettre à jour la classe active
+                langOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+                
+                console.log('Langue sélectionnée:', lang);
+                
+                // Ici, appeler la fonction de changement de langue si elle existe
+                if (typeof changeLanguage === 'function') {
+                    changeLanguage(lang);
+                    // Le changeLanguage gère souvent déjà le rechargement si nécessaire
+                    e.preventDefault();
+                }
+                
+                // On ne fait rien d'autre ici, ce qui permet au comportement par défaut de s'exécuter
+                // Le lien href (s'il y en a un) sera suivi, causant un rechargement si nécessaire
+            });
+        });
+    }
+    
+    // Appliquer immédiatement le correctif
+    enforceDesktopMenu();
+    
+    // Et réappliquer lors du redimensionnement de la fenêtre
+    window.addEventListener('resize', enforceDesktopMenu);
+    
     // Nettoyer les éventuels écouteurs d'événements précédents
     const newMenuToggle = menuToggle.cloneNode(true);
     menuToggle.parentNode.replaceChild(newMenuToggle, menuToggle);
@@ -86,6 +208,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Fonction pour ouvrir le menu
     function openMenu() {
+        // Ne pas ouvrir le menu en mode desktop
+        if (window.innerWidth > 768) return;
+        
         newMenuToggle.classList.add('active');
         navList.classList.add('active');
         body.classList.add('menu-open');
@@ -115,6 +240,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Réactiver le scroll
         document.body.style.overflow = 'auto';
+        
+        // Réappliquer le correctif pour le desktop après fermeture
+        if (window.innerWidth > 768) {
+            enforceDesktopMenu();
+        }
         
         // Log diagnostic
         diagnoseMenu();
@@ -155,6 +285,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (window.innerWidth > 768 && newMenuToggle.classList.contains('active')) {
             closeMenu();
         }
+        
+        // Réappliquer le correctif pour le desktop
+        if (window.innerWidth > 768) {
+            enforceDesktopMenu();
+        }
     });
     
     // Log diagnostic initial
@@ -162,6 +297,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Vérifier l'état initial après un court délai
     setTimeout(ensureCrossIconState, 300);
+    
+    // S'assurer que le menu desktop est visible après un petit délai
+    setTimeout(enforceDesktopMenu, 500);
 
     // Gestion spécifique du menu de langues sur mobile
     const langToggle = document.getElementById('lang-toggle');
@@ -206,4 +344,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+    
+    // Initialiser le sélecteur de langues après chargement complet
+    document.addEventListener('DOMContentLoaded', setupLanguageSelector);
 }); 

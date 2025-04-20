@@ -1,141 +1,218 @@
-// Script simplifié pour le sélecteur de langues horizontal
+// Script pour le nouveau sélecteur de langues
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("Language selector fix loaded - Simple version");
+    console.log("Nouveau sélecteur de langues chargé");
+    
+    // Variables pour suivre l'état de traduction
+    let hasBeenTranslatedOnce = false;
+    const savedTranslationState = localStorage.getItem('hasBeenTranslatedBefore');
+    if (savedTranslationState === 'true') {
+        hasBeenTranslatedOnce = true;
+    }
     
     // Éléments du sélecteur de langue
-    const langOptions = document.querySelectorAll('.lang-option');
-    const navList = document.querySelector('.nav-list');
+    const langSelector = document.querySelector('.lang-selector');
+    const langSelected = document.querySelector('.lang-selected');
+    const langOptions = document.querySelector('.lang-options');
+    const langOptionLinks = document.querySelectorAll('.lang-option');
+    const currentLangDisplay = document.getElementById('current-lang');
     
     // Vérifier si les éléments nécessaires sont présents
-    if (!langOptions || langOptions.length === 0) {
+    if (!langSelector || !langSelected || !langOptions || !langOptionLinks || langOptionLinks.length === 0) {
         console.warn("Éléments du sélecteur de langue non trouvés");
         return;
     }
     
-    console.log("Nombre d'options de langue trouvées:", langOptions.length);
+    console.log("Sélecteur de langue initialisé avec", langOptionLinks.length, "options");
     
-    // Obtenir la langue actuelle
-    function getCurrentLanguage() {
-        // Vérifier d'abord localStorage
-        const storedLang = localStorage.getItem('preferredLanguage');
-        if (storedLang) return storedLang;
-        
-        // Sinon vérifier l'élément actif
-        const activeOption = document.querySelector('.lang-option.active');
-        if (activeOption) {
-            return activeOption.getAttribute('data-lang');
+    // Récupérer la langue actuelle depuis localStorage ou utiliser le français par défaut
+    const currentLang = localStorage.getItem('preferredLanguage') || 'fr';
+    
+    // Mettre à jour l'affichage de la langue actuelle
+    function updateCurrentLangDisplay() {
+        if (currentLangDisplay) {
+            currentLangDisplay.textContent = currentLang.toUpperCase();
         }
         
-        // Par défaut, français
-        return 'fr';
-    }
-    
-    // Fonction pour mettre à jour visuellement la langue active
-    function updateActiveLangOption(langCode) {
-        // Retirer la classe active de toutes les options
-        langOptions.forEach(option => {
+        // Mettre à jour la classe active
+        langOptionLinks.forEach(option => {
             option.classList.remove('active');
+            if (option.getAttribute('data-lang') === currentLang) {
+                option.classList.add('active');
+            }
         });
         
-        // Ajouter la classe active à l'option sélectionnée
-        const selectedOption = document.querySelector(`.lang-option[data-lang="${langCode}"]`);
-        if (selectedOption) {
-            selectedOption.classList.add('active');
+        // Mettre à jour l'état d'expansion du bouton
+        if (langSelected.hasAttribute('aria-expanded')) {
+            langSelected.setAttribute('aria-expanded', langSelector.classList.contains('active') ? 'true' : 'false');
         }
     }
     
-    // Fonction pour déclencher le changement de langue
-    function triggerLanguageChange(langCode) {
-        // Vérifier si c'est la même langue
-        const currentLang = getCurrentLanguage();
-        if (currentLang === langCode) {
-            console.log(`La langue ${langCode} est déjà sélectionnée, pas de changement nécessaire`);
-            return true; // Réussite sans rien faire
+    // Fonction pour ouvrir/fermer le menu des langues
+    function toggleLangMenu() {
+        langSelector.classList.toggle('active');
+        updateCurrentLangDisplay(); // Pour mettre à jour l'état aria-expanded
+    }
+    
+    // Fonction pour fermer le menu des langues
+    function closeLangMenu() {
+        langSelector.classList.remove('active');
+        updateCurrentLangDisplay(); // Pour mettre à jour l'état aria-expanded
+    }
+    
+    // Fonction pour changer de langue
+    function changeLanguage(langCode) {
+        // Si la langue sélectionnée est identique à la langue actuelle, ne rien faire
+        if (langCode === currentLang) {
+            closeLangMenu();
+            return;
         }
         
-        // Sauvegarder la langue dans le stockage local
+        // Stocker la nouvelle langue
         localStorage.setItem('preferredLanguage', langCode);
         
-        // Mettre à jour l'affichage
-        updateActiveLangOption(langCode);
+        // Simuler un clic sur le sélecteur de langue du script de traduction principal
+        // en utilisant un élément caché existant (pour la compatibilité)
+        const hiddenLangOption = document.querySelector(`.lang-dropdown-content a[data-lang="${langCode}"]`);
         
-        // Créer un événement simulé pour déclencher la modification par un script existant
-        const clickEvent = new MouseEvent('click', {
-            bubbles: true,
-            cancelable: true,
-            view: window
-        });
-        
-        // Rechercher l'ancien élément de langue correspondant (utilisé par le script original)
-        const oldLangOption = document.querySelector(`.lang-dropdown-content a[data-lang="${langCode}"]`);
-        
-        if (oldLangOption) {
-            // Déclencher l'événement sur l'élément original
-            oldLangOption.dispatchEvent(clickEvent);
-            console.log(`Événement de clic déclenché sur l'élément de langue ${langCode}`);
-            return true;
+        if (hiddenLangOption) {
+            // Créer un événement de clic simulé
+            const clickEvent = new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true,
+                view: window
+            });
+            
+            // Déclencher l'événement sur l'élément (appel au système de traduction)
+            hiddenLangOption.dispatchEvent(clickEvent);
+            console.log(`Changement de langue vers ${langCode} via le système de traduction existant`);
+            
+            // Marquer que la traduction a eu lieu si ce n'est pas vers le français
+            if (!hasBeenTranslatedOnce && langCode !== 'fr') {
+                hasBeenTranslatedOnce = true;
+                localStorage.setItem('hasBeenTranslatedBefore', 'true');
+            }
         } else {
-            // Si on ne trouve pas l'élément original, on essaie d'autres approches
-            // Ne pas recharger la page systématiquement
-
-            try {
-                // Essayer d'accéder aux fonctions de traduction via window
-                if (window.translationUtils && typeof window.translationUtils.changeLanguage === 'function') {
-                    window.translationUtils.changeLanguage(langCode);
-                    return true;
-                }
-                
-                // Si aucune méthode ne fonctionne et que c'est vraiment une nouvelle langue
-                if (currentLang !== langCode) {
-                    console.log("Aucune méthode de changement de langue n'a fonctionné, rechargement de la page");
-                    // Stocker la langue pour qu'elle soit appliquée après le rechargement
-                    localStorage.setItem('preferredLanguage', langCode);
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 100);
-                }
-                return false;
-            } catch (error) {
-                console.error("Erreur lors du changement de langue:", error);
-                return false;
+            // Si l'élément n'existe pas, déterminer s'il faut recharger la page
+            if (hasBeenTranslatedOnce || savedTranslationState === 'true') {
+                console.log("Rechargement nécessaire - traduction précédente détectée");
+                setTimeout(() => {
+                    window.location.reload();
+                }, 100);
+            } else {
+                console.log("Changement de langue sans rechargement - première traduction");
+                // Mise à jour manuelle de l'interface sans rechargement
+                document.documentElement.lang = langCode;
+                updateCurrentLangDisplay();
             }
         }
+        
+        // Fermer le menu des langues
+        closeLangMenu();
     }
     
-    // Ajouter des écouteurs d'événements pour chaque option de langue
-    langOptions.forEach(option => {
+    // Écouteur pour le bouton principal (ouvrir/fermer menu)
+    langSelected.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleLangMenu();
+    });
+    
+    // Support de la navigation au clavier (accessibilité)
+    langSelected.addEventListener('keydown', function(e) {
+        // Si Espace ou Entrée, ouvrir/fermer le menu
+        if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault();
+            toggleLangMenu();
+        }
+        // Si flèche bas, ouvrir le menu et sélectionner la première option
+        else if (e.key === 'ArrowDown' || e.key === 'Down') {
+            e.preventDefault();
+            if (!langSelector.classList.contains('active')) {
+                toggleLangMenu();
+            }
+            const firstOption = langOptions.querySelector('a');
+            if (firstOption) firstOption.focus();
+        }
+    });
+    
+    // Écouteurs pour chaque option de langue
+    langOptionLinks.forEach(option => {
         option.addEventListener('click', function(e) {
             e.preventDefault();
-            e.stopPropagation(); // Empêcher la propagation pour éviter que le menu se ferme trop tôt
+            e.stopPropagation();
             
-            // Récupérer le code de langue
             const langCode = this.getAttribute('data-lang');
             if (!langCode) return;
             
-            console.log(`Option de langue cliquée: ${langCode}`);
+            console.log(`Option de langue sélectionnée: ${langCode}`);
+            changeLanguage(langCode);
             
-            // Déclencher le changement de langue
-            const success = triggerLanguageChange(langCode);
-            
-            // Sur mobile, retarder légèrement la fermeture du menu
+            // Fermer le menu mobile s'il est ouvert
             if (window.innerWidth <= 768) {
                 setTimeout(() => {
-                    // Fermer le menu mobile manuellement
                     const menuToggle = document.querySelector('.menu-toggle');
+                    const navList = document.querySelector('.nav-list');
+                    
                     if (menuToggle && menuToggle.classList.contains('active') && navList) {
-                        console.log("Fermeture du menu mobile");
                         menuToggle.classList.remove('active');
                         navList.classList.remove('active');
                         document.body.classList.remove('menu-open');
                         document.body.style.overflow = '';
                         menuToggle.setAttribute('aria-expanded', 'false');
                     }
-                }, 500); // Délai pour s'assurer que le changement de langue est bien déclenché
+                }, 300);
+            }
+        });
+        
+        // Support de navigation au clavier entre les options
+        option.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowDown' || e.key === 'Down') {
+                e.preventDefault();
+                const nextLi = this.closest('li').nextElementSibling;
+                if (nextLi) {
+                    const nextLink = nextLi.querySelector('a');
+                    if (nextLink) nextLink.focus();
+                }
+            } 
+            else if (e.key === 'ArrowUp' || e.key === 'Up') {
+                e.preventDefault();
+                const prevLi = this.closest('li').previousElementSibling;
+                if (prevLi) {
+                    const prevLink = prevLi.querySelector('a');
+                    if (prevLink) prevLink.focus();
+                } else {
+                    // Si on est au début, revenir au bouton principal
+                    langSelected.focus();
+                }
+            }
+            else if (e.key === 'Escape') {
+                e.preventDefault();
+                closeLangMenu();
+                langSelected.focus();
+            }
+            else if (e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault();
+                const langCode = this.getAttribute('data-lang');
+                if (langCode) changeLanguage(langCode);
             }
         });
     });
     
-    // Initialiser avec la langue stockée
-    const savedLanguage = localStorage.getItem('preferredLanguage') || 'fr';
-    updateActiveLangOption(savedLanguage);
+    // Fermer le menu quand on clique ailleurs
+    document.addEventListener('click', function(e) {
+        if (!langSelector.contains(e.target)) {
+            closeLangMenu();
+        }
+    });
+    
+    // Fermer le menu avec la touche Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && langSelector.classList.contains('active')) {
+            closeLangMenu();
+            langSelected.focus();
+        }
+    });
+    
+    // Initialiser l'affichage
+    updateCurrentLangDisplay();
 }); 
