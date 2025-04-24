@@ -663,18 +663,26 @@ document.addEventListener('DOMContentLoaded', function() {
                             window.swiperInstances[swiperKey].update();
                         }
                     }
+                    
+                    // Comportement amélioré pour mobile - scrolling plus fluide et précis
+                    if (window.innerWidth <= 768) {
+                        // Défiler directement après la catégorie, ce qui est maintenant la galerie
+                        const galleryRect = targetGallery.getBoundingClientRect();
+                        const isMobile = window.innerWidth <= 768;
+                        
+                        // Sur mobile, on veut afficher la galerie juste en dessous du haut de l'écran
+                        const offset = isMobile ? 
+                            galleryRect.top + window.scrollY - 20 : // position plus haute sur mobile
+                            galleryRect.top + window.scrollY - (window.innerHeight / 4); // position centrée sur desktop
+                        
+                        window.scrollTo({
+                            top: offset,
+                            behavior: 'smooth'
+                        });
+                    }
+                    
                     console.log('Galerie ouverte:', categoryName);
                 }, 50);
-                
-                // Faire défiler jusqu'à la galerie
-                setTimeout(() => {
-                    const galleryRect = targetGallery.getBoundingClientRect();
-                    const offset = galleryRect.top + window.scrollY - (window.innerHeight / 2) + (galleryRect.height / 2);
-                    window.scrollTo({
-                        top: offset,
-                        behavior: 'smooth'
-                    });
-                }, 100);
             };
             
             // Ajouter l'écouteur d'événement principal à la catégorie

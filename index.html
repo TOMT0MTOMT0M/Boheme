@@ -57,7 +57,7 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             position: relative;
-           
+        }
         
         .header-title .logo-image {
             height: 45px;
@@ -407,7 +407,17 @@
                     1024: {
                         slidesPerView: 3,
                     }
-                }
+                },
+                touchEventsTarget: 'wrapper',
+                touchRatio: 1,
+                touchReleaseOnEdges: false,
+                threshold: 5, // Rendre le swipe plus sensible
+                resistance: false, // Réduire la résistance
+                preventInteractionOnTransition: false,
+                passiveListeners: true,
+                simulateTouch: true,
+                touchStartPreventDefault: false,
+                touchMoveStopPropagation: false
             };
             
             // Ajustements spécifiques pour les avis
@@ -446,26 +456,53 @@
                 category.addEventListener('click', function() {
                     const categoryName = this.getAttribute('data-category');
                     const targetGallery = document.getElementById('gallery-' + categoryName);
+                    const isMobile = window.innerWidth <= 768;
+                    
+                    // Sélectionner aussi la galerie mobile si on est sur mobile
+                    const mobileSuffix = isMobile ? '-mobile' : '';
+                    const targetMobileGallery = isMobile ? document.getElementById('gallery-' + categoryName + mobileSuffix) : null;
                     
                     // Si la galerie est déjà active, la fermer
                     if (targetGallery.classList.contains('active')) {
                         targetGallery.classList.remove('active');
+                        if (targetMobileGallery) targetMobileGallery.classList.remove('active');
                         return;
                     }
                     
-                    // Fermer toutes les galeries
+                    // Fermer toutes les galeries (desktop et mobile)
                     document.querySelectorAll('.event-gallery').forEach(gallery => {
                         gallery.classList.remove('active');
                     });
                     
                     // Ouvrir la galerie sélectionnée
                     targetGallery.classList.add('active');
+                    if (targetMobileGallery) targetMobileGallery.classList.add('active');
                     
                     // Initialiser le swiper correspondant avec un délai
                     setTimeout(() => {
+                        // Initialiser le swiper pour desktop et mobile
                         const swiperEl = targetGallery.querySelector('.swiper');
+                        const swiperMobileEl = targetMobileGallery ? targetMobileGallery.querySelector('.swiper') : null;
+                        
+                        // Initialiser les swipers
                         if (swiperEl) {
-                            initSwiper(swiperEl);
+                            initSwiperAndButtons(swiperEl, targetGallery);
+                        }
+                        
+                        if (swiperMobileEl) {
+                            initSwiperAndButtons(swiperMobileEl, targetMobileGallery);
+                        }
+                        
+                        // Comportement amélioré pour mobile - scrolling vers la galerie
+                        if (isMobile && targetMobileGallery) {
+                            const galleryRect = targetMobileGallery.getBoundingClientRect();
+                            // Sur mobile, on veut afficher la galerie juste en dessous du haut de l'écran
+                            const offset = galleryRect.top + window.scrollY - 20;
+                            
+                            window.scrollTo({
+                                top: offset,
+                                behavior: 'smooth'
+                            });
                         }
                     }, 100);
                 });
@@ -475,7 +512,73 @@
             document.querySelectorAll('.swiper:not(.event-gallery .swiper)').forEach(swiperEl => {
                 initSwiper(swiperEl);
             });
+
+            // Initialiser également les swipers d'événements dès le départ (mais cachés)
+            document.querySelectorAll('.event-gallery .swiper').forEach(swiperEl => {
+                const swiper = initSwiper(swiperEl);
+                if (swiper) {
+                    // Attacher manuellement les événements aux boutons de navigation
+                    const gallery = swiperEl.closest('.event-gallery');
+                    const nextBtn = gallery.querySelector('.swiper-button-next');
+                    const prevBtn = gallery.querySelector('.swiper-button-prev');
+                    
+                    if (nextBtn) {
+                        nextBtn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            swiper.slideNext();
+                        });
+                    }
+                    
+                    if (prevBtn) {
+                        prevBtn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            swiper.slidePrev();
+                        });
+                    }
+                }
+            });
+
+            // Forcer une mise à jour de tous les swipers après 500ms
+            setTimeout(() => {
+                Object.values(window.swiperInstances).forEach(swiper => {
+                    if (swiper && typeof swiper.update === 'function') {
+                        swiper.update();
+                    }
+                });
+            }, 500);
         });
+        
+        // Fonction pour initialiser un swiper et ses boutons
+        function initSwiperAndButtons(swiperEl, galleryContainer) {
+            const swiper = initSwiper(swiperEl);
+            // Force un update après initialisation
+            if (swiper) {
+                setTimeout(() => {
+                    swiper.update();
+                    // Forcer l'attachement des événements de navigation
+                    const nextBtn = galleryContainer.querySelector('.swiper-button-next');
+                    const prevBtn = galleryContainer.querySelector('.swiper-button-prev');
+                    
+                    if (nextBtn) {
+                        nextBtn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            swiper.slideNext();
+                        });
+                    }
+                    
+                    if (prevBtn) {
+                        prevBtn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            swiper.slidePrev();
+                        });
+                    }
+                }, 300);
+            }
+        }
     </script>
     
     <!-- Gestionnaire d'erreurs pour les images -->
@@ -523,6 +626,11 @@
                 
                 // Gestionnaire d'événements pour le début du toucher
                 document.addEventListener('touchstart', function(e) {
+                    // Ne pas interférer avec les éléments swiper
+                    if (e.target.closest('.swiper, .swiper-wrapper, .swiper-slide')) {
+                        return; // Laisser Swiper gérer ces événements
+                    }
+                    
                     touchStartTime = Date.now();
                     touchStartY = e.touches[0].clientY;
                     isTouchScrolling = false;
@@ -560,6 +668,11 @@
                 
                 // Gestionnaire d'événements pour le mouvement du toucher
                 document.addEventListener('touchmove', function(e) {
+                    // Ne pas interférer avec les éléments swiper
+                    if (e.target.closest('.swiper, .swiper-wrapper, .swiper-slide')) {
+                        return; // Laisser Swiper gérer ces événements
+                    }
+                    
                     const touchCurrentY = e.touches[0].clientY;
                     const touchDeltaY = Math.abs(touchCurrentY - touchStartY);
                     
@@ -2521,10 +2634,15 @@
         .hero-content {
             max-width: 800px;
             padding: 25px;
+            background-color: rgba(0, 0, 0, 0.3); /* Augmentation de la transparence du fond */
+            backdrop-filter: blur(4px); /* Flou augmenté à 4px (ancien était probablement 8-10px) */
+            border-radius: 5px; /* Coins arrondis pour un look plus doux */
         }
         
         .hero-content p {
             font-size: 1.5rem; /* Texte hero plus grand */
+            color: #fff; /* Texte blanc pour meilleur contraste */
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5); /* Ombre de texte pour améliorer la lisibilité */
         }
         
         .testimonials-intro {
@@ -2652,15 +2770,47 @@
         /* Styles pour les galeries d'événements */
         .event-category {
             cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            padding: 25px;
+            position: relative;
+            transition: background-color 0.3s ease;
+            padding: 15px;
             border-radius: 5px;
-            margin-bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
+            background-color: rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: block;
+            width: 100%;
+        }
+        
+        /* Styles spécifiques pour les catégories individuelles */
+        #category-mariages, #category-deuil, #category-festivites {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Garantir que le contenu est visible et cliquable */
+        #category-mariages *, #category-deuil *, #category-festivites * {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .event-category:active {
+            background-color: rgba(189, 143, 57, 0.2);
+        }
+        
+        .event-category.active {
+            background-color: rgba(189, 143, 57, 0.2);
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Supprimer la flèche d'animation */
+        .event-category::after {
+            display: none; /* cacher la flèche */
+        }
+        
+        .event-category.active::after {
+            display: none; /* cacher la flèche active */
         }
         
         .event-category h3 {
@@ -2688,6 +2838,7 @@
             transition: opacity 0.5s ease;
             margin-top: 30px;
             width: 100%;
+            position: relative; /* Ajouté pour le positionnement absolu des boutons */
         }
         
         .event-gallery.active {
@@ -2712,8 +2863,10 @@
         
         .swiper-slide img {
             width: 100%;
-            height: auto; /* Changé de 100% à auto pour garder les proportions originales */
-            object-fit: contain; /* Changé de 'cover' à 'contain' pour afficher l'image entière */
+            height: 100%;
+            object-fit: cover;
+            max-width: 100%; /* Correction de 30% à 100% */
+            max-height: 400px; /* Hauteur maximale pour les images */
             transition: transform 0.3s ease;
         }
         
@@ -2724,13 +2877,34 @@
         /* Styles personnalisés pour les flèches de navigation */
         .swiper-button-next, 
         .swiper-button-prev {
-            color: var(--color-gold, #BD8F39);
-            background-color: rgba(255, 255, 255, 0.7);
-            width: 40px;
-            height: 40px;
+            color: #fff !important;
+            background-color: rgba(0, 0, 0, 0.5);
+            width: 40px !important;
+            height: 40px !important;
             border-radius: 50%;
-            transition: all 0.3s ease;
-            z-index: 10; /* Assurer que les boutons sont au-dessus des autres éléments */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100 !important; /* Augmenter le z-index pour assurer la visibilité */
+            opacity: 0.9 !important; /* Assurer la visibilité */
+            cursor: pointer !important; /* S'assurer que le curseur est un pointeur */
+            pointer-events: auto !important; /* S'assurer que les événements sont détectés */
+            position: absolute !important; /* Assurer qu'ils sont positionnés absolument */
+            top: 50% !important; /* Les centrer verticalement */
+            transform: translateY(-50%) !important; /* Ajustement pour un centrage parfait */
+        }
+        
+        .swiper-button-next:after, .swiper-button-prev:after {
+            font-size: 20px !important;
+            font-weight: bold;
+        }
+        
+        .swiper-button-next {
+            right: 10px;
+        }
+        
+        .swiper-button-prev {
+            left: 10px;
         }
         
         /* Nouvelle classe pour rendre les boutons plus visibles */
@@ -2753,12 +2927,6 @@
         .swiper-button-prev:hover {
             background-color: white;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-        
-        .swiper-button-next:after, 
-        .swiper-button-prev:after {
-            font-size: 18px;
-            font-weight: bold;
         }
         
         /* Pour les écrans plus petits */
@@ -2882,10 +3050,6 @@
         .swiper-reviews .swiper-pagination-bullet {
             background-color: var(--color-gold, #BD8F39);
             opacity: 0.5;
-        }
-        
-        .swiper-reviews .swiper-pagination-bullet-active {
-            opacity: 1;
         }
         
         .swiper-reviews .swiper-button-next,
@@ -3531,6 +3695,291 @@
             }
         }
     </style>
+    
+    <!-- Styles pour réduire l'espace dans la section Au quotidien -->
+    <style>
+        /* Styles pour réduire l'espace dans la section Au quotidien */
+        #au-quotidien .section-title {
+            margin-bottom: 15px; /* Réduit la marge en bas du titre (valeur par défaut est généralement 30px) */
+        }
+        
+        #au-quotidien .section-content {
+            margin-top: 5px; /* Réduit la marge en haut du contenu */
+        }
+        
+        #au-quotidien .full-width-image {
+            margin-top: 0; /* Supprime la marge supérieure de l'image */
+        }
+        
+        /* Styles pour harmoniser les marges dans la section Événements */
+        #evenements .section-title {
+            margin-bottom: 15px; /* Même marge que pour Au quotidien */
+        }
+        
+        #evenements .event-hero-container {
+            margin-top: 5px; /* Même marge que pour Au quotidien */
+        }
+    </style>
+    
+    <!-- Styles pour réduire l'espace entre les sections -->
+    <style>
+        @media (max-width: 768px) {
+            .events-categories {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .event-gallery {
+                margin-top: 10px;
+                margin-bottom: 25px;
+                width: 100%;
+                background-color: rgba(255, 255, 255, 0.03);
+                padding: 15px 10px;
+            }
+            
+            /* Réduire l'écart après chaque catégorie */
+            .event-category {
+                margin-bottom: 10px;
+                padding: 15px;
+            }
+            
+            /* Style pour maintenir les galeries sous leurs catégories respectives */
+            .event-gallery.active {
+                display: block;
+                animation: fadeIn 0.3s ease forwards;
+            }
+            
+            /* Amélioration visuelle des boutons de navigation sur mobile */
+            .swiper-button-next, 
+            .swiper-button-prev {
+                width: 30px;
+                height: 30px;
+            }
+        }
+    </style>
+    
+    <!-- Styles pour réduire l'espace entre les sections -->
+    <style>
+        /* Styles pour réduire l'espace entre les sections */
+        #au-quotidien {
+            margin-bottom: -60px; /* Augmenté la valeur négative pour réduire davantage l'espace */
+        }
+        
+        #evenements {
+            margin-top: -185px; /* Augmenté la valeur négative pour réduire davantage l'espace */
+        }
+        
+        /* Ajustement pour le three-images-grid et l'espace avant la section Évènements */
+        .three-images-grid {
+            margin-bottom: 30px; /* Réduit encore plus */
+        }
+        
+        /* Styles pour la section événements avec texte sur l'image */
+        .event-hero-container {
+            position: relative;
+            margin-bottom: 30px;
+            width: 100%;
+            height: 350px;
+        }
+        
+        .event-image-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .event-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .event-text-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 800px;
+            z-index: 2;
+        }
+        
+        .event-text-box {
+            background-color: rgba(108, 117, 76, 0.85); /* Couleur kaki avec transparence */
+            padding: 20px 30px;
+            border-radius: 5px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(189, 143, 57, 0.6);
+        }
+        
+        .event-text-box p {
+            color: white;
+            text-align: center;
+            margin: 0;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .event-text-overlay {
+                width: 90%;
+            }
+            
+            .event-text-box {
+                padding: 15px;
+            }
+            
+            .event-text-box p {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+    
+    <!-- Styles responsifs pour les événements -->
+    <style>
+        @media (max-width: 768px) {
+            .event-hero-container {
+                height: 250px;
+            }
+            
+            .event-image-container img {
+                height: 250px;
+            }
+            
+            .event-text-overlay {
+                width: 90%;
+            }
+            
+            .event-text-box {
+                padding: 15px;
+            }
+            
+            .event-text-box p {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+    
+    <!-- Styles pour les dispositifs mobiles et desktop -->
+    <style>
+        /* Styles pour contrôler l'affichage des galeries d'événements */
+        @media (min-width: 769px) {
+            /* Version desktop - Remettre l'affichage original */
+            .events-categories {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+                margin-bottom: 30px;
+            }
+            
+            /* Assurez-vous que toutes les catégories sont affichées en ligne sur desktop */
+            .event-category {
+                /* Garder les styles originaux pour desktop */
+                margin-bottom: 10px;
+            }
+            
+            /* Sur desktop, les galeries apparaissent après toutes les catégories */
+            .event-gallery {
+                order: 2; /* Pour s'assurer qu'ils apparaissent après */
+                grid-column: 1 / -1; /* S'étend sur toutes les colonnes */
+            }
+            
+            /* Réorganiser la structure pour revenir au comportement original */
+            .events-categories > .event-gallery {
+                display: none; /* Cacher ceux qui sont à l'intérieur de events-categories */
+            }
+            
+            /* Montrer les galeries dans event-galleries plutôt que inline */
+            .event-galleries {
+                display: block;
+                margin-top: 20px;
+            }
+            
+            .event-galleries .event-gallery.active {
+                display: block;
+            }
+            
+            /* Masquer les galeries mobiles sur desktop */
+            .mobile-gallery {
+                display: none !important;
+            }
+            
+            /* Classe pour les éléments visibles uniquement sur desktop */
+            .desktop-only {
+                display: block;
+            }
+        }
+
+        @media (max-width: 768px) {
+            /* Version mobile - Afficher les galeries directement après chaque catégorie */
+            .events-categories {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            /* Réduire l'écart après chaque catégorie */
+            .event-category {
+                margin-bottom: 10px;
+                padding: 15px;
+            }
+            
+            /* Réduire les galeries */
+            .event-gallery {
+                margin-top: 10px;
+                margin-bottom: 25px;
+                background-color: rgba(255, 255, 255, 0.03);
+                padding: 15px 10px;
+            }
+            
+            /* Sur mobile, chaque galerie est positionnée directement après sa catégorie */
+            .event-gallery.active {
+                display: block;
+                animation: fadeIn 0.3s ease forwards;
+            }
+            
+            /* Cacher la section event-galleries sur mobile puisque nous utilisons les galeries inline */
+            .event-galleries {
+                display: none;
+            }
+            
+            /* Style des catégories sur mobile */
+            .event-category {
+                margin-bottom: 0;
+                padding: 15px;
+                position: relative;
+                z-index: 1;
+            }
+            
+            /* Style pour les galeries mobiles */
+            .mobile-gallery {
+                display: none;
+                margin-top: 10px;
+                margin-bottom: 25px;
+                background-color: rgba(255, 255, 255, 0.03);
+                padding: 15px 10px;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+                order: 2;
+            }
+            
+            /* Quand actif, montrer la galerie sous sa catégorie */
+            .mobile-gallery.active {
+                display: block;
+                animation: fadeIn 0.3s ease forwards;
+            }
+        }
+
+        /* Animation de fondu pour les galeries */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
 </head>
 <body>
     <!-- Indicateur de chargement pour la traduction -->
@@ -3543,7 +3992,7 @@
         <div class="container">
             <div class="header-title">
                 <img src="images/Logo Boheme.png" alt="Bohème Fleurs" class="logo-image">
-                <a href="#" class="header-title-link" data-no-translate>Boheme Fleurs</a>
+                <a href="#" class="header-title-link" data-no-translate>Bohème Fleurs</a>
             </div>
             <nav class="main-nav">
                 <button class="menu-toggle" aria-label="Menu" aria-expanded="false" aria-controls="main-menu">
@@ -3554,7 +4003,7 @@
                 </button>
                 <ul class="nav-list" id="main-menu" role="menu">
                     <li><a href="#au-quotidien">Au quotidien</a></li>
-                    <li><a href="#evenements">Événements</a></li>
+                    <li><a href="#evenements">Évènements</a></li>
                     <li><a href="#professionnels">Professionnels</a></li>
                     <li><a href="#services">Services</a></li>
                     <li><a href="#reviews">Avis</a></li>
@@ -3593,13 +4042,15 @@
 
     <!-- Hero Section -->
     <section class="hero">
-        <div class="hero-logo">
+        <div class="hero-logo" style="padding-top: 5px; padding-left: 20px;">
             <img src="images/Logo Boheme.png" alt="Bohème Fleurs" class="logo-image">
         </div>
         <img src="images/herobg.jpg" alt="Arrangement floral artistique" class="hero-image" 
              onerror="this.onerror=null; this.src='images/herobg.jpg';">
         <div class="hero-content">
-            <p class="reveal-text">Chez Bohème Fleurs, notre boutique évolue au rythme des saisons. Respectueux du cycle naturel, nous créons des compositions uniques qui répondent à vos attentes, et reflètent cette poésie bohème qui caractérise notre univers.</p>
+            <p class="reveal-text">Bienvenue chez Bohème Fleurs<br>
+    Dans notre boutique, les fleurs évoluent au rythme des saisons, <br>
+    et nous avec.</p>
         </div>
     </section>
 
@@ -3615,7 +4066,7 @@
                 
                 <!-- Texte qui parle de qui nous sommes -->
                 <div class="about-text">
-                    <p class="reveal-text">Chez Bohème Fleurs, nous sommes une équipe passionnée par l'art floral et dédiée à la création de compositions uniques. Notre approche artistique s'inspire de la nature et des saisons, créant des arrangements qui racontent une histoire. Notre boutique est un lieu où l'élégance rencontre l'imagination, offrant une expérience sensorielle authentique à chaque visite.</p>
+                    <p class="reveal-text">Chez Bohème Fleurs, nous créons des compositions uniques qui racontent une histoire, mêlant vos inspirations à cette poésie bohème qui caractérise notre univers. Notre approche artistique s'inspire de ce que peut nous offrir la nature au fil des saisons, ainsi la boutique n'est jamais totalement la même. </p>
                 </div>
                 
                 <!-- Trois photos en dessous -->
@@ -3638,27 +4089,130 @@
     <section id="evenements" class="section">
         <div class="container">
             <h2 class="section-title reveal-text">Évènements</h2>
-            <div class="section-content">
-                <div class="text-content">
-                    <p class="reveal-text">Des créations florales sur mesure pour vos moments importants. Mariages, cérémonies de deuil ou festivités, nous vous accompagnons avec des compositions qui reflètent l'émotion de l'instant.</p>
+            <div class="event-hero-container">
+                <div class="event-image-container">
+                    <img src="images/event.JPG" alt="Compositions florales pour événements" loading="lazy">
                 </div>
+                <div class="event-text-overlay">
+                    <div class="event-text-box">
+                        <p class="reveal-text">Des créations florales sur mesure pour vos moments importants. Mariages, cérémonies de deuil ou festivités, nous vous accompagnons avec des compositions qui reflètent l'émotion de l'instant.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="section-content">
+                <!-- Les catégories d'événements -->
                 <div class="events-categories">
-                    <div class="event-category" data-category="mariages">
+                    <div id="category-mariages" class="event-category" data-category="mariages" onclick="mobileEventCategoryClick(event, 'mariages')">
                         <h3>Mariages</h3>
                         <p>Compositions florales pour votre cérémonie</p>
+                        <!-- Bouton visible uniquement sur mobile -->
+                        <button class="mobile-toggle-button" onclick="toggleMobileGallery('mariages')">VOIR LES PHOTOS</button>
                     </div>
-                    <div class="event-category" data-category="deuil">
+                    
+                    <!-- Galerie Mariages pour Mobile -->
+                    <div class="event-gallery mobile-gallery" id="gallery-mariages-mobile" style="display: none;">
+                        <div class="swiper swiper-mariages-mobile">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide">
+                                    <img src="images/mariage/mar1.jpg" alt="Décoration florale de mariage" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/mariage/mar2.jpg" alt="Bouquet de mariée" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/mariage/mar3.jpg" alt="Arrangement floral pour mariage" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/mariage/mar4.jpg" alt="Décoration de table de mariage" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/mariage/mar5.jpg" alt="Bouquet de mariée sophistiqué" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/mariage/mar6.jpg" alt="Décoration florale de mariage" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/mariage/mar7.jpg" alt="Centre de table de mariage" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/mariage/IMG20230505181300.jpg" alt="Composition florale de mariage" loading="lazy">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Boutons de navigation déplacés en dehors du swiper -->
+                        <div class="swiper-button-next swiper-mariages-mobile-next"></div>
+                        <div class="swiper-button-prev swiper-mariages-mobile-prev"></div>
+                    </div>
+                    
+                    <div id="category-deuil" class="event-category" data-category="deuil" onclick="mobileEventCategoryClick(event, 'deuil')">
                         <h3>Deuil</h3>
                         <p>Hommages floraux pour vos proches</p>
+                        <!-- Bouton visible uniquement sur mobile -->
+                        <button class="mobile-toggle-button" onclick="toggleMobileGallery('deuil')">VOIR LES PHOTOS</button>
                     </div>
-                    <div class="event-category" data-category="festivites">
+                    
+                    <!-- Galerie Deuil pour Mobile -->
+                    <div class="event-gallery mobile-gallery" id="gallery-deuil-mobile" style="display: none;">
+                        <div class="swiper swiper-deuil-mobile">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide">
+                                    <img src="images/deuil/deuil1.jpg" alt="Composition pour cérémonie" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/deuil/deuil2.jpg" alt="Arrangement floral pour deuil" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/deuil/IMG-20250204-WA0011.jpg" alt="Composition funéraire" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/deuil/IMG-20250204-WA0019.jpg" alt="Arrangement funéraire" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/deuil/IMG_20240113_121154 - Copie.jpg" alt="Composition florale deuil élégante" loading="lazy">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Boutons de navigation déplacés en dehors du swiper -->
+                        <div class="swiper-button-next swiper-deuil-mobile-next"></div>
+                        <div class="swiper-button-prev swiper-deuil-mobile-prev"></div>
+                    </div>
+                    
+                    <div id="category-festivites" class="event-category" data-category="festivites" onclick="mobileEventCategoryClick(event, 'festivites')">
                         <h3>Festivités</h3>
                         <p>Décorations pour vos événements spéciaux</p>
+                        <!-- Bouton visible uniquement sur mobile -->
+                        <button class="mobile-toggle-button" onclick="toggleMobileGallery('festivites')">VOIR LES PHOTOS</button>
+                    </div>
+                    
+                    <!-- Galerie Festivités pour Mobile -->
+                    <div class="event-gallery mobile-gallery" id="gallery-festivites-mobile" style="display: none;">
+                        <div class="swiper swiper-festivites-mobile">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide">
+                                    <img src="images/festiv/festi1.jpg" alt="Arrangement pour soirée" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/festiv/festi2.jpg" alt="Décoration florale pour événement" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/festiv/IMG_20231012_185225.jpg" alt="Décoration d'événement" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/festiv/IMG_20231211_165752.jpg" alt="Arrangement festif" loading="lazy">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="images/festiv/IMG_20231217_155339.jpg" alt="Décoration florale événement" loading="lazy">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Boutons de navigation déplacés en dehors du swiper -->
+                        <div class="swiper-button-next swiper-festivites-mobile-next"></div>
+                        <div class="swiper-button-prev swiper-festivites-mobile-prev"></div>
                     </div>
                 </div>
                 
-                <!-- Galerie photos par catégorie - initialement cachée -->
-                <div class="event-galleries">
+                <!-- Galeries photo - dans un conteneur séparé pour desktop -->
+                <div class="event-galleries desktop-only">
                     <!-- Galerie Mariages -->
                     <div class="event-gallery" id="gallery-mariages">
                         <div class="swiper swiper-mariages">
@@ -3688,9 +4242,10 @@
                                     <img src="images/mariage/IMG20230505181300.jpg" alt="Composition florale de mariage" loading="lazy">
                                 </div>
                             </div>
-                            <div class="swiper-button-next swiper-mariages-next"></div>
-                            <div class="swiper-button-prev swiper-mariages-prev"></div>
                         </div>
+                        <!-- Boutons de navigation déplacés en dehors du swiper -->
+                        <div class="swiper-button-next swiper-mariages-next"></div>
+                        <div class="swiper-button-prev swiper-mariages-prev"></div>
                     </div>
                     
                     <!-- Galerie Deuil -->
@@ -3701,7 +4256,7 @@
                                     <img src="images/deuil/deuil1.jpg" alt="Composition pour cérémonie" loading="lazy">
                                 </div>
                                 <div class="swiper-slide">
-                                    <img src="images/deuil/deuil2.jpeg" alt="Arrangement floral pour deuil" loading="lazy">
+                                    <img src="images/deuil/deuil2.jpg" alt="Arrangement floral pour deuil" loading="lazy">
                                 </div>
                                 <div class="swiper-slide">
                                     <img src="images/deuil/IMG-20250204-WA0011.jpg" alt="Composition funéraire" loading="lazy">
@@ -3713,9 +4268,10 @@
                                     <img src="images/deuil/IMG_20240113_121154 - Copie.jpg" alt="Composition florale deuil élégante" loading="lazy">
                                 </div>
                             </div>
-                            <div class="swiper-button-next swiper-deuil-next"></div>
-                            <div class="swiper-button-prev swiper-deuil-prev"></div>
                         </div>
+                        <!-- Boutons de navigation déplacés en dehors du swiper -->
+                        <div class="swiper-button-next swiper-deuil-next"></div>
+                        <div class="swiper-button-prev swiper-deuil-prev"></div>
                     </div>
                     
                     <!-- Galerie Festivités -->
@@ -3738,9 +4294,10 @@
                                     <img src="images/festiv/IMG_20231217_155339.jpg" alt="Décoration florale événement" loading="lazy">
                                 </div>
                             </div>
-                            <div class="swiper-button-next swiper-festivites-next"></div>
-                            <div class="swiper-button-prev swiper-festivites-prev"></div>
                         </div>
+                        <!-- Boutons de navigation déplacés en dehors du swiper -->
+                        <div class="swiper-button-next swiper-festivites-next"></div>
+                        <div class="swiper-button-prev swiper-festivites-prev"></div>
                     </div>
                 </div>
             </div>
@@ -3842,7 +4399,7 @@
                 </div>
                 <div class="service-card">
                     <div class="service-image">
-                        <img src="images/galerie/gal1.JPG" alt="Créations sur mesure" loading="lazy">
+                        <img src="images/galerie/gal1.jpeg" alt="Créations sur mesure" loading="lazy">
                     </div>
                     <div class="service-content">
                         <h3 class="reveal-text">Sur demande</h3>
@@ -3866,7 +4423,7 @@
                         <img src="images/galerie/IMG_20240503_144422.jpg" alt="Création florale saison printemps" loading="lazy">
                     </div>
                     <div class="gallery-item">
-                        <img src="images/galerie/gal1.JPG" alt="Création élégante" loading="lazy">
+                        <img src="images/galerie/gal1.jpeg" alt="Création élégante" loading="lazy">
                     </div>
                     <div class="gallery-item">
                         <img src="images/galerie/IMG20230420165117.jpg" alt="Bouquet printanier" loading="lazy">
@@ -4099,6 +4656,470 @@
             // Charger l'API Google Maps uniquement pour les avis
             loadGoogleMapsAndInitialize();
         });
+    </script>
+    
+    <!-- Styles pour les dispositifs mobiles et desktop -->
+    <style>
+        /* Styles pour contrôler l'affichage des galeries d'événements */
+        /* Desktop: galeries après toutes les catégories */
+        @media (min-width: 769px) {
+            .events-categories {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+                margin-bottom: 30px;
+            }
+            
+            /* Les galeries apparaissent sous toutes les catégories */
+            .event-galleries {
+                display: block;
+                margin-top: 20px;
+            }
+            
+            .event-galleries .event-gallery.active {
+                display: block;
+                animation: fadeIn 0.5s ease forwards;
+            }
+            
+            /* Masquer les galeries mobiles sur desktop */
+            .mobile-gallery {
+                display: none !important;
+            }
+            
+            /* Classe pour les éléments visibles uniquement sur desktop */
+            .desktop-only {
+                display: block;
+            }
+        }
+        
+        /* Mobile: galeries directement après chaque catégorie */
+        @media (max-width: 768px) {
+            /* Masquer le conteneur des galeries desktop sur mobile */
+            .desktop-only {
+                display: none !important;
+            }
+            
+            /* Afficher l'élément events-categories en colonne */
+            .events-categories {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            /* Style des catégories sur mobile */
+            .event-category {
+                margin-bottom: 0;
+                padding: 15px;
+                position: relative;
+                z-index: 1;
+            }
+            
+            /* Style pour les galeries mobiles */
+            .mobile-gallery {
+                margin-top: 10px;
+                margin-bottom: 25px;
+                background-color: rgba(255, 255, 255, 0.03);
+                padding: 15px 10px;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            }
+            
+            /* Quand actif, montrer la galerie sous sa catégorie */
+            .mobile-gallery.active {
+                display: block !important;
+                animation: fadeIn 0.3s ease forwards;
+            }
+        }
+
+        /* Animation de fondu pour les galeries */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+    
+   
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialisation des catégories d'événements
+            const eventCategories = document.querySelectorAll('.event-category');
+            eventCategories.forEach(category => {
+                category.addEventListener('click', function() {
+                    const categoryId = this.getAttribute('data-category');
+                    const events = document.querySelectorAll('.event');
+                    
+                    events.forEach(event => {
+                        if (categoryId === 'all' || event.getAttribute('data-category') === categoryId) {
+                            event.style.display = 'block';
+                        } else {
+                            event.style.display = 'none';
+                        }
+                    });
+
+                    // Mise à jour de la classe active
+                    eventCategories.forEach(cat => cat.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Gestion spécifique pour mobile
+                    if (window.innerWidth <= 768) {
+                        console.log("Mode mobile détecté, gestion des galeries mobiles");
+                        
+                        // Trouver la galerie mobile correspondante
+                        const mobileGalleryId = `gallery-${categoryId}-mobile`;
+                        const mobileGallery = document.getElementById(mobileGalleryId);
+                        
+                        if (!mobileGallery) {
+                            console.error(`Galerie mobile non trouvée: ${mobileGalleryId}`);
+                            return;
+                        }
+                        
+                        console.log(`Galerie mobile trouvée: ${mobileGalleryId}`);
+                        
+                        // Fermer toutes les galeries mobiles d'abord
+                        document.querySelectorAll('.mobile-gallery').forEach(gallery => {
+                            gallery.classList.remove('active');
+                            gallery.style.display = 'none';
+                        });
+                        
+                        // Ouvrir la galerie mobile correspondante
+                        mobileGallery.classList.add('active');
+                        mobileGallery.style.display = 'block';
+                        
+                        // Défiler vers la galerie ouverte
+                        setTimeout(() => {
+                            const offset = mobileGallery.offsetTop - 20;
+                            window.scrollTo({
+                                top: offset,
+                                behavior: 'smooth'
+                            });
+                        }, 300);
+                    }
+                });
+            });
+        });
+    </script>
+    
+    <!-- Script simple pour afficher les galeries mobiles - direct et simple -->
+    <script>
+        // Attendre que le DOM soit prêt
+        document.addEventListener('DOMContentLoaded', function() {
+            // Obtenir toutes les catégories d'événements
+            var categories = document.querySelectorAll('.event-category');
+            console.log('Catégories trouvées:', categories.length);
+            
+            // Ajouter un écouteur de clic à chaque catégorie
+            categories.forEach(function(cat) {
+                cat.addEventListener('click', function() {
+                    // Obtenir l'ID de la catégorie
+                    var catId = this.getAttribute('data-category');
+                    console.log('Catégorie cliquée:', catId);
+                    
+                    // Uniquement sur mobile
+                    if (window.innerWidth <= 768) {
+                        // Fermer toutes les galeries
+                        var allGalleries = document.querySelectorAll('.mobile-gallery');
+                        allGalleries.forEach(function(g) {
+                            g.style.display = 'none';
+                        });
+                        
+                        // Ouvrir la galerie correspondante
+                        var gallery = document.getElementById('gallery-' + catId + '-mobile');
+                        if (gallery) {
+                            console.log('Ouverture de la galerie:', gallery.id);
+                            gallery.style.display = 'block';
+                            
+                            // Défiler vers la galerie
+                            setTimeout(function() {
+                                gallery.scrollIntoView({behavior: 'smooth', block: 'start'});
+                            }, 100);
+                        } else {
+                            console.error('Galerie non trouvée pour:', catId);
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+    
+    <!-- Fonction de bascule pour les galeries mobiles via boutons -->
+    <script>
+        // Nouvelle fonction pour gérer les clics sur les catégories en mode mobile
+        function mobileEventCategoryClick(event, categoryName) {
+            // Ne déclencher que sur mobile
+            if (window.innerWidth <= 768) {
+                // Empêcher l'événement de se propager
+                event.preventDefault();
+                event.stopPropagation();
+                
+                console.log("Clic sur catégorie mobile:", categoryName);
+                
+                // Ouvrir la galerie directement sans vérification supplémentaire
+                toggleMobileGallery(categoryName);
+            }
+        }
+    
+        // Fonction simple et directe pour afficher les galeries mobiles
+        function toggleMobileGallery(categoryName) {
+            // Trouver la galerie correspondante
+            var galleryId = 'gallery-' + categoryName + '-mobile';
+            var gallery = document.getElementById(galleryId);
+            
+            if (!gallery) {
+                console.error('Galerie non trouvée:', galleryId);
+                return;
+            }
+
+            // Gérer la classe active sur les catégories
+            var categories = document.querySelectorAll('.event-category');
+            var currentCategory = document.querySelector('.event-category[data-category="' + categoryName + '"]');
+            
+            // Si la galerie est déjà affichée, la cacher
+            if (gallery.style.display === 'block') {
+                gallery.style.display = 'none';
+                gallery.style.height = '0';
+                gallery.style.overflow = 'hidden';
+                gallery.style.marginTop = '0';
+                gallery.style.marginBottom = '0';
+                gallery.style.padding = '0';
+                
+                // Supprimer la classe active
+                if (currentCategory) {
+                    currentCategory.classList.remove('active');
+                }
+                
+                return;
+            }
+            
+            // Cacher toutes les galeries avec une transition
+            var galleries = document.querySelectorAll('.mobile-gallery');
+            for (var i = 0; i < galleries.length; i++) {
+                galleries[i].style.display = 'none';
+                galleries[i].style.height = '0';
+                galleries[i].style.overflow = 'hidden';
+                galleries[i].style.marginTop = '0';
+                galleries[i].style.marginBottom = '0';
+                galleries[i].style.padding = '0';
+            }
+            
+            // Supprimer la classe active de toutes les catégories
+            categories.forEach(function(cat) {
+                cat.classList.remove('active');
+            });
+            
+            // Ajouter la classe active à la catégorie actuelle
+            if (currentCategory) {
+                currentCategory.classList.add('active');
+            }
+            
+            // Afficher la galerie demandée avec une animation d'expansion
+            gallery.style.display = 'block';
+            gallery.style.opacity = '1';
+            gallery.style.visibility = 'visible';
+            gallery.style.zIndex = '10';
+            gallery.style.height = 'auto';
+            gallery.style.overflow = 'visible';
+            gallery.style.marginTop = '15px';
+            gallery.style.marginBottom = '30px';
+            gallery.style.padding = '20px';
+            
+            // S'assurer que toutes les images sont visibles
+            var images = gallery.querySelectorAll('img');
+            for (var i = 0; i < images.length; i++) {
+                images[i].style.display = 'block';
+                images[i].style.opacity = '1';
+                images[i].style.visibility = 'visible';
+            }
+            
+            // Initialiser le Swiper immédiatement
+            if (typeof Swiper !== 'undefined') {
+                var swiperContainer = gallery.querySelector('.swiper');
+                if (swiperContainer) {
+                    // Détruire l'ancien swiper s'il existe
+                    if (swiperContainer.swiper) {
+                        swiperContainer.swiper.destroy();
+                    }
+                    
+                    // Créer un nouveau swiper
+                    console.log("Initialisation du Swiper pour", galleryId);
+                    var swiper = new Swiper(swiperContainer, {
+                        slidesPerView: 1,
+                        spaceBetween: 20,
+                        navigation: {
+                            nextEl: gallery.querySelector('.swiper-button-next'),
+                            prevEl: gallery.querySelector('.swiper-button-prev')
+                        },
+                        loop: true,
+                        // S'assurer que les slides sont visibles
+                        on: {
+                            init: function() {
+                                console.log("Swiper initialisé!");
+                                // Forcer un update après init
+                                setTimeout(function() {
+                                    swiper.update();
+                                }, 100);
+                            }
+                        }
+                    });
+                }
+            }
+        }
+        
+        // Ajouter un style pour l'animation d'expansion
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ajouter un style pour les transitions
+            var style = document.createElement('style');
+            style.textContent = `
+                .mobile-gallery {
+                    transition: all 0.3s ease-in-out;
+                }
+                
+                /* Réorganisation pour que les galeries s'insèrent correctement dans le flux */
+                @media (max-width: 768px) {
+                    .events-categories {
+                        display: block !important;
+                    }
+                    
+                    .event-category {
+                        margin-bottom: 10px;
+                    }
+                    
+                    .mobile-gallery {
+                        height: 0;
+                        overflow: hidden;
+                        padding: 0;
+                        margin: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Réorganiser les galeries mobiles pour qu'elles s'insèrent correctement
+            var categories = document.querySelectorAll('.event-category');
+            categories.forEach(function(category) {
+                var categoryName = category.getAttribute('data-category');
+                var galleryId = 'gallery-' + categoryName + '-mobile';
+                var gallery = document.getElementById(galleryId);
+                
+                if (gallery && gallery.parentNode) {
+                    // Déplacer la galerie juste après sa catégorie correspondante
+                    category.parentNode.insertBefore(gallery, category.nextSibling);
+                }
+            });
+        });
+    </script>
+    
+    <!-- Style pour les boutons mobiles -->
+    <style>
+        /* Style pour le bouton mobile */
+        @media (max-width: 768px) {
+            .mobile-toggle-button {
+                display: none; /* Cacher les boutons Voir les photos */
+            }
+            
+            .event-category {
+                cursor: pointer;
+                background-color: rgba(0, 0, 0, 0.2);
+                padding: 15px;
+                border-radius: 5px;
+                margin-bottom: 15px;
+                text-align: center;
+            }
+            
+            .event-category:active {
+                background-color: rgba(189, 143, 57, 0.2);
+            }
+            
+            .event-category.active {
+                background-color: rgba(189, 143, 57, 0.2);
+            }
+            
+            /* Supprimer complètement les pseudo-éléments after et before */
+            .event-category::before, 
+            .event-category::after {
+                display: none;
+            }
+            
+            /* Styles pour les galeries mobiles */
+            .mobile-gallery {
+                display: none;
+                position: relative;
+                z-index: 10;
+                margin-top: 15px;
+                margin-bottom: 30px;
+                background-color: rgba(0, 0, 0, 0.5);
+                border-radius: 8px;
+                padding: 20px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            }
+            
+            .mobile-gallery .swiper {
+                width: 100%;
+                height: auto;
+                z-index: 20;
+                position: relative;
+            }
+            
+            .mobile-gallery .swiper-slide {
+                width: 100%;
+                height: auto;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                opacity: 1 !important;
+            }
+            
+            .mobile-gallery .swiper-slide img {
+                max-width: 100%;
+                height: auto;
+                display: block;
+                opacity: 1 !important;
+                visibility: visible !important;
+                object-fit: contain;
+                max-height: 300px;
+            }
+            
+            /* Boutons de navigation */
+            .swiper-button-next, .swiper-button-prev {
+                color: #bd8f39 !important;
+                background-color: rgba(0, 0, 0, 0.3);
+                border-radius: 50%;
+                width: 40px !important;
+                height: 40px !important;
+                margin-top: -20px !important;
+                z-index: 30 !important;
+            }
+            
+            .swiper-button-next:after, .swiper-button-prev:after {
+                font-size: 20px !important;
+                font-weight: bold;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .mobile-toggle-button {
+                display: none !important;
+            }
+        }
+    </style>
+    
+    <!-- Style pour s'assurer que les clics sur l'ensemble de la div fonctionnent -->
+    <style>
+        @media (max-width: 768px) {
+            /* S'assurer que les éléments enfants ne bloquent pas les clics */
+            .event-category h3, 
+            .event-category p, 
+            .event-category img,
+            .event-category div {
+                pointer-events: none;
+            }
+        }
+    </style>
+    
+    <!-- Script pour la galerie d'événements -->
+    <script>
+        // Le code d'initialisation des carrousels a été déplacé dans main.js
+        // pour une meilleure gestion des dépendances et de l'ordre de chargement
     </script>
 </body>
 </html>
