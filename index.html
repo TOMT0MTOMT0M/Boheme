@@ -2691,7 +2691,7 @@
         .full-width-image {
             width: 100%;
             margin-bottom: 40px;
-            height: 600px; /* Hauteur augmentée de 50% (400px -> 600px) */
+            height: 1000px; /* Increased height from 600px to 800px */
             overflow: hidden; /* Cache les parties de l'image qui dépassent */
         }
         
@@ -3719,6 +3719,19 @@
         #evenements .event-hero-container {
             margin-top: 5px; /* Même marge que pour Au quotidien */
         }
+
+        /* Styles pour harmoniser les marges dans la section Professionnels */
+        #professionnels .section-title {
+            margin-bottom: 15px; /* Même marge que pour Au quotidien */
+        }
+        
+        #professionnels .section-content {
+            margin-top: 5px; /* Même marge que pour Au quotidien */
+        }
+
+        #professionnels .text-content {
+            margin-top: 0; /* Supprime la marge supérieure du texte */
+        }
     </style>
     
     <!-- Styles pour réduire l'espace entre les sections -->
@@ -3780,6 +3793,12 @@
             margin-bottom: 30px;
             width: 100%;
             height: 350px;
+            max-width: 100%;
+            margin-left: 0;
+            margin-right: 0;
+            padding-left: 0;
+            padding-right: 0;
+            overflow: hidden;
         }
         
         .event-image-container {
@@ -3789,30 +3808,37 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
         }
         
         .event-image-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            margin: 0;
+            padding: 0;
         }
         
         .event-text-overlay {
             position: absolute;
-            top: 50%;
+            top: 30%; /* Modifié de 50% à 30% pour le placer plus haut */
             left: 50%;
             transform: translate(-50%, -50%);
             width: 80%;
             max-width: 800px;
-            z-index: 2;
+            z-index: 10; /* Augmenté pour s'assurer qu'il est au-dessus de l'image */
+            background-color: rgba(108, 117, 76, 0.5); /* Couleur verte avec transparence ajustée */
+            backdrop-filter: blur(5px);
+            padding: 25px;
+            border-radius: 5px;
+            text-align: center;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
         }
         
         .event-text-box {
-            background-color: rgba(108, 117, 76, 0.85); /* Couleur kaki avec transparence */
             padding: 20px 30px;
-            border-radius: 5px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(189, 143, 57, 0.6);
         }
         
         .event-text-box p {
@@ -3827,6 +3853,8 @@
         @media (max-width: 768px) {
             .event-text-overlay {
                 width: 90%;
+                padding: 20px;
+                left: 5%;
             }
             
             .event-text-box {
@@ -3980,6 +4008,29 @@
             to { opacity: 1; }
         }
     </style>
+
+    <!-- Style pour les titres dans la section professionnels -->
+    <style>
+        .pro-service-title {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 10px 0;
+            background-color: rgba(181, 177, 131, 0.7); /* Couleur kaki avec transparence */
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            color: white; /* Pour assurer une bonne lisibilité */
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+
+    <!-- Style mobile pour l'image dans Au Quotidien -->
+    <style>
+        @media (max-width: 768px) {
+            .quoti-hori-img {
+                height: 400px !important;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Indicateur de chargement pour la traduction -->
@@ -4060,7 +4111,7 @@
             <h2 class="section-title reveal-text">Au quotidien</h2>
             <div class="section-content">
                 <!-- Image horizontale qui prend toute la largeur -->
-                <div class="full-width-image full-width-no-margin">
+                <div class="full-width-image full-width-no-margin quoti-hori-img">
                     <img src="images/quoti-hori.jpg?v=2" alt="Notre boutique au quotidien" loading="lazy" style="object-position: center 63%;">
                 </div>
                 
@@ -4087,16 +4138,14 @@
 
     <!-- Événements Section -->
     <section id="evenements" class="section">
-        <div class="container">
+        <div class="container" style="max-width: 100%; padding-left: 0; padding-right: 0;">
             <h2 class="section-title reveal-text">Évènements</h2>
             <div class="event-hero-container">
                 <div class="event-image-container">
                     <img src="images/event.JPG" alt="Compositions florales pour événements" loading="lazy">
                 </div>
-                <div class="event-text-overlay">
-                    <div class="event-text-box">
-                        <p class="reveal-text">Des créations florales sur mesure pour vos moments importants. Mariages, cérémonies de deuil ou festivités, nous vous accompagnons avec des compositions qui reflètent l'émotion de l'instant.</p>
-                    </div>
+                <div class="event-text-overlay fade-in visible">
+                    <p class="reveal-text">Des créations florales sur mesure pour vos moments importants. Mariages, cérémonies de deuil ou festivités, nous vous accompagnons avec des compositions qui reflètent l'émotion de l'instant.</p>
                 </div>
             </div>
             <div class="section-content">
@@ -4162,7 +4211,7 @@
                                     <img src="images/deuil/deuil2.jpg" alt="Arrangement floral pour deuil" loading="lazy">
                                 </div>
                                 <div class="swiper-slide">
-                                    <img src="images/deuil/IMG-20250204-WA0011.jpg" alt="Composition funéraire" loading="lazy">
+                                    <img src="images/deuil/IMG-20250204-WA0011.jpg" alt="Arrangement funéraire" loading="lazy">
                                 </div>
                                 <div class="swiper-slide">
                                     <img src="images/deuil/IMG-20250204-WA0019.jpg" alt="Arrangement funéraire" loading="lazy">
@@ -4259,7 +4308,7 @@
                                     <img src="images/deuil/deuil2.jpg" alt="Arrangement floral pour deuil" loading="lazy">
                                 </div>
                                 <div class="swiper-slide">
-                                    <img src="images/deuil/IMG-20250204-WA0011.jpg" alt="Composition funéraire" loading="lazy">
+                                    <img src="images/deuil/IMG-20250204-WA0011.jpg" alt="Arrangement funéraire" loading="lazy">
                                 </div>
                                 <div class="swiper-slide">
                                     <img src="images/deuil/IMG-20250204-WA0019.jpg" alt="Arrangement funéraire" loading="lazy">
@@ -4390,7 +4439,7 @@
                 </div>
                 <div class="service-card">
                     <div class="service-image">
-                        <img src="images/galerie/abo1.jpg" alt="Abonnements floraux" loading="lazy">
+                        <img src="images/galerie/abo1.JPG" alt="Abonnements floraux" loading="lazy">
                     </div>
                     <div class="service-content">
                         <h3 class="reveal-text">Abonnements</h3>

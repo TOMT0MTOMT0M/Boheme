@@ -797,4 +797,42 @@ document.addEventListener('DOMContentLoaded', function() {
             link.setAttribute('tabindex', '0');
         });
     }
+
+    // Gestion du formulaire de contact compact
+    const contactForm = document.querySelector('.contact-form');
+    if (contactForm) {
+        const formGroups = contactForm.querySelectorAll('.form-group');
+        
+        // Initialiser tous les champs en mode réduit
+        formGroups.forEach(group => {
+            group.classList.add('collapsed');
+            
+            const input = group.querySelector('input, textarea');
+            if (input) {
+                // Ajouter un gestionnaire d'événements pour le focus
+                input.addEventListener('focus', function() {
+                    // Réduire tous les autres champs
+                    formGroups.forEach(otherGroup => {
+                        if (otherGroup !== group) {
+                            otherGroup.classList.add('collapsed');
+                            otherGroup.classList.remove('expanded');
+                        }
+                    });
+                    
+                    // Développer le champ actuel
+                    group.classList.remove('collapsed');
+                    group.classList.add('expanded');
+                });
+                
+                // Ajouter un gestionnaire d'événements pour le blur
+                input.addEventListener('blur', function() {
+                    // Si le champ est vide, le réduire
+                    if (!input.value.trim()) {
+                        group.classList.add('collapsed');
+                        group.classList.remove('expanded');
+                    }
+                });
+            }
+        });
+    }
 }); 

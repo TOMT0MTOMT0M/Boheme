@@ -809,6 +809,7 @@ body.menu-open {
     width: auto;
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
     transition: transform 0.3s ease, filter 0.3s ease;
+    margin-top: -45px;
 }
 
 .hero-logo:hover .logo-image {
@@ -1372,6 +1373,30 @@ img, .img-container {
 
 .form-group {
     margin-bottom: var(--spacing-sm);
+    position: relative;
+}
+
+.form-group.collapsed {
+    margin-bottom: 0;
+}
+
+.form-group.collapsed input,
+.form-group.collapsed textarea {
+    height: 44px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.form-group.expanded {
+    margin-bottom: var(--spacing-sm);
+}
+
+.form-group.expanded input,
+.form-group.expanded textarea {
+    height: auto;
+    overflow: visible;
+    white-space: normal;
 }
 
 label {
@@ -1416,6 +1441,33 @@ input:focus, textarea:focus {
     background-color: #d3a349;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Styles spécifiques pour mobile */
+@media (max-width: 576px) {
+    .contact-form-container {
+        order: 3; /* Place le formulaire en dernier sur mobile */
+        margin-top: var(--spacing-md);
+    }
+
+    .form-group {
+        margin-bottom: 0;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        font-size: 16px;
+        padding: 12px;
+        min-height: 44px;
+    }
+
+    .form-group.expanded {
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .form-group.expanded textarea {
+        min-height: 100px;
+    }
 }
 
 .map-container {
